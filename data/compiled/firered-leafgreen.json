@@ -8067,7 +8067,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -8820,7 +8820,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -9423,7 +9423,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -9993,7 +9993,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -10579,7 +10579,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -11301,7 +11301,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -12073,7 +12073,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -12828,7 +12828,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -13397,7 +13397,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -14101,7 +14101,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -14839,7 +14839,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -16285,7 +16285,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -16974,7 +16974,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -17763,7 +17763,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -18605,7 +18605,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -19360,7 +19360,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -20304,7 +20304,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -21417,7 +21417,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -22138,7 +22138,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -23064,7 +23064,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -29038,7 +29038,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -29725,7 +29725,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -32493,7 +32493,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -33199,7 +33199,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -33923,7 +33923,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -34545,7 +34545,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -35184,7 +35184,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -35873,7 +35873,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -36645,7 +36645,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -37468,7 +37468,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -40246,7 +40246,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -41189,7 +41189,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -41998,7 +41998,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -42618,7 +42618,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -43459,7 +43459,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -44182,7 +44182,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -45024,7 +45024,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -45898,7 +45898,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -46706,7 +46706,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -47650,7 +47650,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -48613,7 +48613,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -49420,7 +49420,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -50295,7 +50295,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -51119,7 +51119,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -51755,7 +51755,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -52357,7 +52357,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -53266,7 +53266,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -53954,7 +53954,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -61175,7 +61175,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -61830,7 +61830,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -62399,7 +62399,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -63105,7 +63105,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -63711,7 +63711,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -64519,7 +64519,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -65275,7 +65275,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -67242,7 +67242,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -67931,7 +67931,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -68841,7 +68841,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -70580,7 +70580,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -71455,7 +71455,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -72382,7 +72382,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -73071,7 +73071,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -73727,7 +73727,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -74297,7 +74297,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -74936,7 +74936,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -75640,7 +75640,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -76602,7 +76602,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -77494,7 +77494,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -78267,7 +78267,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -78974,7 +78974,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -79935,7 +79935,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -80776,7 +80776,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -81448,7 +81448,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -82293,7 +82293,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -83254,7 +83254,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -85246,7 +85246,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -86157,7 +86157,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -91111,7 +91111,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -91940,7 +91940,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -92749,7 +92749,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -93557,7 +93557,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -94194,7 +94194,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -94816,7 +94816,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -101031,7 +101031,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -101737,7 +101737,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -102443,7 +102443,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -103252,7 +103252,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -104093,7 +104093,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -104952,7 +104952,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -112468,7 +112468,7 @@
         {
           "name": "thief",
           "type": "dark",
-          "power": 60,
+          "power": 40,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
