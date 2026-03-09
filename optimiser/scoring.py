@@ -126,7 +126,8 @@ def compute_scores(
             m_power = move["power"]
             m_acc = move["accuracy"] if move["accuracy"] is not None else 100
 
-            power_adj = m_power / 2 if move.get("is_multi_turn") else m_power
+            multi_hit = move.get("multi_hit", 1.0)
+            power_adj = (m_power * multi_hit) / 2 if move.get("is_multi_turn") else m_power * multi_hit
             stab = 1.5 if m_type in p_types else 1.0
             stat = p_atk if m_type in PHYSICAL_TYPES else p_spa
             acc_factor = (m_acc / 100) ** acc_exponent

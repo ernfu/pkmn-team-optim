@@ -202,6 +202,25 @@ LOW_PRIORITY_MOVES = {
     "focus-punch",
 }
 
+# Multi-hit moves → expected number of hits.
+# Gen 3 2-5 hit distribution: 2 (3/8), 3 (3/8), 4 (1/8), 5 (1/8) → E = 3.0
+MULTI_HIT_MOVES = {
+    "pin-missile": 3.0,
+    "bone-rush": 3.0,
+    "rock-blast": 3.0,
+    "bullet-seed": 3.0,
+    "icicle-spear": 3.0,
+    "fury-attack": 3.0,
+    "fury-swipes": 3.0,
+    "spike-cannon": 3.0,
+    "comet-punch": 3.0,
+    "double-slap": 3.0,
+    "barrage": 3.0,
+    "bonemerang": 2.0,
+    "double-kick": 2.0,
+    "twineedle": 2.0,
+}
+
 # TMs that can be purchased repeatedly (Game Corner / Dept Store) in FRLG.
 # All other TMs are single-use.
 FRLG_UNLIMITED_TMS = {
@@ -456,6 +475,7 @@ def compile_version_group(version_group: str) -> Path:
             md["is_multi_turn"] = mname in MULTI_TURN_MOVES
             md["recoil_pct"] = RECOIL_MOVES.get(mname, 0)
             md["is_low_priority"] = mname in LOW_PRIORITY_MOVES
+            md["multi_hit"] = MULTI_HIT_MOVES.get(mname, 1.0)
             learn_methods = rm["learn_methods"]
             tm_only = learn_methods == ["machine"] or learn_methods == ["tutor"]
             moves.append(

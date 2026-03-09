@@ -72,8 +72,10 @@ def display_team(team, pokemon_pool, scores):
             md = move_by_name.get(mname, {})
             m_type = md.get("type", "?")
             raw_power = md.get("power", 0) or 0
+            multi_hit = md.get("multi_hit", 1.0)
             is_mt = md.get("is_multi_turn", False)
-            power_adj = raw_power // 2 if is_mt else raw_power
+            effective_power = raw_power * multi_hit
+            power_adj = effective_power / 2 if is_mt else effective_power
             acc = md.get("accuracy") or 100
             cat = "Phys" if m_type in PHYSICAL_TYPES else "Spec"
 
@@ -81,7 +83,8 @@ def display_team(team, pokemon_pool, scores):
                 (scores.get((p["name"], mname, t), 0) for t in ALL_TYPES),
                 default=0,
             )
-            power_display = f"{power_adj}{'*' if is_mt else ''}"
+            suffix = "*" if is_mt else ("×" if multi_hit > 1 else "")
+            power_display = f"{power_adj:.0f}{suffix}"
             print(
                 f"  {mname:<20} {m_type.capitalize():<10} {power_display:>5} "
                 f"{acc:>5} {cat:<8} {best_se:>8.0f}"

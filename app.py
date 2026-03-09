@@ -189,7 +189,9 @@ def _build_result(team, pool, scores, z_val, obj_val=None):
             md = move_by_name.get(mname, {})
             m_type = md.get("type", "?")
             raw_power = md.get("power", 0) or 0
+            multi_hit = md.get("multi_hit", 1.0)
             is_mt = md.get("is_multi_turn", False)
+            effective_power = raw_power * multi_hit
             acc = md.get("accuracy") or 100
             atk_base = (
                 p["base_stats"]["attack"]
@@ -198,13 +200,13 @@ def _build_result(team, pool, scores, z_val, obj_val=None):
             )
             has_se = any(is_super_effective(m_type, t) for t in ALL_TYPES)
             best_se = (
-                _gen3_damage(raw_power, atk_base, m_type, p["types"]) if has_se else 0
+                _gen3_damage(effective_power, atk_base, m_type, p["types"]) if has_se else 0
             )
             moves.append(
                 {
                     "name": mname,
                     "type": m_type,
-                    "power": raw_power // 2 if is_mt else raw_power,
+                    "power": effective_power / 2 if is_mt else effective_power,
                     "is_multi_turn": is_mt,
                     "accuracy": acc,
                     "category": "Physical" if m_type in PHYSICAL_TYPES else "Special",
@@ -225,6 +227,7 @@ def _build_result(team, pool, scores, z_val, obj_val=None):
                 md = move_by_name.get(mn, {})
                 m_type = md.get("type")
                 m_power = md.get("power", 0) or 0
+                m_multi = md.get("multi_hit", 1.0)
                 if not m_type or not is_super_effective(m_type, t):
                     continue
                 atk_base = (
@@ -232,7 +235,7 @@ def _build_result(team, pool, scores, z_val, obj_val=None):
                     if m_type in PHYSICAL_TYPES
                     else p["base_stats"]["special-attack"]
                 )
-                dmg = _gen3_damage(m_power, atk_base, m_type, p["types"])
+                dmg = _gen3_damage(m_power * m_multi, atk_base, m_type, p["types"])
                 if dmg > best:
                     best = dmg
             row["cells"].append(best)
