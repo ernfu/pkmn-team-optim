@@ -87,6 +87,7 @@ GEN3_POWER_OVERRIDES = {
     "pin-missile": 14,  # 14 → 25 in Gen 6
     "skull-bash": 100,  # 100 → 130 in Gen 6
     "crabhammer": 90,  # 90 → 100 in Gen 6
+    "dig": 60,  # 60 → 80 later
 }
 
 KANTO_LEGENDARIES = {"articuno", "zapdos", "moltres", "mewtwo", "mew"}
