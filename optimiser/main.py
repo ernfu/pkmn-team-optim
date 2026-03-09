@@ -8,7 +8,13 @@ from pathlib import Path
 
 from data.pokedex import FRLG_UNLIMITED_TMS
 
-from .scoring import ALL_TYPES, PHYSICAL_TYPES, compute_scores, has_4x_weakness, SE_CHART
+from .scoring import (
+    ALL_TYPES,
+    PHYSICAL_TYPES,
+    compute_scores,
+    has_4x_weakness,
+    SE_CHART,
+)
 from .solver import Params, optimise
 
 DATA_PATH = (
@@ -208,6 +214,13 @@ def main():
         help="Max speed bonus for the fastest Pokémon (0.25=25%%, slowest gets 1.0x, default: 0.25)",
     )
     parser.add_argument(
+        "--exclude",
+        action="append",
+        default=[],
+        metavar="POKEMON",
+        help="Exclude a Pokémon from the pool (repeatable)",
+    )
+    parser.add_argument(
         "--data",
         type=str,
         default=None,
@@ -236,9 +249,13 @@ def main():
         unlimited_tms=FRLG_UNLIMITED_TMS,
     )
 
+    excluded = {n.lower() for n in args.exclude}
+
     print(f"Loading data from {data_path}...")
-    no_4x = getattr(args, 'no_4x_weakness', False)
+    no_4x = getattr(args, "no_4x_weakness", False)
     pool = load_pokemon(data_path, params.no_legendaries, no_4x_weakness=no_4x)
+    if excluded:
+        pool = [p for p in pool if p["name"] not in excluded]
     print(f"Pool: {len(pool)} fully-evolved Pokémon")
 
     print("Pre-computing scores...")

@@ -299,6 +299,15 @@
             </div>
 
             <div class="field">
+                <label>Exclude Pokemon</label>
+                <div class="add-row">
+                    <input type="text" id="exclude-poke-input" list="pokemon-list" placeholder="Type to search...">
+                    <button class="btn btn-sm btn-add" id="add-exclude-btn">Add</button>
+                </div>
+                <div class="tag-list" id="excluded-pokemon-tags"></div>
+            </div>
+
+            <div class="field">
                 <label>Lock Pokemon</label>
                 <div class="add-row">
                     <input type="text" id="lock-poke-input" list="pokemon-list" placeholder="Type to search...">
@@ -403,6 +412,7 @@ let lockedPokemon = [];
 let lockedMoves = [];
 let mustHaveMoves = [];
 let mustHaveTypes = [];
+let excludedPokemon = [];
 
 const ALL_TYPES = [
     'normal','fire','water','electric','grass','ice','fighting','poison',
@@ -418,6 +428,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('speed-bonus').addEventListener('input', e => {
         document.getElementById('speed-bonus-value').textContent = e.target.value + '%';
+    });
+    document.getElementById('add-exclude-btn').addEventListener('click', addExcludedPokemon);
+    document.getElementById('exclude-poke-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); addExcludedPokemon(); }
     });
     document.getElementById('add-lock-btn').addEventListener('click', addLockedPokemon);
     document.getElementById('add-lock-move-btn').addEventListener('click', addLockedMove);
@@ -468,6 +482,20 @@ async function loadMovesForPoke() {
     const moves = await res.json();
     moveSel.innerHTML = '<option value="">Move\u2026</option>' +
         moves.map(m => `<option value="${m}">${m}</option>`).join('');
+}
+
+function addExcludedPokemon() {
+    const input = document.getElementById('exclude-poke-input');
+    const name = input.value.trim().toLowerCase();
+    if (!name || !pokemonList.includes(name) || excludedPokemon.includes(name)) return;
+    excludedPokemon.push(name);
+    input.value = '';
+    renderTags('excluded-pokemon-tags', excludedPokemon, removeExcludedPokemon);
+}
+
+function removeExcludedPokemon(name) {
+    excludedPokemon = excludedPokemon.filter(n => n !== name);
+    renderTags('excluded-pokemon-tags', excludedPokemon, removeExcludedPokemon);
 }
 
 function addLockedPokemon() {
@@ -575,6 +603,7 @@ async function runOptimize() {
         locked_moves: lockedMoves,
         must_have_moves: mustHaveMoves,
         must_have_types: mustHaveTypes,
+        excluded_pokemon: excludedPokemon,
     };
 
     try {

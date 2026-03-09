@@ -202,8 +202,12 @@ def build_model(pokemon_pool, scores, params):
             )
 
     return Model(
-        prob=prob, x=x, y=y, z=z,
-        poke_names=poke_names, moves_by_poke=moves_by_poke,
+        prob=prob,
+        x=x,
+        y=y,
+        z=z,
+        poke_names=poke_names,
+        moves_by_poke=moves_by_poke,
     )
 
 
@@ -222,8 +226,7 @@ def solve_model(model):
     for p in model.poke_names:
         if pulp.value(model.x[p]) > 0.5:
             chosen_moves = [
-                m for m in model.moves_by_poke[p]
-                if pulp.value(model.y[p, m]) > 0.5
+                m for m in model.moves_by_poke[p] if pulp.value(model.y[p, m]) > 0.5
             ]
             team.append({"name": p, "moves": chosen_moves})
 

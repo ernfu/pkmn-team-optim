@@ -76,8 +76,7 @@ def has_4x_weakness(types: list[str]) -> bool:
         return False
     t1, t2 = types[0], types[1]
     return any(
-        t1 in se_targets and t2 in se_targets
-        for se_targets in SE_CHART.values()
+        t1 in se_targets and t2 in se_targets for se_targets in SE_CHART.values()
     )
 
 

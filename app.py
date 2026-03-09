@@ -11,7 +11,13 @@ log = logging.getLogger(__name__)
 
 from data.pokedex import FRLG_UNLIMITED_TMS
 from optimiser.main import DATA_PATH, load_pokemon
-from optimiser.scoring import ALL_TYPES, PHYSICAL_TYPES, compute_scores, has_4x_weakness, is_super_effective
+from optimiser.scoring import (
+    ALL_TYPES,
+    PHYSICAL_TYPES,
+    compute_scores,
+    has_4x_weakness,
+    is_super_effective,
+)
 from optimiser.solver import Params, build_model, solve_model
 
 app = Flask(__name__)
@@ -123,9 +129,14 @@ def optimize():
         unlimited_tms=FRLG_UNLIMITED_TMS,
     )
 
+    excluded_pokemon = {n.lower() for n in data.get("excluded_pokemon", [])}
+
     pool, scores = _get_pool_and_scores(
         params.no_legendaries, acc_exponent, speed_bonus, no_4x_weakness
     )
+
+    if excluded_pokemon:
+        pool = [p for p in pool if p["name"] not in excluded_pokemon]
 
     t1 = time.perf_counter()
     model = build_model(pool, scores, params)
@@ -186,7 +197,9 @@ def _build_result(team, pool, scores, z_val):
                 else p["base_stats"]["special-attack"]
             )
             has_se = any(is_super_effective(m_type, t) for t in ALL_TYPES)
-            best_se = _gen3_damage(raw_power, atk_base, m_type, p["types"]) if has_se else 0
+            best_se = (
+                _gen3_damage(raw_power, atk_base, m_type, p["types"]) if has_se else 0
+            )
             moves.append(
                 {
                     "name": mname,
