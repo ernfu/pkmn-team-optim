@@ -25,7 +25,7 @@ All $S_{p,m,t}$ values are computed before the solver runs - they become **const
 For every triple $(p, m, t)$ where move $m$ is super-effective against defending type $t$:
 
 $$
-S_{p,m,t} = \text{power}_m^{*} \;\cdot\; \left(\frac{\text{acc}_m}{100}\right)^{\!\alpha} \;\cdot\; \text{STAB}_{p,m} \;\cdot\; 2.0 \;\cdot\; \text{stat}_{p,m} \;\cdot\; \text{speedFactor}_p \;\cdot\; \text{recoilFactor}_m \;\cdot\; \text{priorityFactor}_m
+S_{p,m,t} = \text{power}_m^{*}  \cdot  \left(\frac{\text{acc}_m}{100}\right)^{\alpha}  \cdot  \text{STAB}_{p,m}  \cdot  2.0  \cdot  \text{stat}_{p,m}  \cdot  \text{speedFactor}_p  \cdot  \text{recoilFactor}_m  \cdot  \text{priorityFactor}_m
 $$
 
 | Term | Value | Notes |
@@ -35,7 +35,7 @@ $$
 | $\text{STAB}_{p,m}$ | 1.5 or 1.0 | Same-type attack bonus, directly from the game formula |
 | $2.0$ | Constant | Super-effective multiplier. Only SE triples are stored, so this is always 2.0. |
 | $\text{stat}_{p,m}$ | Base Atk or Sp.Atk | The other half of the damage numerator. Multiplying $\text{stat} \times \text{power}$ is a valid proxy for ranking offensive output because the terms we drop - level factor $(2L/5+2)$, division by $50 \cdot \text{Def}$, the $+2$ floor constant - are either shared across all candidates or unknown (defender's defense). |
-| $\text{speedFactor}_p$ | $1 + \beta \cdot \frac{\text{speed}_p - \text{speed}_{\min}}{\text{speed}_{\max} - \text{speed}_{\min}}$ | Linear speed bonus. $\beta$ (`speed_bonus`, default 0.1) is the max bonus for the fastest Pokémon in the pool. Slowest gets 1.0×, fastest gets $(1+\beta)\times$. |
+| $\text{speedFactor}$ | See notes | Linear speed bonus: $1 + \beta \cdot (v_p - v_{\min}) / (v_{\max} - v_{\min})$ where $v$ is base speed. $\beta$ (`speed_bonus`, default 0.1) is the max bonus for the fastest Pokémon in the pool. Slowest gets 1.0×, fastest gets $(1+\beta)\times$. |
 | $\text{recoilFactor}_m$ | $1 - \text{recoilPct}$ | Penalises self-damaging moves proportionally to recoil. Double-Edge (33% recoil) gets 0.67×, Take-Down and Submission (25% recoil) get 0.75×. Non-recoil moves get 1.0×. |
 | $\text{priorityFactor}_m$ | $\gamma$ or 1.0 | Penalises negative-priority moves like Focus Punch which fail if the user is hit before attacking. $\gamma$ (`low_priority_factor`, default 0.3) applies to these moves; all others get 1.0×. |
 
@@ -68,7 +68,7 @@ The $y$ variables dominate - ~1600 binary variables is modest for a MILP but eno
 ## 4 Objective
 
 $$
-\max \quad z \;+\; \varepsilon \sum_{t \in \mathcal{T}} \sum_{p \in \mathcal{P}} \sum_{m \in \mathcal{M}_p} S_{p,m,t} \; y_{p,m}
+\max \quad z  +  \varepsilon \sum_{t \in \mathcal{T}} \sum_{p \in \mathcal{P}} \sum_{m \in \mathcal{M}_p} S_{p,m,t} \, y_{p,m}
 $$
 
 where $\varepsilon = 10^{-4}$.
@@ -76,7 +76,7 @@ where $\varepsilon = 10^{-4}$.
 
 
 - **$z$** - the worst-case damage. Maximising this directly is the primary goal.
-- **$\varepsilon \cdot \text{total\_power}$** - a regularisation/tie-breaker. Many teams can achieve the same $z^*$; this selects the one with the highest total SE firepower. The small $\varepsilon$ ensures this never overrides a genuine improvement to worst-case damage (since individual $S$ values are in the thousands, $\varepsilon \cdot \text{total} \ll z$ for any meaningful difference in $z$).
+- **$\varepsilon \cdot \text{total power}$** - a regularisation/tie-breaker. Many teams can achieve the same $z^*$; this selects the one with the highest total SE firepower. The small $\varepsilon$ ensures this never overrides a genuine improvement to worst-case damage (since individual $S$ values are in the thousands, $\varepsilon \cdot \text{total} \ll z$ for any meaningful difference in $z$).
 
 ### Equivalence to max-min
 
@@ -109,7 +109,7 @@ $$
 $$
 
 $$
-y_{p,m} \leq x_p \qquad \forall\, p \in \mathcal{P},\; m \in \mathcal{M}_p
+y_{p,m} \leq x_p \qquad \forall\, p \in \mathcal{P},\ m \in \mathcal{M}_p
 $$
 
 The first constraint is a *big-M* style coupling: if $x_p = 0$ (Pokémon not selected), all its $y$ variables are forced to 0. The second set is redundant given the first but tightens the LP relaxation - without it, fractional $x_p$ values can activate more $y$ variables than they should, widening the gap.
@@ -119,15 +119,15 @@ The first constraint is a *big-M* style coupling: if $x_p = 0$ (Pokémon not sel
 For every defending type $t$, the team's effective damage must be at least $z$. The damage contribution of each move depends on whether it belongs to a duplicate-type group (§5.4):
 
 $$
-z \;\leq\; \sum_{p \in \mathcal{P}} \sum_{m \in \mathcal{M}_p} c_{p,m,t} \qquad \forall\, t \in \mathcal{T}
+z  \leq  \sum_{p \in \mathcal{P}} \sum_{m \in \mathcal{M}_p} c_{p,m,t} \qquad \forall\, t \in \mathcal{T}
 $$
 
 where the per-move contribution $c_{p,m,t}$ is:
 
 $$
 c_{p,m,t} = \begin{cases}
-  \delta \cdot S_{p,m,t} \cdot y_{p,m} \;+\; (1-\delta) \cdot S_{p,m,t} \cdot f_{p,m}
-    & \text{if } m \in G_{p,\tau(m)},\; |G_{p,\tau(m)}| \geq 2 \\[4pt]
+  \delta \cdot S_{p,m,t} \cdot y_{p,m}  +  (1-\delta) \cdot S_{p,m,t} \cdot f_{p,m}
+    & \text{if } m \in G_{p,\tau(m)},\ |G_{p,\tau(m)}| \geq 2 \\[4pt]
   S_{p,m,t} \cdot y_{p,m}
     & \text{otherwise}
 \end{cases}
@@ -158,7 +158,7 @@ $\delta$ is the `duplicate_type_discount` parameter (default 0.5). At $\delta = 
 At most $n$ Pokémon on the team may share any single type:
 
 $$
-\sum_{\substack{p \in \mathcal{P} \\ t \in \text{types}(p)}} x_p \;\leq\; n \qquad \forall\, t \in \mathcal{T}
+\sum_{\substack{p \in \mathcal{P} \\ t \in \text{types}(p)}} x_p  \leq  n \qquad \forall\, t \in \mathcal{T}
 $$
 
 Default $n = 2$.
@@ -168,7 +168,7 @@ Default $n = 2$.
 At least $k$ (Pokémon, move) pairs with a super-effective move against every defending type:
 
 $$
-\sum_{p \in \mathcal{P}} \sum_{\substack{m \in \mathcal{M}_p \\ S_{p,m,t} > 0}} y_{p,m} \;\geq\; k \qquad \forall\, t \in \mathcal{T}
+\sum_{p \in \mathcal{P}} \sum_{\substack{m \in \mathcal{M}_p \\ S_{p,m,t} > 0}} y_{p,m}  \geq  k \qquad \forall\, t \in \mathcal{T}
 $$
 
 Default $k = 2$.
@@ -178,7 +178,7 @@ Default $k = 2$.
 For each single-use TM move (TMs not in the unlimited set), at most one Pokémon may learn it:
 
 $$
-\sum_{p \in \text{users}(m_{\text{TM}})} y_{p,\, m_{\text{TM}}} \;\leq\; 1 \qquad \forall\; m_{\text{TM}} \in \text{SingleUseTMs}
+\sum_{p \in \text{users}(m_{\text{TM}})} y_{p,\, m_{\text{TM}}}  \leq  1 \qquad \forall\ m_{\text{TM}} \in \text{SingleUseTMs}
 $$
 
 Unlimited TMs (purchasable repeatedly in FRLG): Ice Beam, Thunderbolt, Flamethrower, Iron Tail, Hyper Beam, Dig, Brick Break, Rest, Secret Power, Attract, Roar.
@@ -196,13 +196,13 @@ $$y_{p,m} = 1$$
 **Must-Have Move** - At least one team member carries move $m$:
 
 $$
-\sum_{\substack{p \in \mathcal{P} \\ m \in \mathcal{M}_p}} y_{p,m} \;\geq\; 1
+\sum_{\substack{p \in \mathcal{P} \\ m \in \mathcal{M}_p}} y_{p,m}  \geq  1
 $$
 
 **Must-Have Type** - At least one team member is of type $t$:
 
 $$
-\sum_{\substack{p \in \mathcal{P} \\ t \in \text{types}(p)}} x_p \;\geq\; 1
+\sum_{\substack{p \in \mathcal{P} \\ t \in \text{types}(p)}} x_p  \geq  1
 $$
 
 ---
@@ -231,7 +231,7 @@ After PuLP builds the model and HiGHS preprocesses it:
 | `duplicate_type_discount` | $\delta$ | 0.5 | Credit for a 2nd same-type move (0–1). At 0 the full-credit constraint becomes a hard ban; at 1 the $f$ variables are omitted entirely. |
 | `speed_bonus` | $\beta$ | 0.1 | Fastest Pokémon gets $(1+\beta)\times$ effective power, slowest gets $1.0\times$. Linear interpolation. |
 | `low_priority_factor` | $\gamma$ | 0.3 | Multiplier for negative-priority moves (e.g., Focus Punch). 0.3 = 30% credit. Set to 1.0 to disable. |
-| Regularisation | $\varepsilon$ | $10^{-4}$ | Tie-break weight. Must be small enough that $\varepsilon \cdot \text{total\_power} < 1$ unit of $z$ improvement. |
+| Regularisation | $\varepsilon$ | $10^{-4}$ | Tie-break weight. Must be small enough that $\varepsilon \cdot \text{total power} < 1$ unit of $z$ improvement. |
 
 ### Known Limitations
 
