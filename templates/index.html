@@ -240,7 +240,7 @@
             <div class="field">
                 <label for="max-overlap">Max Same-Type Pokémon</label>
                 <input type="number" id="max-overlap" value="1" min="1" max="6">
-                <div class="hint">How many team members can share a type. 2 means at most 2 Water-types, etc.</div>
+                <div class="hint">How many team members can share a type. 2 means at most 2 Water-types.</div>
             </div>
 
             <div class="field">
@@ -252,16 +252,23 @@
             <div class="field">
                 <label for="acc-exponent">Accuracy Penalty</label>
                 <input type="number" id="acc-exponent" value="2.0" min="0" max="5" step="0.5">
-                <div class="hint">How harshly inaccurate moves are penalized. Higher values strongly favor accurate moves.</div>
+                <div class="hint">
+                    Accuracy penalty mult = (accuracy ÷ 100)<sup>penalty</sup>.<br>
+                    At 2.0, a 100% accurate move has mult 1.0 on power, 85% has mult 0.72, <br>
+                    70% has mult 0.49.
+                </div>
             </div>
 
             <div class="field">
-                <label for="dup-type-discount">Duplicate Type Value</label>
+                <label for="dup-type-discount">Same-Type Move Penalty</label>
                 <div class="range-row">
                     <input type="range" id="dup-type-discount" min="0" max="100" value="20" step="10">
                     <span class="range-value" id="dup-type-value">20%</span>
                 </div>
-                <div class="hint">How much a 2nd move of the same type counts. 0% = avoid duplicates, 100% = no preference.</div>
+                <div class="hint">
+                    Discount mult for 2nd same-type move.<br>
+                    At 20%: 2nd same-type move only has 20% of original power.
+                </div>
             </div>
 
             <div class="field">
@@ -270,7 +277,11 @@
                     <input type="range" id="speed-bonus" min="0" max="50" value="25" step="5">
                     <span class="range-value" id="speed-bonus-value">25%</span>
                 </div>
-                <div class="hint">Max effective power bonus for the fastest Pokémon. Slowest gets 1.0×. 0% = speed irrelevant.</div>
+                <div class="hint">
+                    Bonus mult for high speed Pokémon.<br>
+                    At 25%: the fastest Pokémon in the whole game gets 1.25× power on all skills.<br>
+                    The slowest gets 1.0×.
+                </div>
             </div>
         </div>
 
@@ -347,7 +358,10 @@
                 <div class="field">
                     <label for="pred-acc-exponent">Accuracy Penalty</label>
                     <input type="number" id="pred-acc-exponent" value="2.0" min="0" max="5" step="0.5">
-                    <div class="hint">How harshly inaccurate moves are penalized. Higher = harsher on low-accuracy moves.</div>
+                    <div class="hint">
+                        Accuracy penalty mult = (accuracy ÷ 100)<sup>penalty</sup>.
+                        At 2.0, a 100% move has mult 1.0, 85% has mult 0.72, 70% has mult 0.49.
+                    </div>
                 </div>
             </div>
             <div class="card">
