@@ -130,8 +130,8 @@ def main():
     parser.add_argument(
         "--max-overlap",
         type=int,
-        default=2,
-        help="Max Pokémon sharing any single type (default: 2)",
+        default=1,
+        help="Max Pokémon sharing any single type (default: 1)",
     )
     parser.add_argument(
         "--min-redundancy",
@@ -188,14 +188,14 @@ def main():
     parser.add_argument(
         "--duplicate-type-discount",
         type=float,
-        default=0.5,
-        help="How much a 2nd move of the same type counts (0=avoid, 1=full value, default: 0.5)",
+        default=0.2,
+        help="How much a 2nd move of the same type counts (0=avoid, 1=full value, default: 0.2)",
     )
     parser.add_argument(
         "--speed-bonus",
         type=float,
-        default=0.1,
-        help="Max speed bonus for the fastest Pokémon (0.1=10%%, slowest gets 1.0x, default: 0.1)",
+        default=0.25,
+        help="Max speed bonus for the fastest Pokémon (0.25=25%%, slowest gets 1.0x, default: 0.25)",
     )
     parser.add_argument(
         "--data",

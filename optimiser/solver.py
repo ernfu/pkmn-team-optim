@@ -18,9 +18,9 @@ EPSILON = 1e-4
 
 @dataclass
 class Params:
-    max_overlap: int = 2
+    max_overlap: int = 1
     min_redundancy: int = 2
-    duplicate_type_discount: float = 0.5
+    duplicate_type_discount: float = 0.2
     no_legendaries: bool = True
     locked_pokemon: dict[str, list[str]] = field(default_factory=dict)
     must_have_moves: list[str] = field(default_factory=list)

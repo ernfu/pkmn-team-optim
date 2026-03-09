@@ -239,7 +239,7 @@
 
             <div class="field">
                 <label for="max-overlap">Max Same-Type Pokémon</label>
-                <input type="number" id="max-overlap" value="2" min="1" max="6">
+                <input type="number" id="max-overlap" value="1" min="1" max="6">
                 <div class="hint">How many team members can share a type. 2 means at most 2 Water-types, etc.</div>
             </div>
 
@@ -258,8 +258,8 @@
             <div class="field">
                 <label for="dup-type-discount">Duplicate Type Value</label>
                 <div class="range-row">
-                    <input type="range" id="dup-type-discount" min="0" max="100" value="50" step="10">
-                    <span class="range-value" id="dup-type-value">50%</span>
+                    <input type="range" id="dup-type-discount" min="0" max="100" value="20" step="10">
+                    <span class="range-value" id="dup-type-value">20%</span>
                 </div>
                 <div class="hint">How much a 2nd move of the same type counts. 0% = avoid duplicates, 100% = no preference.</div>
             </div>
@@ -267,8 +267,8 @@
             <div class="field">
                 <label for="speed-bonus">Speed Bonus</label>
                 <div class="range-row">
-                    <input type="range" id="speed-bonus" min="0" max="50" value="10" step="5">
-                    <span class="range-value" id="speed-bonus-value">10%</span>
+                    <input type="range" id="speed-bonus" min="0" max="50" value="25" step="5">
+                    <span class="range-value" id="speed-bonus-value">25%</span>
                 </div>
                 <div class="hint">Max effective power bonus for the fastest Pokémon. Slowest gets 1.0×. 0% = speed irrelevant.</div>
             </div>

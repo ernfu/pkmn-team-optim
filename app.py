@@ -35,7 +35,7 @@ _score_cache: dict[tuple, tuple] = {}
 def _get_pool_and_scores(
     no_legendaries: bool,
     acc_exponent: float,
-    speed_bonus: float = 0.1,
+    speed_bonus: float = 0.25,
 ):
     key = (no_legendaries, acc_exponent, speed_bonus)
     if key not in _score_cache:
@@ -93,11 +93,11 @@ def optimize():
     t0 = time.perf_counter()
     data = request.get_json()
 
-    max_overlap = int(data.get("max_overlap", 2))
+    max_overlap = int(data.get("max_overlap", 1))
     min_redundancy = int(data.get("min_redundancy", 2))
     acc_exponent = float(data.get("acc_exponent", 2.0))
-    duplicate_type_discount = float(data.get("duplicate_type_discount", 0.5))
-    speed_bonus = float(data.get("speed_bonus", 0.1))
+    duplicate_type_discount = float(data.get("duplicate_type_discount", 0.2))
+    speed_bonus = float(data.get("speed_bonus", 0.25))
     allow_legendaries = bool(data.get("allow_legendaries", False))
 
     locked_pokemon: dict[str, list[str]] = {}
