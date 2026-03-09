@@ -15,7 +15,7 @@ The optimizer uses a single-phase regularised max-min mixed-integer linear progr
 
 Each move is scored by: `power × accuracy × STAB × type effectiveness × stat × speed × recoil × priority`, using Gen 3-accurate mechanics (physical/special determined by type, not move). Self-damaging moves (Double-Edge, Take-Down, Submission) are penalised proportionally to their recoil, and unreliable negative-priority moves (Focus Punch) are heavily discounted.
 
-See [OPTIMISATION.md](http://OPTIMISATION.md) for full description on the MILP problem.
+See OPTIMISATION.md for full description on the MILP problem.
 
 ## Quick Start
 
