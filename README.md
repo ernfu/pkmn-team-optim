@@ -103,3 +103,11 @@ Fetches from [PokeAPI](https://pokeapi.co/) with local caching. The compiled JSO
 - [HiGHS](https://highs.dev/) (MILP solver)
 - [Flask](https://flask.palletsprojects.com/) (web UI)
 - [PokeAPI](https://pokeapi.co/) (data source)
+
+
+## Contribute
+
+I don't plan to upgrade this to support other gens unless..
+- Nintendo release another Pokemon game on switch + pokeapi have the data
+- There's a new cool idea for the optimisation problem (go to Discussion to mention it?)
+- I get bored again
