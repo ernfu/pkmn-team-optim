@@ -2,7 +2,7 @@
 
 A regularised **max-min Mixed-Integer Linear Program (MILP)** that selects a 6-Pokémon team maximising worst-case super-effective damage, solved with PuLP (HiGHS).
 
-The core idea: pick 6 Pokémon and assign each up to 4 moves to maximise the *weakest* super-effective damage across all 17 defending types. This is a combinatorial optimisation - brute-force over $\binom{73}{6} \approx 7 \times 10^8$ team combinations with $\sim 20^4$ moveset assignments each is infeasible, so we formulate it as a MILP and let a branch-and-bound solver handle it.
+The core idea: pick 6 Pokémon and assign each up to 4 moves to maximise the *weakest* super-effective damage across all 17 defending types. This is a combinatorial optimisation - brute-force over $\binom{73}{6} \approx 7 \times 10^8$ team combinations (73 full evolves, pick 6) with $\sim 20^4$ moveset assignments each is infeasible, so we formulate it as a MILP and let a branch-and-bound solver handle it.
 
 ---
 
@@ -25,7 +25,7 @@ All $S_{p,m,t}$ values are computed before the solver runs - they become **const
 For every triple $(p, m, t)$ where move $m$ is super-effective against defending type $t$:
 
 $$
-S_{p,m,t} = \text{power}_m^{*} \;\cdot\; \left(\frac{\text{acc}_m}{100}\right)^{\!\alpha} \;\cdot\; \text{STAB}_{p,m} \;\cdot\; 2.0 \;\cdot\; \text{stat}_{p,m} \;\cdot\; \text{speed\_factor}_p \;\cdot\; \text{recoil\_factor}_m \;\cdot\; \text{priority\_factor}_m
+S_{p,m,t} = \text{power}_m^{*} \;\cdot\; \left(\frac{\text{acc}_m}{100}\right)^{\!\alpha} \;\cdot\; \text{STAB}_{p,m} \;\cdot\; 2.0 \;\cdot\; \text{stat}_{p,m} \;\cdot\; \text{speedFactor}_p \;\cdot\; \text{recoilFactor}_m \;\cdot\; \text{priorityFactor}_m
 $$
 
 | Term | Value | Notes |
@@ -35,9 +35,9 @@ $$
 | $\text{STAB}_{p,m}$ | 1.5 or 1.0 | Same-type attack bonus, directly from the game formula |
 | $2.0$ | Constant | Super-effective multiplier. Only SE triples are stored, so this is always 2.0. |
 | $\text{stat}_{p,m}$ | Base Atk or Sp.Atk | The other half of the damage numerator. Multiplying $\text{stat} \times \text{power}$ is a valid proxy for ranking offensive output because the terms we drop - level factor $(2L/5+2)$, division by $50 \cdot \text{Def}$, the $+2$ floor constant - are either shared across all candidates or unknown (defender's defense). |
-| $\text{speed\_factor}_p$ | $1 + \beta \cdot \frac{\text{speed}_p - \text{speed}_{\min}}{\text{speed}_{\max} - \text{speed}_{\min}}$ | Linear speed bonus. $\beta$ (`speed_bonus`, default 0.1) is the max bonus for the fastest Pokémon in the pool. Slowest gets 1.0×, fastest gets $(1+\beta)\times$. |
-| $\text{recoil\_factor}_m$ | $1 - \text{recoil\_pct}$ | Penalises self-damaging moves proportionally to recoil. Double-Edge (33% recoil) gets 0.67×, Take-Down and Submission (25% recoil) get 0.75×. Non-recoil moves get 1.0×. |
-| $\text{priority\_factor}_m$ | $\gamma$ or 1.0 | Penalises negative-priority moves like Focus Punch which fail if the user is hit before attacking. $\gamma$ (`low_priority_factor`, default 0.3) applies to these moves; all others get 1.0×. |
+| $\text{speedFactor}_p$ | $1 + \beta \cdot \frac{\text{speed}_p - \text{speed}_{\min}}{\text{speed}_{\max} - \text{speed}_{\min}}$ | Linear speed bonus. $\beta$ (`speed_bonus`, default 0.1) is the max bonus for the fastest Pokémon in the pool. Slowest gets 1.0×, fastest gets $(1+\beta)\times$. |
+| $\text{recoilFactor}_m$ | $1 - \text{recoilPct}$ | Penalises self-damaging moves proportionally to recoil. Double-Edge (33% recoil) gets 0.67×, Take-Down and Submission (25% recoil) get 0.75×. Non-recoil moves get 1.0×. |
+| $\text{priorityFactor}_m$ | $\gamma$ or 1.0 | Penalises negative-priority moves like Focus Punch which fail if the user is hit before attacking. $\gamma$ (`low_priority_factor`, default 0.3) applies to these moves; all others get 1.0×. |
 
 $S_{p,m,t} = 0$ whenever $m$ is **not** super-effective against $t$. Non-SE moves (neutral, resisted, immune) are invisible to the optimiser - it only cares about SE damage.
 
