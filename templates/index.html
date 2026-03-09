@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gen 3 Pokemon Team Optimizer</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+            background:#0d1117;color:#e6edf3;line-height:1.6;min-height:100vh;
+        }
+        .container{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+        header{text-align:center;margin-bottom:2.5rem}
+        header h1{font-size:2rem;font-weight:700;color:#f0f6fc;margin-bottom:.25rem}
+        header p{color:#8b949e;font-size:1rem}
+
+        .config-grid{
+            display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;
+        }
+        @media(max-width:768px){.config-grid{grid-template-columns:1fr}}
+
+        .card{
+            background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem;
+        }
+        .card h2{
+            font-size:.85rem;font-weight:600;text-transform:uppercase;
+            letter-spacing:.05em;color:#8b949e;margin-bottom:1.25rem;
+        }
+        .field{margin-bottom:1rem}
+        .field label{display:block;font-size:.875rem;color:#c9d1d9;margin-bottom:.35rem}
+        .field input[type="number"],
+        .field input[type="text"],
+        .field select{
+            background:#0d1117;border:1px solid #30363d;color:#e6edf3;
+            padding:.5rem .75rem;border-radius:6px;font-size:.875rem;width:100%;
+        }
+        .field input:focus,.field select:focus{
+            outline:none;border-color:#58a6ff;
+            box-shadow:0 0 0 3px rgba(56,139,253,.15);
+        }
+        .field input[type="range"]{width:100%;accent-color:#58a6ff}
+        .range-row{display:flex;align-items:center;gap:.75rem}
+        .range-row input[type="range"]{flex:1}
+        .range-value{
+            font-size:.875rem;font-weight:600;color:#58a6ff;
+            min-width:3rem;text-align:right;
+        }
+        .hint{font-size:.75rem;color:#6e7681;margin-top:.2rem}
+
+        .checkbox-field{
+            display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;
+        }
+        .checkbox-field input[type="checkbox"]{accent-color:#58a6ff;width:16px;height:16px}
+        .checkbox-field label{font-size:.875rem;color:#c9d1d9;cursor:pointer}
+
+        .tag-list{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+        .tag{
+            display:inline-flex;align-items:center;gap:.35rem;
+            background:#21262d;border:1px solid #30363d;border-radius:20px;
+            padding:.25rem .75rem;font-size:.8rem;text-transform:capitalize;
+        }
+        .tag .remove{cursor:pointer;color:#f85149;font-weight:700;font-size:.9rem}
+        .tag .remove:hover{color:#ff7b72}
+
+        .add-row{display:flex;gap:.5rem;align-items:center}
+        .add-row input,.add-row select{
+            flex:1;background:#0d1117;border:1px solid #30363d;color:#e6edf3;
+            padding:.5rem .75rem;border-radius:6px;font-size:.875rem;
+        }
+
+        .btn{
+            padding:.5rem 1rem;border:none;border-radius:6px;
+            font-size:.875rem;font-weight:600;cursor:pointer;transition:background .15s;
+        }
+        .btn-sm{padding:.35rem .75rem;font-size:.8rem}
+        .btn-add{background:#21262d;color:#c9d1d9;border:1px solid #30363d}
+        .btn-add:hover{background:#30363d}
+        .btn-primary{background:#238636;color:#fff;font-size:1rem;padding:.75rem 2rem}
+        .btn-primary:hover{background:#2ea043}
+        .btn-primary:disabled{opacity:.6;cursor:not-allowed}
+        .optimize-row{text-align:center;margin-bottom:2rem}
+
+        #loading,#pred-loading{text-align:center;padding:3rem;color:#8b949e}
+        .spinner{
+            display:inline-block;width:32px;height:32px;
+            border:3px solid #30363d;border-top-color:#58a6ff;
+            border-radius:50%;animation:spin .8s linear infinite;
+        }
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        #results{display:none}
+        .results-header{
+            display:flex;align-items:center;justify-content:space-between;
+            margin-bottom:1.5rem;flex-wrap:wrap;gap:.5rem;
+        }
+        .results-header h2{font-size:1.5rem;color:#f0f6fc}
+        .z-star{font-size:.875rem;color:#8b949e}
+
+        .team-grid{
+            display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
+            gap:1rem;margin-bottom:2rem;
+        }
+        .poke-card{
+            background:#161b22;border:1px solid #30363d;
+            border-radius:8px;padding:1.25rem;text-align:center;
+        }
+        .poke-card .poke-name{
+            font-size:1.1rem;font-weight:700;text-transform:capitalize;margin-bottom:.5rem;
+        }
+        .type-badges{display:flex;justify-content:center;gap:.35rem;margin-bottom:.75rem}
+        .type-badge{
+            font-size:.7rem;font-weight:700;text-transform:uppercase;
+            padding:.15rem .5rem;border-radius:4px;color:#fff;letter-spacing:.03em;
+        }
+        .stats{display:flex;justify-content:center;gap:1rem;font-size:.8rem;color:#8b949e}
+        .stats span{font-weight:600;color:#c9d1d9}
+
+        .moveset-section{margin-bottom:2rem}
+        .moveset-card{
+            background:#161b22;border:1px solid #30363d;
+            border-radius:8px;margin-bottom:1rem;overflow:hidden;
+        }
+        .moveset-card .ms-header{
+            padding:.75rem 1rem;font-weight:700;text-transform:uppercase;
+            font-size:.9rem;background:#21262d;border-bottom:1px solid #30363d;
+        }
+        .moveset-card table{width:100%;border-collapse:collapse;font-size:.85rem}
+        .moveset-card th{
+            text-align:left;padding:.5rem 1rem;font-size:.75rem;
+            text-transform:uppercase;color:#8b949e;border-bottom:1px solid #21262d;
+        }
+        .moveset-card td{padding:.5rem 1rem;border-bottom:1px solid #21262d}
+        .moveset-card tr:last-child td{border-bottom:none}
+        .move-name{text-transform:capitalize;font-weight:600}
+
+        .coverage-section{margin-bottom:2rem}
+        .coverage-section h3{font-size:1rem;color:#f0f6fc;margin-bottom:1rem}
+        .matrix-wrap{
+            overflow-x:auto;border:1px solid #30363d;border-radius:8px;
+        }
+        .matrix-wrap table{
+            width:100%;border-collapse:collapse;font-size:.8rem;min-width:600px;
+        }
+        .matrix-wrap th{
+            padding:.5rem .6rem;text-align:center;font-size:.75rem;
+            text-transform:capitalize;color:#8b949e;background:#161b22;
+            border-bottom:1px solid #30363d;white-space:nowrap;
+        }
+        .matrix-wrap th:first-child{text-align:left;min-width:90px}
+        .matrix-wrap td{
+            padding:.45rem .6rem;text-align:center;
+            border-bottom:1px solid #21262d;font-variant-numeric:tabular-nums;
+        }
+        .matrix-wrap td:first-child{
+            text-align:left;text-transform:capitalize;font-weight:600;background:#161b22;
+        }
+        .matrix-wrap td.total-col{font-weight:700;border-left:2px solid #30363d}
+        .matrix-wrap tr:last-child td{border-bottom:none}
+
+        .weakest-callout{
+            background:#161b22;border:1px solid #30363d;border-left:4px solid #f85149;
+            border-radius:6px;padding:1rem 1.25rem;font-size:.9rem;color:#c9d1d9;
+        }
+        .weakest-callout strong{text-transform:capitalize;color:#f85149}
+
+        .error-msg{
+            background:#161b22;border:1px solid rgba(248,81,73,.2);
+            border-left:4px solid #f85149;border-radius:6px;
+            padding:1.25rem;color:#f85149;white-space:pre-line;
+        }
+
+        .tab-bar{
+            display:flex;gap:0;margin-bottom:2rem;
+            border-bottom:2px solid #30363d;
+        }
+        .tab-btn{
+            padding:.75rem 1.5rem;font-size:.95rem;font-weight:600;
+            color:#8b949e;background:none;border:none;cursor:pointer;
+            border-bottom:2px solid transparent;margin-bottom:-2px;
+            transition:color .15s,border-color .15s;
+        }
+        .tab-btn:hover{color:#c9d1d9}
+        .tab-btn.active{color:#58a6ff;border-bottom-color:#58a6ff}
+        .tab-content{display:none}
+        .tab-content.active{display:block}
+
+        .pred-slot{
+            background:#0d1117;border:1px solid #30363d;border-radius:6px;
+            padding:.75rem;margin-bottom:.75rem;
+        }
+        .pred-slot .pred-header{display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem}
+        .pred-slot .pred-header input{
+            flex:1;background:#161b22;border:1px solid #30363d;color:#e6edf3;
+            padding:.45rem .75rem;border-radius:6px;font-size:.875rem;
+        }
+        .pred-slot .pred-header input:focus{
+            outline:none;border-color:#58a6ff;
+            box-shadow:0 0 0 3px rgba(56,139,253,.15);
+        }
+        .pred-moves{
+            display:grid;grid-template-columns:1fr 1fr;gap:.35rem;
+        }
+        .pred-moves select{
+            background:#161b22;border:1px solid #30363d;color:#e6edf3;
+            padding:.4rem .6rem;border-radius:6px;font-size:.8rem;
+        }
+        .pred-moves select:focus{
+            outline:none;border-color:#58a6ff;
+            box-shadow:0 0 0 3px rgba(56,139,253,.15);
+        }
+        .btn-remove{
+            background:none;border:1px solid #30363d;color:#f85149;
+            border-radius:6px;padding:.3rem .6rem;font-size:.9rem;
+            cursor:pointer;font-weight:700;
+        }
+        .btn-remove:hover{background:#1c1014;border-color:#f85149}
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Gen 3 Pokemon Team Optimizer</h1>
+        <p>FireRed / LeafGreen &mdash; MILP-powered team builder</p>
+    </header>
+
+    <div class="tab-bar">
+        <button class="tab-btn active" data-tab="tab-optimize">Optimize</button>
+        <button class="tab-btn" data-tab="tab-predict">Predict Coverage</button>
+    </div>
+
+    <datalist id="pokemon-list"></datalist>
+    <datalist id="all-moves-list"></datalist>
+
+    <div id="tab-optimize" class="tab-content active">
+    <div class="config-grid">
+        <div class="card">
+            <h2>Solver Parameters</h2>
+
+            <div class="field">
+                <label for="max-overlap">Max Same-Type Pokémon</label>
+                <input type="number" id="max-overlap" value="2" min="1" max="6">
+                <div class="hint">How many team members can share a type. 2 means at most 2 Water-types, etc.</div>
+            </div>
+
+            <div class="field">
+                <label for="min-redundancy">Min Super-Effective Coverage</label>
+                <input type="number" id="min-redundancy" value="2" min="1" max="6">
+                <div class="hint">At least this many Pokémon must have a super-effective move against each enemy type.</div>
+            </div>
+
+            <div class="field">
+                <label for="acc-exponent">Accuracy Penalty</label>
+                <input type="number" id="acc-exponent" value="2.0" min="0" max="5" step="0.5">
+                <div class="hint">How harshly inaccurate moves are penalized. Higher values strongly favor accurate moves.</div>
+            </div>
+
+            <div class="field">
+                <label for="dup-type-discount">Duplicate Type Value</label>
+                <div class="range-row">
+                    <input type="range" id="dup-type-discount" min="0" max="100" value="50" step="10">
+                    <span class="range-value" id="dup-type-value">50%</span>
+                </div>
+                <div class="hint">How much a 2nd move of the same type counts. 0% = avoid duplicates, 100% = no preference.</div>
+            </div>
+
+            <div class="field">
+                <label for="speed-bonus">Speed Bonus</label>
+                <div class="range-row">
+                    <input type="range" id="speed-bonus" min="0" max="50" value="10" step="5">
+                    <span class="range-value" id="speed-bonus-value">10%</span>
+                </div>
+                <div class="hint">Max effective power bonus for the fastest Pokémon. Slowest gets 1.0×. 0% = speed irrelevant.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Team Constraints</h2>
+
+            <div class="checkbox-field">
+                <input type="checkbox" id="allow-legendaries">
+                <label for="allow-legendaries">Allow Legendaries</label>
+            </div>
+
+            <div class="field">
+                <label>Lock Pokemon</label>
+                <div class="add-row">
+                    <input type="text" id="lock-poke-input" list="pokemon-list" placeholder="Type to search...">
+                    <button class="btn btn-sm btn-add" id="add-lock-btn">Add</button>
+                </div>
+                <div class="tag-list" id="locked-pokemon-tags"></div>
+            </div>
+
+            <div class="field">
+                <label>Lock Moves (on locked Pokemon)</label>
+                <div class="add-row">
+                    <select id="lock-move-poke"><option value="">Pokemon&hellip;</option></select>
+                    <select id="lock-move-move"><option value="">Move&hellip;</option></select>
+                    <button class="btn btn-sm btn-add" id="add-lock-move-btn">Add</button>
+                </div>
+                <div class="tag-list" id="locked-moves-tags"></div>
+            </div>
+
+            <div class="field">
+                <label>Must-Have Moves</label>
+                <div class="add-row">
+                    <input type="text" id="must-have-input" list="all-moves-list" placeholder="Type to search...">
+                    <button class="btn btn-sm btn-add" id="add-must-have-btn">Add</button>
+                </div>
+                <div class="tag-list" id="must-have-tags"></div>
+            </div>
+
+            <div class="field">
+                <label>Must-Have Types</label>
+                <div class="add-row">
+                    <select id="must-have-type-input">
+                        <option value="">Select type&hellip;</option>
+                    </select>
+                    <button class="btn btn-sm btn-add" id="add-must-have-type-btn">Add</button>
+                </div>
+                <div class="tag-list" id="must-have-type-tags"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="optimize-row">
+        <button class="btn btn-primary" id="optimize-btn">Optimize Team</button>
+    </div>
+
+    <div id="loading" hidden>
+        <div class="spinner"></div>
+        <p style="margin-top:1rem">Running MILP solver&hellip;</p>
+    </div>
+
+    <div id="error" hidden></div>
+    <div id="results"></div>
+    </div>
+
+    <div id="tab-predict" class="tab-content">
+        <div class="config-grid">
+            <div class="card">
+                <h2>Settings</h2>
+                <div class="checkbox-field">
+                    <input type="checkbox" id="pred-allow-legendaries">
+                    <label for="pred-allow-legendaries">Allow Legendaries</label>
+                </div>
+                <div class="field">
+                    <label for="pred-acc-exponent">Accuracy Penalty</label>
+                    <input type="number" id="pred-acc-exponent" value="2.0" min="0" max="5" step="0.5">
+                    <div class="hint">How harshly inaccurate moves are penalized. Higher = harsher on low-accuracy moves.</div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Team Builder</h2>
+                <div id="pred-team-slots"></div>
+                <button class="btn btn-sm btn-add" id="pred-add-slot-btn" style="margin-top:.75rem">+ Add Pokemon</button>
+            </div>
+        </div>
+
+        <div class="optimize-row">
+            <button class="btn btn-primary" id="predict-btn">Calculate Coverage</button>
+        </div>
+        <div id="pred-loading" hidden>
+            <div class="spinner"></div>
+            <p style="margin-top:1rem">Calculating coverage&hellip;</p>
+        </div>
+        <div id="pred-error" hidden></div>
+        <div id="pred-results"></div>
+    </div>
+</div>
+
+<script>
+const TYPE_COLORS = {
+    normal:'#A8A77A',fire:'#EE8130',water:'#6390F0',electric:'#F7D02C',
+    grass:'#7AC74C',ice:'#96D9D6',fighting:'#C22E28',poison:'#A33EA1',
+    ground:'#E2BF65',flying:'#A98FF3',psychic:'#F95587',bug:'#A6B91A',
+    rock:'#B6A136',ghost:'#735797',dragon:'#6F35FC',dark:'#705746',
+    steel:'#B7B7CE'
+};
+
+let pokemonList = [];
+let allMovesList = [];
+let lockedPokemon = [];
+let lockedMoves = [];
+let mustHaveMoves = [];
+let mustHaveTypes = [];
+
+const ALL_TYPES = [
+    'normal','fire','water','electric','grass','ice','fighting','poison',
+    'ground','flying','psychic','bug','rock','ghost','dragon','dark','steel'
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+    Promise.all([loadPokemonList(), loadAllMoves()]);
+    document.getElementById('allow-legendaries').addEventListener('change', loadPokemonList);
+    document.getElementById('lock-move-poke').addEventListener('change', loadMovesForPoke);
+    document.getElementById('dup-type-discount').addEventListener('input', e => {
+        document.getElementById('dup-type-value').textContent = e.target.value + '%';
+    });
+    document.getElementById('speed-bonus').addEventListener('input', e => {
+        document.getElementById('speed-bonus-value').textContent = e.target.value + '%';
+    });
+    document.getElementById('add-lock-btn').addEventListener('click', addLockedPokemon);
+    document.getElementById('add-lock-move-btn').addEventListener('click', addLockedMove);
+    document.getElementById('add-must-have-btn').addEventListener('click', addMustHave);
+    document.getElementById('add-must-have-type-btn').addEventListener('click', addMustHaveType);
+    document.getElementById('optimize-btn').addEventListener('click', runOptimize);
+
+    const typeSel = document.getElementById('must-have-type-input');
+    typeSel.innerHTML = '<option value="">Select type\u2026</option>' +
+        ALL_TYPES.map(t => `<option value="${t}">${t[0].toUpperCase() + t.slice(1)}</option>`).join('');
+
+    document.getElementById('lock-poke-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); addLockedPokemon(); }
+    });
+    document.getElementById('must-have-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); addMustHave(); }
+    });
+});
+
+async function loadPokemonList() {
+    const leg = document.getElementById('allow-legendaries').checked ||
+                document.getElementById('pred-allow-legendaries').checked;
+    const res = await fetch(`/api/pokemon?allow_legendaries=${leg}`);
+    pokemonList = await res.json();
+    document.getElementById('pokemon-list').innerHTML =
+        pokemonList.map(n => `<option value="${n}">`).join('');
+    refreshLockMovePokeSelect();
+}
+
+async function loadAllMoves() {
+    const res = await fetch('/api/all-moves');
+    allMovesList = await res.json();
+    document.getElementById('all-moves-list').innerHTML =
+        allMovesList.map(n => `<option value="${n}">`).join('');
+}
+
+function refreshLockMovePokeSelect() {
+    const sel = document.getElementById('lock-move-poke');
+    sel.innerHTML = '<option value="">Pokemon\u2026</option>' +
+        lockedPokemon.map(n => `<option value="${n}">${n}</option>`).join('');
+}
+
+async function loadMovesForPoke() {
+    const poke = document.getElementById('lock-move-poke').value;
+    const moveSel = document.getElementById('lock-move-move');
+    if (!poke) { moveSel.innerHTML = '<option value="">Move\u2026</option>'; return; }
+    const res = await fetch(`/api/moves/${poke}`);
+    const moves = await res.json();
+    moveSel.innerHTML = '<option value="">Move\u2026</option>' +
+        moves.map(m => `<option value="${m}">${m}</option>`).join('');
+}
+
+function addLockedPokemon() {
+    const input = document.getElementById('lock-poke-input');
+    const name = input.value.trim().toLowerCase();
+    if (!name || !pokemonList.includes(name) || lockedPokemon.includes(name)) return;
+    if (lockedPokemon.length >= 6) return;
+    lockedPokemon.push(name);
+    input.value = '';
+    renderTags('locked-pokemon-tags', lockedPokemon, removeLockedPokemon);
+    refreshLockMovePokeSelect();
+}
+
+function removeLockedPokemon(name) {
+    lockedPokemon = lockedPokemon.filter(n => n !== name);
+    lockedMoves = lockedMoves.filter(lm => lm.pokemon !== name);
+    renderTags('locked-pokemon-tags', lockedPokemon, removeLockedPokemon);
+    renderLockedMoves();
+    refreshLockMovePokeSelect();
+}
+
+function addLockedMove() {
+    const poke = document.getElementById('lock-move-poke').value;
+    const move = document.getElementById('lock-move-move').value;
+    if (!poke || !move) return;
+    if (lockedMoves.some(lm => lm.pokemon === poke && lm.move === move)) return;
+    lockedMoves.push({ pokemon: poke, move });
+    renderLockedMoves();
+}
+
+function removeLockedMoveAt(i) {
+    lockedMoves.splice(i, 1);
+    renderLockedMoves();
+}
+
+function renderLockedMoves() {
+    const el = document.getElementById('locked-moves-tags');
+    el.innerHTML = lockedMoves.map((lm, i) =>
+        `<span class="tag">${lm.pokemon}: ${lm.move}` +
+        `<span class="remove" data-lm-idx="${i}">&times;</span></span>`
+    ).join('');
+    el.querySelectorAll('.remove').forEach(btn => {
+        btn.addEventListener('click', () => removeLockedMoveAt(parseInt(btn.dataset.lmIdx)));
+    });
+}
+
+function addMustHave() {
+    const input = document.getElementById('must-have-input');
+    const name = input.value.trim().toLowerCase();
+    if (!name || mustHaveMoves.includes(name)) return;
+    mustHaveMoves.push(name);
+    input.value = '';
+    renderTags('must-have-tags', mustHaveMoves, removeMustHave);
+}
+
+function removeMustHave(name) {
+    mustHaveMoves = mustHaveMoves.filter(n => n !== name);
+    renderTags('must-have-tags', mustHaveMoves, removeMustHave);
+}
+
+function addMustHaveType() {
+    const sel = document.getElementById('must-have-type-input');
+    const name = sel.value;
+    if (!name || mustHaveTypes.includes(name)) return;
+    mustHaveTypes.push(name);
+    sel.value = '';
+    renderTags('must-have-type-tags', mustHaveTypes, removeMustHaveType);
+}
+
+function removeMustHaveType(name) {
+    mustHaveTypes = mustHaveTypes.filter(n => n !== name);
+    renderTags('must-have-type-tags', mustHaveTypes, removeMustHaveType);
+}
+
+function renderTags(elId, list, removeFn) {
+    const el = document.getElementById(elId);
+    el.innerHTML = list.map(n =>
+        `<span class="tag">${n}<span class="remove" data-name="${n}">&times;</span></span>`
+    ).join('');
+    el.querySelectorAll('.remove').forEach(btn => {
+        btn.addEventListener('click', () => removeFn(btn.dataset.name));
+    });
+}
+
+async function runOptimize() {
+    const btn = document.getElementById('optimize-btn');
+    const loading = document.getElementById('loading');
+    const results = document.getElementById('results');
+    const errorDiv = document.getElementById('error');
+
+    btn.disabled = true;
+    loading.hidden = false;
+    results.style.display = 'none';
+    errorDiv.hidden = true;
+
+    const payload = {
+        max_overlap: parseInt(document.getElementById('max-overlap').value),
+        min_redundancy: parseInt(document.getElementById('min-redundancy').value),
+        acc_exponent: parseFloat(document.getElementById('acc-exponent').value),
+        duplicate_type_discount: parseInt(document.getElementById('dup-type-discount').value) / 100,
+        speed_bonus: parseInt(document.getElementById('speed-bonus').value) / 100,
+        allow_legendaries: document.getElementById('allow-legendaries').checked,
+        locked_pokemon: lockedPokemon,
+        locked_moves: lockedMoves,
+        must_have_moves: mustHaveMoves,
+        must_have_types: mustHaveTypes,
+    };
+
+    try {
+        const res = await fetch('/optimize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (data.status !== 'Optimal') {
+            errorDiv.innerHTML = `<div class="error-msg">${data.message || 'Optimization failed.'}</div>`;
+            errorDiv.hidden = false;
+        } else {
+            renderResults(data);
+            results.style.display = 'block';
+        }
+    } catch (err) {
+        errorDiv.innerHTML = `<div class="error-msg">Request failed: ${err.message}</div>`;
+        errorDiv.hidden = false;
+    } finally {
+        btn.disabled = false;
+        loading.hidden = true;
+    }
+}
+
+function typeBadge(t) {
+    return `<span class="type-badge" style="background:${TYPE_COLORS[t]||'#888'}">${t}</span>`;
+}
+
+function renderResults(data, targetId, heading) {
+    const el = document.getElementById(targetId || 'results');
+
+    let html = `
+        <div class="results-header">
+            <h2>${heading || 'Optimal Team'}</h2>
+            <span class="z-star">Min coverage = ${data.min_coverage}</span>
+        </div>`;
+
+    html += '<div class="team-grid">';
+    for (const r of data.roster) {
+        html += `
+            <div class="poke-card">
+                <div class="poke-name">${r.name}</div>
+                <div class="type-badges">${r.types.map(typeBadge).join('')}</div>
+                <div class="stats">
+                    Atk <span>${r.attack}</span> &middot; SpA <span>${r.special_attack}</span>
+                </div>
+            </div>`;
+    }
+    html += '</div>';
+
+    html += '<div class="moveset-section">';
+    for (const ms of data.movesets) {
+        html += `
+            <div class="moveset-card">
+                <div class="ms-header">${ms.pokemon}</div>
+                <table>
+                    <tr><th>Move</th><th>Type</th><th>Pwr</th><th>Acc</th><th>Cat</th><th>Best SE</th></tr>`;
+        for (const m of ms.moves) {
+            html += `
+                <tr>
+                    <td class="move-name">${m.name}</td>
+                    <td>${typeBadge(m.type)}</td>
+                    <td>${m.is_multi_turn ? m.power + '*' : m.power}</td>
+                    <td>${m.accuracy}</td>
+                    <td>${m.category}</td>
+                    <td>${m.best_se.toLocaleString()}</td>
+                </tr>`;
+        }
+        html += '</table></div>';
+    }
+    html += '</div>';
+
+    const allCells = data.coverage.flatMap(r => r.cells);
+    const maxVal = Math.max(...allCells, 1);
+
+    html += `
+        <div class="coverage-section">
+            <h3>Type Coverage Matrix</h3>
+            <div class="matrix-wrap"><table>
+                <tr>
+                    <th>Def Type</th>
+                    ${data.team_names.map(n => `<th>${n.slice(0,8)}</th>`).join('')}
+                    <th>Total</th>
+                </tr>`;
+
+    for (const row of data.coverage) {
+        const weak = row.type === data.weakest.type;
+        html += `<tr${weak ? ' style="background:#1c1014"' : ''}>`;
+        html += `<td>${row.type}</td>`;
+        for (const val of row.cells) {
+            const bg = val === 0
+                ? 'rgba(255,255,255,0.03)'
+                : `rgba(46,160,67,${(0.15 + 0.65 * val / maxVal).toFixed(2)})`;
+            html += `<td style="background:${bg}">${val > 0 ? val.toLocaleString() : '\u2014'}</td>`;
+        }
+        html += `<td class="total-col">${row.total.toLocaleString()}</td></tr>`;
+    }
+    html += '</table></div></div>';
+
+    if (data.weakest.type) {
+        html += `
+            <div class="weakest-callout">
+                Weakest link: <strong>${data.weakest.type}</strong>
+                (total SE score = ${data.weakest.total.toLocaleString()})
+            </div>`;
+    }
+
+    el.innerHTML = html;
+}
+
+// --- Tab switching ---
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+});
+
+// --- Predict Coverage tab ---
+let predSlots = [];
+let predSlotId = 0;
+
+function predAddSlot() {
+    if (predSlots.length >= 6) return;
+    const id = predSlotId++;
+    predSlots.push({ id, pokemon: '', moves: ['','','',''], availableMoves: [] });
+    predRenderSlots();
+}
+
+function predRemoveSlot(id) {
+    predSlots = predSlots.filter(s => s.id !== id);
+    predRenderSlots();
+}
+
+function predRenderSlots() {
+    const container = document.getElementById('pred-team-slots');
+    container.innerHTML = '';
+    for (const slot of predSlots) {
+        const div = document.createElement('div');
+        div.className = 'pred-slot';
+
+        let movesHtml = '';
+        for (let i = 0; i < 4; i++) {
+            const opts = slot.availableMoves.map(m =>
+                `<option value="${m}"${slot.moves[i] === m ? ' selected' : ''}>${m}</option>`
+            ).join('');
+            movesHtml += `<select class="pred-move-sel" data-slot="${slot.id}" data-idx="${i}">` +
+                `<option value="">Move ${i+1}\u2026</option>${opts}</select>`;
+        }
+
+        div.innerHTML = `
+            <div class="pred-header">
+                <input type="text" list="pokemon-list" placeholder="Type Pokemon name\u2026"
+                       value="${slot.pokemon}" data-slot="${slot.id}" class="pred-poke-input">
+                <button class="btn-remove" data-slot="${slot.id}">&times;</button>
+            </div>
+            <div class="pred-moves">${movesHtml}</div>`;
+        container.appendChild(div);
+    }
+
+    container.querySelectorAll('.pred-poke-input').forEach(input => {
+        input.addEventListener('change', async () => {
+            const slotId = parseInt(input.dataset.slot);
+            const slot = predSlots.find(s => s.id === slotId);
+            const name = input.value.trim().toLowerCase();
+            if (!name || !pokemonList.includes(name)) return;
+            slot.pokemon = name;
+            const res = await fetch(`/api/moves/${name}`);
+            slot.availableMoves = await res.json();
+            slot.moves = ['','','',''];
+            predRenderSlots();
+        });
+    });
+
+    container.querySelectorAll('.btn-remove').forEach(btn => {
+        btn.addEventListener('click', () => predRemoveSlot(parseInt(btn.dataset.slot)));
+    });
+
+    container.querySelectorAll('.pred-move-sel').forEach(sel => {
+        sel.addEventListener('change', () => {
+            const slot = predSlots.find(s => s.id === parseInt(sel.dataset.slot));
+            slot.moves[parseInt(sel.dataset.idx)] = sel.value;
+        });
+    });
+}
+
+async function runPredict() {
+    const btn = document.getElementById('predict-btn');
+    const loading = document.getElementById('pred-loading');
+    const results = document.getElementById('pred-results');
+    const errorDiv = document.getElementById('pred-error');
+
+    const team = predSlots
+        .filter(s => s.pokemon)
+        .map(s => ({ pokemon: s.pokemon, moves: s.moves.filter(m => m) }));
+
+    if (team.length === 0) {
+        errorDiv.innerHTML = '<div class="error-msg">Add at least one Pokemon with moves.</div>';
+        errorDiv.hidden = false;
+        return;
+    }
+    for (const t of team) {
+        if (t.moves.length === 0) {
+            errorDiv.innerHTML = `<div class="error-msg">Select at least one move for ${t.pokemon}.</div>`;
+            errorDiv.hidden = false;
+            return;
+        }
+    }
+
+    btn.disabled = true;
+    loading.hidden = false;
+    results.style.display = 'none';
+    errorDiv.hidden = true;
+
+    try {
+        const res = await fetch('/api/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                team,
+                acc_exponent: parseFloat(document.getElementById('pred-acc-exponent').value),
+            }),
+        });
+        const data = await res.json();
+        if (data.error) {
+            errorDiv.innerHTML = `<div class="error-msg">${data.error}</div>`;
+            errorDiv.hidden = false;
+        } else {
+            renderResults(data, 'pred-results', 'Coverage Analysis');
+            results.style.display = 'block';
+        }
+    } catch (err) {
+        errorDiv.innerHTML = `<div class="error-msg">Request failed: ${err.message}</div>`;
+        errorDiv.hidden = false;
+    } finally {
+        btn.disabled = false;
+        loading.hidden = true;
+    }
+}
+
+document.getElementById('pred-add-slot-btn').addEventListener('click', predAddSlot);
+document.getElementById('predict-btn').addEventListener('click', runPredict);
+document.getElementById('pred-allow-legendaries').addEventListener('change', loadPokemonList);
+</script>
+</body>
+</html>
