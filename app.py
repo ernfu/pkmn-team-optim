@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 from data.pokedex import FRLG_UNLIMITED_TMS
 from optimiser.main import DATA_PATH, load_pokemon
-from optimiser.scoring import ALL_TYPES, PHYSICAL_TYPES, compute_scores
+from optimiser.scoring import ALL_TYPES, PHYSICAL_TYPES, compute_scores, is_super_effective
 from optimiser.solver import Params, build_model, solve_model
 
 app = Flask(__name__)
@@ -138,6 +138,15 @@ def optimize():
     return jsonify(_build_result(result, pool, scores, z_val))
 
 
+def _gen3_damage(power, atk_base, move_type, poke_types, defender_base=100):
+    """Gen 3 damage formula for a SE hit at Lv100, 0 IV / 0 EV."""
+    A = 2 * atk_base + 5
+    D = 2 * defender_base + 5
+    base = (42 * power * A // D) // 50 + 2
+    damage = int(base * (1.5 if move_type in poke_types else 1.0))
+    return damage * 2
+
+
 def _build_result(team, pool, scores, z_val):
     poke_by_name = {p["name"]: p for p in pool}
     move_by_name: dict[str, dict] = {}
@@ -167,9 +176,13 @@ def _build_result(team, pool, scores, z_val):
             raw_power = md.get("power", 0) or 0
             is_mt = md.get("is_multi_turn", False)
             acc = md.get("accuracy") or 100
-            best_se = max(
-                (scores.get((p["name"], mname, t), 0) for t in ALL_TYPES), default=0
+            atk_base = (
+                p["base_stats"]["attack"]
+                if m_type in PHYSICAL_TYPES
+                else p["base_stats"]["special-attack"]
             )
+            has_se = any(is_super_effective(m_type, t) for t in ALL_TYPES)
+            best_se = _gen3_damage(raw_power, atk_base, m_type, p["types"]) if has_se else 0
             moves.append(
                 {
                     "name": mname,
@@ -178,7 +191,7 @@ def _build_result(team, pool, scores, z_val):
                     "is_multi_turn": is_mt,
                     "accuracy": acc,
                     "category": "Physical" if m_type in PHYSICAL_TYPES else "Special",
-                    "best_se": round(best_se),
+                    "best_se": best_se,
                 }
             )
         movesets.append({"pokemon": entry["name"], "moves": moves})
@@ -189,24 +202,35 @@ def _build_result(team, pool, scores, z_val):
         row = {"type": t, "cells": []}
         row_total = 0
         for entry in team:
-            best = max(
-                (scores.get((entry["name"], mn, t), 0) for mn in entry["moves"]),
-                default=0,
-            )
-            row["cells"].append(round(best))
+            p = poke_by_name[entry["name"]]
+            best = 0
+            for mn in entry["moves"]:
+                md = move_by_name.get(mn, {})
+                m_type = md.get("type")
+                m_power = md.get("power", 0) or 0
+                if not m_type or not is_super_effective(m_type, t):
+                    continue
+                atk_base = (
+                    p["base_stats"]["attack"]
+                    if m_type in PHYSICAL_TYPES
+                    else p["base_stats"]["special-attack"]
+                )
+                dmg = _gen3_damage(m_power, atk_base, m_type, p["types"])
+                if dmg > best:
+                    best = dmg
+            row["cells"].append(best)
             row_total += best
-        row["total"] = round(row_total)
+        row["total"] = row_total
         if row_total < weakest_val:
             weakest_val, weakest_type = row_total, t
         coverage.append(row)
 
     return {
         "status": "Optimal",
-        "min_coverage": round(z_val, 1),
         "roster": roster,
         "movesets": movesets,
         "coverage": coverage,
-        "weakest": {"type": weakest_type, "total": round(weakest_val)},
+        "weakest": {"type": weakest_type, "total": weakest_val},
         "team_names": [e["name"] for e in team],
     }
 
@@ -235,7 +259,6 @@ def api_predict():
     scores = compute_scores(pool, acc_exponent=acc_exponent)
 
     result = _build_result(team, pool, scores, z_val=0)
-    result["min_coverage"] = result["weakest"]["total"]
     result["status"] = "OK"
     return jsonify(result)
 

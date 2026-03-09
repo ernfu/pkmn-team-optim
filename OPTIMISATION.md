@@ -1,8 +1,8 @@
 # Optimisation Problem - Gen 3 Pokémon Team Optimizer
 
-A regularised **max-min Mixed-Integer Linear Program (MILP)** that selects a 6-Pokémon team maximising worst-case super-effective type coverage, solved with PuLP (HiGHS).
+A regularised **max-min Mixed-Integer Linear Program (MILP)** that selects a 6-Pokémon team maximising worst-case super-effective damage, solved with PuLP (HiGHS).
 
-The core idea: pick 6 Pokémon and assign each up to 4 moves to maximise the *weakest* super-effective coverage across all 17 defending types. This is a combinatorial optimisation - brute-force over $\binom{73}{6} \approx 7 \times 10^8$ team combinations with $\sim 20^4$ moveset assignments each is infeasible, so we formulate it as a MILP and let a branch-and-bound solver handle it.
+The core idea: pick 6 Pokémon and assign each up to 4 moves to maximise the *weakest* super-effective damage across all 17 defending types. This is a combinatorial optimisation - brute-force over $\binom{73}{6} \approx 7 \times 10^8$ team combinations with $\sim 20^4$ moveset assignments each is infeasible, so we formulate it as a MILP and let a branch-and-bound solver handle it.
 
 ---
 
@@ -37,7 +37,7 @@ $$
 | $\text{stat}_{p,m}$ | Base Atk or Sp.Atk | The other half of the damage numerator. Multiplying $\text{stat} \times \text{power}$ is a valid proxy for ranking offensive output because the terms we drop - level factor $(2L/5+2)$, division by $50 \cdot \text{Def}$, the $+2$ floor constant - are either shared across all candidates or unknown (defender's defense). |
 | $\text{speed\_factor}_p$ | $1 + \beta \cdot \frac{\text{speed}_p - \text{speed}_{\min}}{\text{speed}_{\max} - \text{speed}_{\min}}$ | Linear speed bonus. $\beta$ (`speed_bonus`, default 0.1) is the max bonus for the fastest Pokémon in the pool. Slowest gets 1.0×, fastest gets $(1+\beta)\times$. |
 
-$S_{p,m,t} = 0$ whenever $m$ is **not** super-effective against $t$. Non-SE moves (neutral, resisted, immune) are invisible to the optimiser - it only cares about SE coverage.
+$S_{p,m,t} = 0$ whenever $m$ is **not** super-effective against $t$. Non-SE moves (neutral, resisted, immune) are invisible to the optimiser - it only cares about SE damage.
 
 ### Gen 3 Physical / Special Split
 
@@ -56,7 +56,7 @@ This means a Pokémon with high Atk but low Sp.Atk gets poor scores for Fire/Wat
 |---|---|---|---|
 | $x_p$ | Binary | $\|\mathcal{P}\| \approx 73$ | 1 if Pokémon $p$ is on the team |
 | $y_{p,m}$ | Binary | $\sum_p \|\mathcal{M}_p\| \approx 1600$ | 1 if move $m$ is in $p$'s moveset |
-| $z$ | Continuous | 1 | Auxiliary: the worst-case coverage value we're maximising |
+| $z$ | Continuous | 1 | Auxiliary: the worst-case damage value we're maximising |
 | $f_{p,m}$ | Continuous $[0, 1]$ | varies | 1 if move $m$ gets full credit (vs. discounted; see §5.4) |
 
 The $y$ variables dominate - ~1600 binary variables is modest for a MILP but enough that the LP relaxation gap matters for solve time.
@@ -73,18 +73,18 @@ where $\varepsilon = 10^{-4}$.
 
 
 
-- **$z$** - the worst-case coverage. Maximising this directly is the primary goal.
-- **$\varepsilon \cdot \text{total\_power}$** - a regularisation/tie-breaker. Many teams can achieve the same $z^*$; this selects the one with the highest total SE firepower. The small $\varepsilon$ ensures this never overrides a genuine improvement to worst-case coverage (since individual $S$ values are in the thousands, $\varepsilon \cdot \text{total} \ll z$ for any meaningful difference in $z$).
+- **$z$** - the worst-case damage. Maximising this directly is the primary goal.
+- **$\varepsilon \cdot \text{total\_power}$** - a regularisation/tie-breaker. Many teams can achieve the same $z^*$; this selects the one with the highest total SE firepower. The small $\varepsilon$ ensures this never overrides a genuine improvement to worst-case damage (since individual $S$ values are in the thousands, $\varepsilon \cdot \text{total} \ll z$ for any meaningful difference in $z$).
 
 ### Equivalence to max-min
 
-The natural formulation is $\max \min_{t} \text{coverage}(t)$, but $\min(\cdot)$ is non-linear. The standard epigraph trick replaces it: introduce $z \in \mathbb{R}$ and add one constraint per type:
+The natural formulation is $\max \min_{t} \text{damage}(t)$, but $\min(\cdot)$ is non-linear. The standard epigraph trick replaces it: introduce $z \in \mathbb{R}$ and add one constraint per type:
 
 $$
-z \leq \text{coverage}(t) \qquad \forall\, t \in \mathcal{T}
+z \leq \text{damage}(t) \qquad \forall\, t \in \mathcal{T}
 $$
 
-Since $z$ is being maximised, the solver pushes it up until it's tight against the binding (weakest) type. At optimality, $z^* = \min_t \text{coverage}(t)$.
+Since $z$ is being maximised, the solver pushes it up until it's tight against the binding (weakest) type. At optimality, $z^* = \min_t \text{damage}(t)$.
 
 This is a standard LP/MILP pattern - any max-min or min-max over a finite set can be linearised this way. The regularisation term doesn't affect the equivalence since $\varepsilon$ is small enough that it can't compensate for a unit decrease in $z$.
 
@@ -112,9 +112,9 @@ $$
 
 The first constraint is a *big-M* style coupling: if $x_p = 0$ (Pokémon not selected), all its $y$ variables are forced to 0. The second set is redundant given the first but tightens the LP relaxation - without it, fractional $x_p$ values can activate more $y$ variables than they should, widening the gap.
 
-### 5.3 Min Coverage (defines z)
+### 5.3 Min Damage (defines z)
 
-For every defending type $t$, the team's effective coverage must be at least $z$. The coverage contribution of each move depends on whether it belongs to a duplicate-type group (§5.4):
+For every defending type $t$, the team's effective damage must be at least $z$. The damage contribution of each move depends on whether it belongs to a duplicate-type group (§5.4):
 
 $$
 z \;\leq\; \sum_{p \in \mathcal{P}} \sum_{m \in \mathcal{M}_p} c_{p,m,t} \qquad \forall\, t \in \mathcal{T}
@@ -147,7 +147,7 @@ $$
 
 At most one move per type group gets full credit. Every selected move in the group contributes at least $\delta \cdot S_{p,m,t}$ (the base fraction); the single full-credit move contributes the remaining $(1-\delta) \cdot S_{p,m,t}$ on top.
 
-Since we are maximising, the solver sets $f_{p,m} = 1$ for whichever move in the group scores highest against the binding (weakest) coverage constraint. This is exact — unlike an average-based penalty, it correctly discounts the specific second move rather than approximating.
+Since we are maximising, the solver sets $f_{p,m} = 1$ for whichever move in the group scores highest against the binding (weakest) damage constraint. This is exact — unlike an average-based penalty, it correctly discounts the specific second move rather than approximating.
 
 $\delta$ is the `duplicate_type_discount` parameter (default 0.5). At $\delta = 0$ the second same-type move contributes nothing (equivalent to a hard ban); at $\delta = 1$ no penalty is applied.
 

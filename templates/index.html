@@ -226,7 +226,7 @@
 
     <div class="tab-bar">
         <button class="tab-btn active" data-tab="tab-optimize">Optimize</button>
-        <button class="tab-btn" data-tab="tab-predict">Predict Coverage</button>
+        <button class="tab-btn" data-tab="tab-predict">Predict Damage</button>
     </div>
 
     <datalist id="pokemon-list"></datalist>
@@ -244,7 +244,7 @@
             </div>
 
             <div class="field">
-                <label for="min-redundancy">Min Super-Effective Coverage</label>
+                <label for="min-redundancy">Min Super-Effective Move Types</label>
                 <input type="number" id="min-redundancy" value="2" min="1" max="6">
                 <div class="hint">At least this many Pokémon must have a super-effective move against each enemy type.</div>
             </div>
@@ -254,7 +254,7 @@
                 <input type="number" id="acc-exponent" value="2.0" min="0" max="5" step="0.5">
                 <div class="hint">
                     Accuracy penalty mult = (accuracy ÷ 100)<sup>penalty</sup>.<br>
-                    At 2.0, a 100% accurate move has mult 1.0 on power, 85% has mult 0.72, <br>
+                    At 2.0, a 100% accurate move has mult 1.0 on damage, 85% has mult 0.72, <br>
                     70% has mult 0.49.
                 </div>
             </div>
@@ -267,7 +267,7 @@
                 </div>
                 <div class="hint">
                     Discount mult for 2nd same-type move.<br>
-                    At 20%: 2nd same-type move only has 20% of original power.
+                    At 20%: 2nd same-type move only has 20% of original damage.
                 </div>
             </div>
 
@@ -279,7 +279,7 @@
                 </div>
                 <div class="hint">
                     Bonus mult for high speed Pokémon.<br>
-                    At 25%: the fastest Pokémon in the whole game gets 1.25× power on all skills.<br>
+                    At 25%: the fastest Pokémon in the whole game gets 1.25× damage on all moves.<br>
                     The slowest gets 1.0×.
                 </div>
             </div>
@@ -372,11 +372,11 @@
         </div>
 
         <div class="optimize-row">
-            <button class="btn btn-primary" id="predict-btn">Calculate Coverage</button>
+            <button class="btn btn-primary" id="predict-btn">Calculate Damage</button>
         </div>
         <div id="pred-loading" hidden>
             <div class="spinner"></div>
-            <p style="margin-top:1rem">Calculating coverage&hellip;</p>
+            <p style="margin-top:1rem">Calculating damage&hellip;</p>
         </div>
         <div id="pred-error" hidden></div>
         <div id="pred-results"></div>
@@ -604,7 +604,6 @@ function renderResults(data, targetId, heading) {
     let html = `
         <div class="results-header">
             <h2>${heading || 'Optimal Team'}</h2>
-            <span class="z-star">Min coverage = ${data.min_coverage}</span>
         </div>`;
 
     html += '<div class="team-grid">';
@@ -626,7 +625,7 @@ function renderResults(data, targetId, heading) {
             <div class="moveset-card">
                 <div class="ms-header">${ms.pokemon}</div>
                 <table>
-                    <tr><th>Move</th><th>Type</th><th>Pwr</th><th>Acc</th><th>Cat</th><th>Best SE</th></tr>`;
+                    <tr><th>Move</th><th>Type</th><th>Pwr</th><th>Acc</th><th>Cat</th><th>SE HP</th></tr>`;
         for (const m of ms.moves) {
             html += `
                 <tr>
@@ -647,7 +646,7 @@ function renderResults(data, targetId, heading) {
 
     html += `
         <div class="coverage-section">
-            <h3>Type Coverage Matrix</h3>
+            <h3>Type Damage Matrix <small style="font-weight:400;color:#8b949e;font-size:.7em">(Lv100 attackers, 0 IV/0 EV &middot; Defender: base 100 Def/SpDef &middot; SE hits only)</small></h3>
             <div class="matrix-wrap"><table>
                 <tr>
                     <th>Def Type</th>
@@ -673,7 +672,7 @@ function renderResults(data, targetId, heading) {
         html += `
             <div class="weakest-callout">
                 Weakest link: <strong>${data.weakest.type}</strong>
-                (total SE score = ${data.weakest.total.toLocaleString()})
+                (total HP damage = ${data.weakest.total.toLocaleString()})
             </div>`;
     }
 
@@ -690,7 +689,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     });
 });
 
-// --- Predict Coverage tab ---
+// --- Predict Damage tab ---
 let predSlots = [];
 let predSlotId = 0;
 
@@ -800,7 +799,7 @@ async function runPredict() {
             errorDiv.innerHTML = `<div class="error-msg">${data.error}</div>`;
             errorDiv.hidden = false;
         } else {
-            renderResults(data, 'pred-results', 'Coverage Analysis');
+            renderResults(data, 'pred-results', 'Damage Analysis');
             results.style.display = 'block';
         }
     } catch (err) {
