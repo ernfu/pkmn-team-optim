@@ -288,7 +288,24 @@ def api_predict():
     pool = list(_poke_by_name.values())
     scores = compute_scores(pool, acc_exponent=acc_exponent)
 
-    result = _build_result(team, pool, scores, z_val=0)
+    z_val = min(
+        sum(
+            scores.get((entry["name"], mn, t), 0)
+            for entry in team
+            for mn in entry["moves"]
+        )
+        for t in ALL_TYPES
+    )
+
+    total_power = sum(
+        scores.get((entry["name"], mn, t), 0)
+        for t in ALL_TYPES
+        for entry in team
+        for mn in entry["moves"]
+    )
+    obj_val = z_val + 1e-4 * total_power
+
+    result = _build_result(team, pool, scores, z_val=z_val, obj_val=obj_val)
     result["status"] = "OK"
     return jsonify(result)
 
