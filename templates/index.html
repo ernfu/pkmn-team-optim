@@ -79,6 +79,8 @@
         .btn-primary{background:#238636;color:#fff;font-size:1rem;padding:.75rem 2rem}
         .btn-primary:hover{background:#2ea043}
         .btn-primary:disabled{opacity:.6;cursor:not-allowed}
+        .btn-reset{background:transparent;color:#f85149;border:1px solid #f8514966;margin-left:.75rem}
+        .btn-reset:hover{background:#1c1014;border-color:#f85149}
         .optimize-row{text-align:center;margin-bottom:2rem}
 
         #loading,#pred-loading{text-align:center;padding:3rem;color:#8b949e}
@@ -360,6 +362,7 @@
 
     <div class="optimize-row">
         <button class="btn btn-primary" id="optimize-btn">Optimize Team</button>
+        <button class="btn btn-reset" id="reset-btn">Reset</button>
     </div>
 
     <div id="loading" hidden>
@@ -429,16 +432,113 @@ const ALL_TYPES = [
     'ground','flying','psychic','bug','rock','ghost','dragon','dark','steel'
 ];
 
+const STORAGE_KEY = 'gen3_optim_state';
+const DEFAULTS = {
+    maxOverlap: 1, minRedundancy: 2, accExponent: 2.0,
+    dupTypeDiscount: 20, speedBonus: 25,
+    allowLegendaries: false, no4xWeakness: false,
+    lockedPokemon: [], lockedMoves: [], mustHaveMoves: [],
+    mustHaveTypes: [], excludedPokemon: [],
+};
+
+function saveState() {
+    const state = {
+        maxOverlap: parseInt(document.getElementById('max-overlap').value),
+        minRedundancy: parseInt(document.getElementById('min-redundancy').value),
+        accExponent: parseFloat(document.getElementById('acc-exponent').value),
+        dupTypeDiscount: parseInt(document.getElementById('dup-type-discount').value),
+        speedBonus: parseInt(document.getElementById('speed-bonus').value),
+        allowLegendaries: document.getElementById('allow-legendaries').checked,
+        no4xWeakness: document.getElementById('no-4x-weakness').checked,
+        lockedPokemon, lockedMoves, mustHaveMoves, mustHaveTypes, excludedPokemon,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function restoreState() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    try { var s = JSON.parse(raw); } catch { return; }
+
+    document.getElementById('max-overlap').value = s.maxOverlap ?? DEFAULTS.maxOverlap;
+    document.getElementById('min-redundancy').value = s.minRedundancy ?? DEFAULTS.minRedundancy;
+    document.getElementById('acc-exponent').value = s.accExponent ?? DEFAULTS.accExponent;
+
+    const dtd = s.dupTypeDiscount ?? DEFAULTS.dupTypeDiscount;
+    document.getElementById('dup-type-discount').value = dtd;
+    document.getElementById('dup-type-value').textContent = dtd + '%';
+
+    const sb = s.speedBonus ?? DEFAULTS.speedBonus;
+    document.getElementById('speed-bonus').value = sb;
+    document.getElementById('speed-bonus-value').textContent = sb + '%';
+
+    document.getElementById('allow-legendaries').checked = s.allowLegendaries ?? DEFAULTS.allowLegendaries;
+    document.getElementById('no-4x-weakness').checked = s.no4xWeakness ?? DEFAULTS.no4xWeakness;
+
+    lockedPokemon = s.lockedPokemon ?? [];
+    lockedMoves = s.lockedMoves ?? [];
+    mustHaveMoves = s.mustHaveMoves ?? [];
+    mustHaveTypes = s.mustHaveTypes ?? [];
+    excludedPokemon = s.excludedPokemon ?? [];
+
+    renderTags('locked-pokemon-tags', lockedPokemon, removeLockedPokemon);
+    renderLockedMoves();
+    renderTags('must-have-tags', mustHaveMoves, removeMustHave);
+    renderTags('must-have-type-tags', mustHaveTypes, removeMustHaveType);
+    renderTags('excluded-pokemon-tags', excludedPokemon, removeExcludedPokemon);
+    refreshLockMovePokeSelect();
+}
+
+function resetState() {
+    localStorage.removeItem(STORAGE_KEY);
+
+    document.getElementById('max-overlap').value = DEFAULTS.maxOverlap;
+    document.getElementById('min-redundancy').value = DEFAULTS.minRedundancy;
+    document.getElementById('acc-exponent').value = DEFAULTS.accExponent;
+    document.getElementById('dup-type-discount').value = DEFAULTS.dupTypeDiscount;
+    document.getElementById('dup-type-value').textContent = DEFAULTS.dupTypeDiscount + '%';
+    document.getElementById('speed-bonus').value = DEFAULTS.speedBonus;
+    document.getElementById('speed-bonus-value').textContent = DEFAULTS.speedBonus + '%';
+    document.getElementById('allow-legendaries').checked = DEFAULTS.allowLegendaries;
+    document.getElementById('no-4x-weakness').checked = DEFAULTS.no4xWeakness;
+
+    lockedPokemon = [];
+    lockedMoves = [];
+    mustHaveMoves = [];
+    mustHaveTypes = [];
+    excludedPokemon = [];
+
+    renderTags('locked-pokemon-tags', lockedPokemon, removeLockedPokemon);
+    renderLockedMoves();
+    renderTags('must-have-tags', mustHaveMoves, removeMustHave);
+    renderTags('must-have-type-tags', mustHaveTypes, removeMustHaveType);
+    renderTags('excluded-pokemon-tags', excludedPokemon, removeExcludedPokemon);
+    refreshLockMovePokeSelect();
+
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('error').hidden = true;
+
+    loadPokemonList();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     Promise.all([loadPokemonList(), loadAllMoves()]);
     document.getElementById('allow-legendaries').addEventListener('change', loadPokemonList);
     document.getElementById('lock-move-poke').addEventListener('change', loadMovesForPoke);
     document.getElementById('dup-type-discount').addEventListener('input', e => {
         document.getElementById('dup-type-value').textContent = e.target.value + '%';
+        saveState();
     });
     document.getElementById('speed-bonus').addEventListener('input', e => {
         document.getElementById('speed-bonus-value').textContent = e.target.value + '%';
+        saveState();
     });
+
+    ['max-overlap','min-redundancy','acc-exponent'].forEach(id => {
+        document.getElementById(id).addEventListener('change', saveState);
+    });
+    document.getElementById('allow-legendaries').addEventListener('change', saveState);
+    document.getElementById('no-4x-weakness').addEventListener('change', saveState);
     document.getElementById('add-exclude-btn').addEventListener('click', addExcludedPokemon);
     document.getElementById('exclude-poke-input').addEventListener('keydown', e => {
         if (e.key === 'Enter') { e.preventDefault(); addExcludedPokemon(); }
@@ -448,6 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-must-have-btn').addEventListener('click', addMustHave);
     document.getElementById('add-must-have-type-btn').addEventListener('click', addMustHaveType);
     document.getElementById('optimize-btn').addEventListener('click', runOptimize);
+    document.getElementById('reset-btn').addEventListener('click', resetState);
 
     const typeSel = document.getElementById('must-have-type-input');
     typeSel.innerHTML = '<option value="">Select type\u2026</option>' +
@@ -459,6 +560,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('must-have-input').addEventListener('keydown', e => {
         if (e.key === 'Enter') { e.preventDefault(); addMustHave(); }
     });
+
+    restoreState();
 });
 
 async function loadPokemonList() {
@@ -501,11 +604,13 @@ function addExcludedPokemon() {
     excludedPokemon.push(name);
     input.value = '';
     renderTags('excluded-pokemon-tags', excludedPokemon, removeExcludedPokemon);
+    saveState();
 }
 
 function removeExcludedPokemon(name) {
     excludedPokemon = excludedPokemon.filter(n => n !== name);
     renderTags('excluded-pokemon-tags', excludedPokemon, removeExcludedPokemon);
+    saveState();
 }
 
 function addLockedPokemon() {
@@ -517,6 +622,7 @@ function addLockedPokemon() {
     input.value = '';
     renderTags('locked-pokemon-tags', lockedPokemon, removeLockedPokemon);
     refreshLockMovePokeSelect();
+    saveState();
 }
 
 function removeLockedPokemon(name) {
@@ -525,6 +631,7 @@ function removeLockedPokemon(name) {
     renderTags('locked-pokemon-tags', lockedPokemon, removeLockedPokemon);
     renderLockedMoves();
     refreshLockMovePokeSelect();
+    saveState();
 }
 
 function addLockedMove() {
@@ -534,11 +641,13 @@ function addLockedMove() {
     if (lockedMoves.some(lm => lm.pokemon === poke && lm.move === move)) return;
     lockedMoves.push({ pokemon: poke, move });
     renderLockedMoves();
+    saveState();
 }
 
 function removeLockedMoveAt(i) {
     lockedMoves.splice(i, 1);
     renderLockedMoves();
+    saveState();
 }
 
 function renderLockedMoves() {
@@ -559,11 +668,13 @@ function addMustHave() {
     mustHaveMoves.push(name);
     input.value = '';
     renderTags('must-have-tags', mustHaveMoves, removeMustHave);
+    saveState();
 }
 
 function removeMustHave(name) {
     mustHaveMoves = mustHaveMoves.filter(n => n !== name);
     renderTags('must-have-tags', mustHaveMoves, removeMustHave);
+    saveState();
 }
 
 function addMustHaveType() {
@@ -573,11 +684,13 @@ function addMustHaveType() {
     mustHaveTypes.push(name);
     sel.value = '';
     renderTags('must-have-type-tags', mustHaveTypes, removeMustHaveType);
+    saveState();
 }
 
 function removeMustHaveType(name) {
     mustHaveTypes = mustHaveTypes.filter(n => n !== name);
     renderTags('must-have-type-tags', mustHaveTypes, removeMustHaveType);
+    saveState();
 }
 
 function renderTags(elId, list, removeFn) {
