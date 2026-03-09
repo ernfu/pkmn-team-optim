@@ -215,12 +215,12 @@ def solve_model(model):
     """
     Solve a built Model.
 
-    Returns (status, team_list | error_message, z_value).
+    Returns (status, team_list | error_message, z_value, objective_value).
     """
     model.prob.solve(pulp.HiGHS(msg=0, gapRel=0.01, timeLimit=30))
 
     if model.prob.status != pulp.constants.LpStatusOptimal:
-        return "Infeasible", None, 0
+        return "Infeasible", None, 0, 0
 
     team = []
     for p in model.poke_names:
@@ -230,7 +230,9 @@ def solve_model(model):
             ]
             team.append({"name": p, "moves": chosen_moves})
 
-    return "Optimal", team, pulp.value(model.z)
+    z_val = pulp.value(model.z)
+    obj_val = pulp.value(model.prob.objective)
+    return "Optimal", team, z_val, obj_val
 
 
 def optimise(pokemon_pool, scores, params):

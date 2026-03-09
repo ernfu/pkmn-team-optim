@@ -267,7 +267,7 @@ def main():
     print(f"Score entries: {len(scores)} (acc exponent: {args.acc_exponent})")
 
     print("\n--- Optimising (regularised max-min) ---")
-    status, result, z_val = optimise(pool, scores, params)
+    status, result, z_val, _obj_val = optimise(pool, scores, params)
 
     if status != "Optimal":
         print(f"\n{result}")

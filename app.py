@@ -143,14 +143,14 @@ def optimize():
     log.info("optimize: model build %.3fs", time.perf_counter() - t1)
 
     t2 = time.perf_counter()
-    status, result, z_val = solve_model(model)
+    status, result, z_val, obj_val = solve_model(model)
     log.info("optimize: solve %.3fs", time.perf_counter() - t2)
 
     log.info("optimize: total %.3fs", time.perf_counter() - t0)
     if status != "Optimal":
         return jsonify({"status": status, "message": result})
 
-    return jsonify(_build_result(result, pool, scores, z_val))
+    return jsonify(_build_result(result, pool, scores, z_val, obj_val))
 
 
 def _gen3_damage(power, atk_base, move_type, poke_types, defender_base=100):
@@ -162,7 +162,7 @@ def _gen3_damage(power, atk_base, move_type, poke_types, defender_base=100):
     return damage * 2
 
 
-def _build_result(team, pool, scores, z_val):
+def _build_result(team, pool, scores, z_val, obj_val=None):
     poke_by_name = {p["name"]: p for p in pool}
     move_by_name: dict[str, dict] = {}
     for p in pool:
@@ -242,8 +242,21 @@ def _build_result(team, pool, scores, z_val):
             weakest_val, weakest_type = row_total, t
         coverage.append(row)
 
+    tiebreaker = (obj_val - z_val) if obj_val is not None else 0
+    if obj_val and obj_val > 0:
+        z_pct = z_val / obj_val * 100
+        tb_pct = tiebreaker / obj_val * 100
+    else:
+        z_pct = 100.0
+        tb_pct = 0.0
+
     return {
         "status": "Optimal",
+        "z_val": round(z_val, 1),
+        "obj_val": round(obj_val, 1) if obj_val is not None else None,
+        "z_pct": round(z_pct, 2),
+        "tiebreaker": round(tiebreaker, 1),
+        "tb_pct": round(tb_pct, 2),
         "roster": roster,
         "movesets": movesets,
         "coverage": coverage,

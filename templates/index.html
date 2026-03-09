@@ -96,6 +96,16 @@
         }
         .results-header h2{font-size:1.5rem;color:#f0f6fc}
         .z-star{font-size:.875rem;color:#8b949e}
+        .z-breakdown{display:flex;flex-direction:column;align-items:flex-end;gap:.25rem}
+        .z-part{
+            font-size:.8rem;color:#c9d1d9;
+            display:flex;align-items:center;gap:.5rem;
+        }
+        .z-label{
+            font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;
+            color:#8b949e;min-width:5.5rem;text-align:right;
+        }
+        .z-pct{color:#58a6ff;font-weight:600;font-size:.75rem}
 
         .team-grid{
             display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
@@ -636,9 +646,21 @@ function typeBadge(t) {
 function renderResults(data, targetId, heading) {
     const el = document.getElementById(targetId || 'results');
 
+    let zInfo = '';
+    if (data.z_val != null) {
+        zInfo = `<span class="z-star">Objective z = ${data.z_val.toLocaleString()}</span>`;
+        if (data.obj_val != null && data.tb_pct != null) {
+            zInfo = `<div class="z-breakdown">
+                <span class="z-star">Objective = ${data.obj_val.toLocaleString()}</span>
+                <span class="z-part"><span class="z-label">Coverage z</span> ${data.z_val.toLocaleString()} <span class="z-pct">(${data.z_pct}%)</span></span>
+                <span class="z-part"><span class="z-label">Tiebreaker</span> ${data.tiebreaker.toLocaleString()} <span class="z-pct">(${data.tb_pct}%)</span></span>
+            </div>`;
+        }
+    }
     let html = `
         <div class="results-header">
             <h2>${heading || 'Optimal Team'}</h2>
+            ${zInfo}
         </div>`;
 
     html += '<div class="team-grid">';
