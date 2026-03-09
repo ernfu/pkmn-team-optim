@@ -35,7 +35,7 @@ $$
 | $\text{STAB}_{p,m}$ | 1.5 or 1.0 | Same-type attack bonus, directly from the game formula |
 | $2.0$ | Constant | Super-effective multiplier. Only SE triples are stored, so this is always 2.0. |
 | $\text{stat}_{p,m}$ | Base Atk or Sp.Atk | The other half of the damage numerator. Multiplying $\text{stat} \times \text{power}$ is a valid proxy for ranking offensive output because the terms we drop - level factor $(2L/5+2)$, division by $50 \cdot \text{Def}$, the $+2$ floor constant - are either shared across all candidates or unknown (defender's defense). |
-| $\text{speedFactor}$ | See notes | Linear speed bonus: $1 + \beta \cdot (v_p - v_{\min}) / (v_{\max} - v_{\min})$ where $v$ is base speed. $\beta$ (`speed_bonus`, default 0.1) is the max bonus for the fastest Pokémon in the pool. Slowest gets 1.0×, fastest gets $(1+\beta)\times$. |
+| $\text{speedFactor}$ | See notes | Linear speed bonus: $1 + \beta \cdot (v_p - v_{\min}) / (v_{\max} - v_{\min})$ where $v$ is base speed. $\beta$ (`speed_bonus`, default 0.25) is the max bonus for the fastest Pokémon in the pool. Slowest gets 1.0×, fastest gets $(1+\beta)\times$. |
 | $\text{recoilFactor}_m$ | $1 - \text{recoilPct}$ | Penalises self-damaging moves proportionally to recoil. Double-Edge (33% recoil) gets 0.67×, Take-Down and Submission (25% recoil) get 0.75×. Non-recoil moves get 1.0×. |
 | $\text{priorityFactor}_m$ | $\gamma$ or 1.0 | Penalises negative-priority moves like Focus Punch which fail if the user is hit before attacking. $\gamma$ (`low_priority_factor`, default 0.3) applies to these moves; all others get 1.0×. |
 
@@ -151,7 +151,7 @@ At most one move per type group gets full credit. Every selected move in the gro
 
 Since we are maximising, the solver sets $f_{p,m} = 1$ for whichever move in the group scores highest against the binding (weakest) damage constraint. This is exact — unlike an average-based penalty, it correctly discounts the specific second move rather than approximating.
 
-$\delta$ is the `duplicate_type_discount` parameter (default 0.5). At $\delta = 0$ the second same-type move contributes nothing (equivalent to a hard ban); at $\delta = 1$ no penalty is applied.
+$\delta$ is the `duplicate_type_discount` parameter (default 0.2). At $\delta = 0$ the second same-type move contributes nothing (equivalent to a hard ban); at $\delta = 1$ no penalty is applied.
 
 ### 5.5 Type Overlap Cap
 
@@ -161,7 +161,7 @@ $$
 \sum_{\substack{p \in \mathcal{P} \\ t \in \text{types}(p)}} x_p  \leq  n \qquad \forall\, t \in \mathcal{T}
 $$
 
-Default $n = 2$.
+Default $n = 1$.
 
 ### 5.6 Super-Effective Redundancy
 
@@ -225,12 +225,12 @@ After PuLP builds the model and HiGHS preprocesses it:
 
 | Parameter | Symbol | Default | Effect on solve |
 |---|---|---|---|
-| `max_overlap` | $n$ | 2 | Caps same-type Pokémon. Lower values tighten the feasible region - can make the problem infeasible if too restrictive. |
-| `min_redundancy` | $k$ | 2 | Requires $k$ SE (Pokémon, move) pairs per defending type. Higher values add harder constraints; $k \geq 3$ often infeasible. |
-| `acc_exponent` | $\alpha$ | 2.0 | Accuracy penalty harshness. Only affects pre-computed scores, not the MILP structure. |
-| `duplicate_type_discount` | $\delta$ | 0.5 | Credit for a 2nd same-type move (0–1). At 0 the full-credit constraint becomes a hard ban; at 1 the $f$ variables are omitted entirely. |
-| `speed_bonus` | $\beta$ | 0.1 | Fastest Pokémon gets $(1+\beta)\times$ effective power, slowest gets $1.0\times$. Linear interpolation. |
-| `low_priority_factor` | $\gamma$ | 0.3 | Multiplier for negative-priority moves (e.g., Focus Punch). 0.3 = 30% credit. Set to 1.0 to disable. |
+| `max_overlap` | $n$ | 1 | How many team members can share a type. Lower values tighten the feasible region - can make the problem infeasible if too restrictive. |
+| `min_redundancy` | $k$ | 2 | At least $k$ Pokémon must have a SE move against each enemy type. Higher values add harder constraints; $k \geq 3$ often infeasible. |
+| `acc_exponent` | $\alpha$ | 2.0 | Accuracy penalty: mult = $(\text{acc}/100)^\alpha$. At 2.0, 85% acc → 0.72×, 70% acc → 0.49×. Only affects pre-computed scores, not the MILP structure. |
+| `duplicate_type_discount` | $\delta$ | 0.2 | Discount for a 2nd same-type move. At 0.2, the 2nd move only gets 20% credit. At 0 the full-credit constraint becomes a hard ban; at 1 the $f$ variables are omitted entirely. |
+| `speed_bonus` | $\beta$ | 0.25 | Bonus for fast Pokémon. At 0.25, the fastest gets $1.25\times$ damage, the slowest gets $1.0\times$. Linear interpolation. |
+| `low_priority_factor` | $\gamma$ | 0.3 | Multiplier for negative-priority moves (e.g., Focus Punch). 0.3 = 30% credit. Not exposed in CLI/UI. |
 | Regularisation | $\varepsilon$ | $10^{-4}$ | Tie-break weight. Must be small enough that $\varepsilon \cdot \text{total power} < 1$ unit of $z$ improvement. |
 
 ### Known Limitations
