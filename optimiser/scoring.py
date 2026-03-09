@@ -74,6 +74,7 @@ def compute_scores(
     pokemon_pool: list[dict],
     acc_exponent: float = 2.0,
     speed_bonus: float = 0.1,
+    low_priority_factor: float = 0.3,
 ) -> dict[tuple[str, str, str], float]:
     """
     Pre-compute S_{p,m,t} for every (pokemon, move, defending_type) triple.
@@ -86,6 +87,9 @@ def compute_scores(
 
     speed_bonus: fractional bonus the fastest Pokémon in the pool receives
     (0.1 = 10%).  Slowest gets 1.0×, linearly interpolated.
+
+    low_priority_factor: multiplier for negative-priority moves like Focus
+    Punch (0.3 = 30% credit).  Set to 1.0 to disable the penalty.
     """
     scores: dict[tuple[str, str, str], float] = {}
 
@@ -117,12 +121,24 @@ def compute_scores(
             stat = p_atk if m_type in PHYSICAL_TYPES else p_spa
             acc_factor = (m_acc / 100) ** acc_exponent
 
+            recoil_factor = 1.0 - move["recoil_pct"]
+
+            is_low_pri = move["is_low_priority"]
+            priority_factor = low_priority_factor if is_low_pri else 1.0
+
             for def_type in ALL_TYPES:
                 if not is_super_effective(m_type, def_type):
                     continue
                 effectiveness = 2.0
                 score = (
-                    power_adj * acc_factor * stab * effectiveness * stat * speed_factor
+                    power_adj
+                    * acc_factor
+                    * stab
+                    * effectiveness
+                    * stat
+                    * speed_factor
+                    * recoil_factor
+                    * priority_factor
                 )
                 key = (p_name, m_name, def_type)
                 if key not in scores or score > scores[key]:

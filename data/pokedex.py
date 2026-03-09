@@ -175,6 +175,16 @@ MULTI_TURN_MOVES = {
     "razor-wind",
 }
 
+RECOIL_MOVES = {
+    "double-edge": 0.33,
+    "take-down": 0.25,
+    "submission": 0.25,
+}
+
+LOW_PRIORITY_MOVES = {
+    "focus-punch",
+}
+
 # TMs that can be purchased repeatedly (Game Corner / Dept Store) in FRLG.
 # All other TMs are single-use.
 FRLG_UNLIMITED_TMS = {
@@ -425,6 +435,8 @@ def compile_version_group(version_group: str) -> Path:
             if md["power"] is None and mname in VARIABLE_POWER_ESTIMATES:
                 md["power"] = VARIABLE_POWER_ESTIMATES[mname]
             md["is_multi_turn"] = mname in MULTI_TURN_MOVES
+            md["recoil_pct"] = RECOIL_MOVES.get(mname, 0)
+            md["is_low_priority"] = mname in LOW_PRIORITY_MOVES
             learn_methods = rm["learn_methods"]
             tm_only = learn_methods == ["machine"]
             moves.append(

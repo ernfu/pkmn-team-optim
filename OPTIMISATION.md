@@ -25,7 +25,7 @@ All $S_{p,m,t}$ values are computed before the solver runs - they become **const
 For every triple $(p, m, t)$ where move $m$ is super-effective against defending type $t$:
 
 $$
-S_{p,m,t} = \text{power}_m^{*} \;\cdot\; \left(\frac{\text{acc}_m}{100}\right)^{\!\alpha} \;\cdot\; \text{STAB}_{p,m} \;\cdot\; 2.0 \;\cdot\; \text{stat}_{p,m} \;\cdot\; \text{speed\_factor}_p
+S_{p,m,t} = \text{power}_m^{*} \;\cdot\; \left(\frac{\text{acc}_m}{100}\right)^{\!\alpha} \;\cdot\; \text{STAB}_{p,m} \;\cdot\; 2.0 \;\cdot\; \text{stat}_{p,m} \;\cdot\; \text{speed\_factor}_p \;\cdot\; \text{recoil\_factor}_m \;\cdot\; \text{priority\_factor}_m
 $$
 
 | Term | Value | Notes |
@@ -36,6 +36,8 @@ $$
 | $2.0$ | Constant | Super-effective multiplier. Only SE triples are stored, so this is always 2.0. |
 | $\text{stat}_{p,m}$ | Base Atk or Sp.Atk | The other half of the damage numerator. Multiplying $\text{stat} \times \text{power}$ is a valid proxy for ranking offensive output because the terms we drop - level factor $(2L/5+2)$, division by $50 \cdot \text{Def}$, the $+2$ floor constant - are either shared across all candidates or unknown (defender's defense). |
 | $\text{speed\_factor}_p$ | $1 + \beta \cdot \frac{\text{speed}_p - \text{speed}_{\min}}{\text{speed}_{\max} - \text{speed}_{\min}}$ | Linear speed bonus. $\beta$ (`speed_bonus`, default 0.1) is the max bonus for the fastest Pokémon in the pool. Slowest gets 1.0×, fastest gets $(1+\beta)\times$. |
+| $\text{recoil\_factor}_m$ | $1 - \text{recoil\_pct}$ | Penalises self-damaging moves proportionally to recoil. Double-Edge (33% recoil) gets 0.67×, Take-Down and Submission (25% recoil) get 0.75×. Non-recoil moves get 1.0×. |
+| $\text{priority\_factor}_m$ | $\gamma$ or 1.0 | Penalises negative-priority moves like Focus Punch which fail if the user is hit before attacking. $\gamma$ (`low_priority_factor`, default 0.3) applies to these moves; all others get 1.0×. |
 
 $S_{p,m,t} = 0$ whenever $m$ is **not** super-effective against $t$. Non-SE moves (neutral, resisted, immune) are invisible to the optimiser - it only cares about SE damage.
 
@@ -228,6 +230,7 @@ After PuLP builds the model and HiGHS preprocesses it:
 | `acc_exponent` | $\alpha$ | 2.0 | Accuracy penalty harshness. Only affects pre-computed scores, not the MILP structure. |
 | `duplicate_type_discount` | $\delta$ | 0.5 | Credit for a 2nd same-type move (0–1). At 0 the full-credit constraint becomes a hard ban; at 1 the $f$ variables are omitted entirely. |
 | `speed_bonus` | $\beta$ | 0.1 | Fastest Pokémon gets $(1+\beta)\times$ effective power, slowest gets $1.0\times$. Linear interpolation. |
+| `low_priority_factor` | $\gamma$ | 0.3 | Multiplier for negative-priority moves (e.g., Focus Punch). 0.3 = 30% credit. Set to 1.0 to disable. |
 | Regularisation | $\varepsilon$ | $10^{-4}$ | Tie-break weight. Must be small enough that $\varepsilon \cdot \text{total\_power} < 1$ unit of $z$ improvement. |
 
 ### Known Limitations
@@ -235,4 +238,4 @@ After PuLP builds the model and HiGHS preprocesses it:
 - **Single-type defenders only.** The model treats each of the 17 types independently. Dual-type matchups (e.g., 4× against Ground/Flying, or immunity from Normal/Ghost) are not modelled.
 - **No immunities.** A score of 0 means "not super-effective," but the model doesn't distinguish "neutral" from "immune."
 - **No defensive stats.** HP, Def, Sp.Def are ignored - the model assumes every Pokémon survives long enough to attack.
-- **Speed is a proxy.** The linear bonus approximates the value of moving first but doesn't model actual speed tiers or priority moves.
+- **Speed is a proxy.** The linear bonus approximates the value of moving first but doesn't model actual speed tiers.

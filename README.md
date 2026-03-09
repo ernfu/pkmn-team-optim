@@ -12,7 +12,7 @@ The optimizer uses a single-phase regularised max-min mixed-integer linear progr
 - **Type overlap cap** - no more than `n` Pokémon sharing any single type (default 2)
 - **SE redundancy** - at least `k` Pokémon with a super-effective move against every defending type (default 2)
 
-Each move is scored by: `power × accuracy × STAB × type effectiveness × stat × speed`, using Gen 3-accurate mechanics (physical/special determined by type, not move).
+Each move is scored by: `power × accuracy × STAB × type effectiveness × stat × speed × recoil × priority`, using Gen 3-accurate mechanics (physical/special determined by type, not move). Self-damaging moves (Double-Edge, Take-Down, Submission) are penalised proportionally to their recoil, and unreliable negative-priority moves (Focus Punch) are heavily discounted.
 
 ## Quick Start
 
@@ -77,6 +77,7 @@ gen3-optim/
 | `min_redundancy`             | 2       | Min Pokémon with a super-effective move required against every defending type               |
 | `acc_exponent`               | 2.0     | Accuracy penalty exponent: `(acc/100)^exp`. Higher values strongly favor accurate moves.   |
 | `duplicate_type_discount`    | 0.5     | Credit for a 2nd same-type move on one Pokémon (0 = no credit, 1 = full value)             |
+| `low_priority_factor`        | 0.3     | Multiplier for negative-priority moves like Focus Punch (0 = ignore, 1 = full value)       |
 
 ## User Constraints
 
@@ -93,7 +94,7 @@ cd data
 python pokedex.py compile firered-leafgreen
 ```
 
-Fetches from [PokeAPI](https://pokeapi.co/) with local caching. The compiled JSON includes Gen 3-accurate typings (no Fairy), legendary/fully-evolved flags, and multi-turn move tags.
+Fetches from [PokeAPI](https://pokeapi.co/) with local caching. The compiled JSON includes Gen 3-accurate typings (no Fairy), legendary/fully-evolved flags, multi-turn move tags, recoil percentages, and low-priority flags.
 
 ## Tech Stack
 
