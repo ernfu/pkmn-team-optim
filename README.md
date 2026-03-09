@@ -9,10 +9,13 @@ The optimizer uses a single-phase regularised max-min mixed-integer linear progr
 **Objective**: Maximise `z + ε · total_power`, where `z` is a lower bound on coverage across all 17 defending types. This finds the team with the best worst-case type coverage, breaking ties in favour of higher total firepower.
 
 **Constraints**:
+
 - **Type overlap cap** - no more than `n` Pokémon sharing any single type (default 2)
 - **SE redundancy** - at least `k` Pokémon with a super-effective move against every defending type (default 2)
 
 Each move is scored by: `power × accuracy × STAB × type effectiveness × stat × speed × recoil × priority`, using Gen 3-accurate mechanics (physical/special determined by type, not move). Self-damaging moves (Double-Edge, Take-Down, Submission) are penalised proportionally to their recoil, and unreliable negative-priority moves (Focus Punch) are heavily discounted.
+
+See [OPTIMISATION.md](http://OPTIMISATION.md) for full description on the MILP problem.
 
 ## Quick Start
 
@@ -71,13 +74,15 @@ gen3-optim/
 
 ## Tunable Parameters
 
-| Param                        | Default | Description                                                                               |
-| ---------------------------- | ------- | ----------------------------------------------------------------------------------------- |
-| `max_overlap`                | 2       | Max Pokémon on the team sharing any single type                                            |
-| `min_redundancy`             | 2       | Min Pokémon with a super-effective move required against every defending type               |
-| `acc_exponent`               | 2.0     | Accuracy penalty exponent: `(acc/100)^exp`. Higher values strongly favor accurate moves.   |
-| `duplicate_type_discount`    | 0.5     | Credit for a 2nd same-type move on one Pokémon (0 = no credit, 1 = full value)             |
-| `low_priority_factor`        | 0.3     | Multiplier for negative-priority moves like Focus Punch (0 = ignore, 1 = full value)       |
+
+| Param                     | Default | Description                                                                              |
+| ------------------------- | ------- | ---------------------------------------------------------------------------------------- |
+| `max_overlap`             | 2       | Max Pokémon on the team sharing any single type                                          |
+| `min_redundancy`          | 2       | Min Pokémon with a super-effective move required against every defending type            |
+| `acc_exponent`            | 2.0     | Accuracy penalty exponent: `(acc/100)^exp`. Higher values strongly favor accurate moves. |
+| `duplicate_type_discount` | 0.5     | Credit for a 2nd same-type move on one Pokémon (0 = no credit, 1 = full value)           |
+| `low_priority_factor`     | 0.3     | Multiplier for negative-priority moves like Focus Punch (0 = ignore, 1 = full value)     |
+
 
 ## User Constraints
 
@@ -104,10 +109,11 @@ Fetches from [PokeAPI](https://pokeapi.co/) with local caching. The compiled JSO
 - [Flask](https://flask.palletsprojects.com/) (web UI)
 - [PokeAPI](https://pokeapi.co/) (data source)
 
-
 ## Contribute
 
 I don't plan to upgrade this to support other gens unless..
+
 - Nintendo release another Pokemon game on switch + pokeapi have the data
 - There's a new cool idea for the optimisation problem (go to Discussion to mention it?)
 - I get bored again
+
