@@ -38,7 +38,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -59,7 +59,7 @@
         {
           "name": "vine-whip",
           "type": "grass",
-          "power": 45,
+          "power": 35,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -75,7 +75,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -102,7 +102,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -118,7 +118,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -252,7 +252,7 @@
         {
           "name": "petal-dance",
           "type": "grass",
-          "power": 120,
+          "power": 70,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "special",
@@ -295,7 +295,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -332,7 +332,7 @@
         {
           "name": "skull-bash",
           "type": "normal",
-          "power": 130,
+          "power": 100,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -391,7 +391,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "curse",
@@ -735,7 +735,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -756,7 +756,7 @@
         {
           "name": "vine-whip",
           "type": "grass",
-          "power": 45,
+          "power": 35,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -772,7 +772,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -799,7 +799,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -815,7 +815,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -976,7 +976,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -1040,7 +1040,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -1269,7 +1269,7 @@
         {
           "name": "petal-dance",
           "type": "grass",
-          "power": 120,
+          "power": 70,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "special",
@@ -1301,7 +1301,7 @@
         {
           "name": "skull-bash",
           "type": "normal",
-          "power": 130,
+          "power": 100,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -1432,7 +1432,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -1453,7 +1453,7 @@
         {
           "name": "vine-whip",
           "type": "grass",
-          "power": 45,
+          "power": 35,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -1469,7 +1469,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -1496,7 +1496,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -1512,7 +1512,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -1721,7 +1721,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -1785,7 +1785,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -2025,12 +2025,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "petal-dance",
           "type": "grass",
-          "power": 120,
+          "power": 70,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "special",
@@ -2062,7 +2062,7 @@
         {
           "name": "skull-bash",
           "type": "normal",
-          "power": 130,
+          "power": 100,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -2192,7 +2192,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "scratch",
@@ -2257,7 +2257,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -2273,7 +2273,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -2289,7 +2289,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "bite",
@@ -2370,7 +2370,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -2386,7 +2386,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -2423,7 +2423,7 @@
         {
           "name": "fire-spin",
           "type": "fire",
-          "power": 35,
+          "power": 15,
           "accuracy": 85,
           "pp": 15,
           "damage_class": "special",
@@ -2482,7 +2482,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -2595,7 +2595,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -2986,7 +2986,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "scratch",
@@ -3018,7 +3018,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -3050,7 +3050,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -3066,7 +3066,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -3082,7 +3082,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -3147,7 +3147,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -3163,7 +3163,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -3200,7 +3200,7 @@
         {
           "name": "fire-spin",
           "type": "fire",
-          "power": 35,
+          "power": 15,
           "accuracy": 85,
           "pp": 15,
           "damage_class": "special",
@@ -3259,7 +3259,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -3339,7 +3339,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "slash",
@@ -3371,7 +3371,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -3779,7 +3779,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "scratch",
@@ -3811,7 +3811,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -3875,7 +3875,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -3891,7 +3891,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -3907,7 +3907,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -4004,7 +4004,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -4020,7 +4020,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -4057,7 +4057,7 @@
         {
           "name": "fire-spin",
           "type": "fire",
-          "power": 35,
+          "power": 15,
           "accuracy": 85,
           "pp": 15,
           "damage_class": "special",
@@ -4132,7 +4132,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -4212,7 +4212,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "slash",
@@ -4244,7 +4244,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -4516,7 +4516,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "overheat",
@@ -4699,7 +4699,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -4715,12 +4715,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -4747,7 +4747,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -4763,7 +4763,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -4907,7 +4907,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -4923,7 +4923,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -4987,7 +4987,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -5056,7 +5056,7 @@
         {
           "name": "skull-bash",
           "type": "normal",
-          "power": 130,
+          "power": 100,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -5115,7 +5115,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flail",
@@ -5508,7 +5508,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -5524,12 +5524,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -5556,7 +5556,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -5572,7 +5572,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -5700,7 +5700,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -5716,7 +5716,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -5780,7 +5780,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -5833,7 +5833,7 @@
         {
           "name": "skull-bash",
           "type": "normal",
-          "power": 130,
+          "power": 100,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -5892,7 +5892,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -6317,7 +6317,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -6333,12 +6333,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -6365,7 +6365,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -6381,7 +6381,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -6541,7 +6541,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -6557,7 +6557,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -6637,7 +6637,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -6690,7 +6690,7 @@
         {
           "name": "skull-bash",
           "type": "normal",
-          "power": 130,
+          "power": 100,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -6749,7 +6749,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -7007,7 +7007,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "water-pulse",
@@ -7179,7 +7179,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -7250,7 +7250,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -7349,7 +7349,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "supersonic",
@@ -7525,7 +7525,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -7557,7 +7557,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -7605,7 +7605,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -7883,7 +7883,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -8078,7 +8078,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -8126,7 +8126,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "twineedle",
@@ -8147,7 +8147,7 @@
         {
           "name": "pin-missile",
           "type": "bug",
-          "power": 25,
+          "power": 14,
           "accuracy": 95,
           "pp": 20,
           "damage_class": "physical",
@@ -8254,7 +8254,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -8318,7 +8318,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -8732,7 +8732,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -8759,7 +8759,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "toxic",
@@ -8823,7 +8823,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -8887,7 +8887,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -9270,7 +9270,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -9297,7 +9297,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "toxic",
@@ -9361,7 +9361,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -9425,7 +9425,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -9807,7 +9807,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -9834,7 +9834,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "hyper-beam",
@@ -9914,7 +9914,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -9978,7 +9978,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -10295,7 +10295,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -10322,7 +10322,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -10338,7 +10338,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -10451,7 +10451,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -10531,7 +10531,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -10659,7 +10659,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -11040,7 +11040,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -11067,7 +11067,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -11083,7 +11083,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -11179,7 +11179,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -11227,7 +11227,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -11307,7 +11307,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -11387,7 +11387,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -11875,7 +11875,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -12003,7 +12003,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -12099,7 +12099,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -12444,7 +12444,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -12572,7 +12572,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -12636,7 +12636,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -13012,7 +13012,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "wrap",
@@ -13044,7 +13044,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "poison-sting",
@@ -13188,7 +13188,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -13284,7 +13284,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -13300,7 +13300,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -13692,7 +13692,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "wrap",
@@ -13724,7 +13724,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "poison-sting",
@@ -13884,7 +13884,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -13980,7 +13980,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -13996,7 +13996,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -14403,7 +14403,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "slam",
@@ -14435,7 +14435,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -14451,7 +14451,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -14467,7 +14467,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -14515,7 +14515,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -14531,7 +14531,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -14694,7 +14694,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -14776,7 +14776,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -15023,7 +15023,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -15039,7 +15039,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -15055,7 +15055,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -15071,7 +15071,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -15119,7 +15119,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -15135,7 +15135,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -15200,7 +15200,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -15280,7 +15280,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -15360,7 +15360,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -15736,7 +15736,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -15752,7 +15752,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "poison-sting",
@@ -15801,7 +15801,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -15881,7 +15881,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -16010,7 +16010,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -16418,7 +16418,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -16466,7 +16466,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -16482,7 +16482,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "poison-sting",
@@ -16530,7 +16530,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -16546,7 +16546,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -16626,7 +16626,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -16722,7 +16722,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "slash",
@@ -16754,7 +16754,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -17195,7 +17195,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "take-down",
@@ -17227,7 +17227,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -17468,7 +17468,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -17548,7 +17548,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -17972,7 +17972,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -17988,7 +17988,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -18100,7 +18100,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -18196,7 +18196,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -18260,7 +18260,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -18701,7 +18701,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "scratch",
@@ -18765,7 +18765,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -18798,7 +18798,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -18942,7 +18942,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -18958,7 +18958,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -19070,7 +19070,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -19134,7 +19134,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -19150,7 +19150,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -19846,7 +19846,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "take-down",
@@ -19878,7 +19878,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "poison-sting",
@@ -20119,7 +20119,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -20199,7 +20199,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -20607,7 +20607,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -20623,7 +20623,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "poison-sting",
@@ -20719,7 +20719,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -20815,7 +20815,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -20879,7 +20879,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -21288,7 +21288,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -21336,7 +21336,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -21352,12 +21352,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thrash",
           "type": "normal",
-          "power": 120,
+          "power": 90,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -21384,7 +21384,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "poison-sting",
@@ -21528,7 +21528,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -21544,7 +21544,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -21656,7 +21656,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -21736,7 +21736,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -21752,7 +21752,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -22384,7 +22384,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -22400,7 +22400,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -22416,7 +22416,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -22432,7 +22432,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -22528,7 +22528,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -22544,7 +22544,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -22608,7 +22608,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -22688,7 +22688,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -22818,7 +22818,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "dream-eater",
@@ -22834,7 +22834,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -22882,7 +22882,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -23306,7 +23306,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -23322,7 +23322,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -23338,7 +23338,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -23354,7 +23354,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "sing",
@@ -23450,7 +23450,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -23466,7 +23466,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -23530,7 +23530,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -23610,7 +23610,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -23723,7 +23723,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "dream-eater",
@@ -23739,7 +23739,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -23787,7 +23787,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -24242,7 +24242,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -24258,7 +24258,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -24345,7 +24345,7 @@
         {
           "name": "fire-spin",
           "type": "fire",
-          "power": 35,
+          "power": 15,
           "accuracy": 85,
           "pp": 15,
           "damage_class": "special",
@@ -24436,7 +24436,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -24516,7 +24516,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flail",
@@ -24876,7 +24876,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -24892,7 +24892,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "roar",
@@ -24961,7 +24961,7 @@
         {
           "name": "fire-spin",
           "type": "fire",
-          "power": 35,
+          "power": 15,
           "accuracy": 85,
           "pp": 15,
           "damage_class": "special",
@@ -25036,7 +25036,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -25116,7 +25116,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -25557,7 +25557,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -25573,7 +25573,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -25703,7 +25703,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -25719,7 +25719,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -25783,7 +25783,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -25960,7 +25960,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -26009,7 +26009,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -26353,7 +26353,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -26369,7 +26369,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -26385,7 +26385,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -26401,7 +26401,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "sing",
@@ -26513,7 +26513,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -26529,7 +26529,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -26593,7 +26593,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -26673,7 +26673,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -26769,7 +26769,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -26817,7 +26817,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -27209,7 +27209,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "bite",
@@ -27289,7 +27289,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -27385,7 +27385,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -27841,7 +27841,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "bite",
@@ -27921,7 +27921,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -28033,7 +28033,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -28554,7 +28554,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "acid",
@@ -28671,7 +28671,7 @@
         {
           "name": "petal-dance",
           "type": "grass",
-          "power": 120,
+          "power": 70,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "special",
@@ -28714,7 +28714,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -28778,7 +28778,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flail",
@@ -29090,7 +29090,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -29122,7 +29122,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "acid",
@@ -29223,7 +29223,7 @@
         {
           "name": "petal-dance",
           "type": "grass",
-          "power": 120,
+          "power": 70,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "special",
@@ -29266,7 +29266,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -29330,7 +29330,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -29658,7 +29658,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -29690,7 +29690,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -29706,7 +29706,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "hyper-beam",
@@ -29791,7 +29791,7 @@
         {
           "name": "petal-dance",
           "type": "grass",
-          "power": 120,
+          "power": 70,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "special",
@@ -29834,7 +29834,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -29898,7 +29898,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -30307,7 +30307,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -30339,7 +30339,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -30355,7 +30355,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "psybeam",
@@ -30500,7 +30500,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -30644,7 +30644,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -31006,7 +31006,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -31038,7 +31038,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -31054,7 +31054,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "hyper-beam",
@@ -31086,7 +31086,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growth",
@@ -31198,7 +31198,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -31310,7 +31310,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -31693,7 +31693,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -31720,7 +31720,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "supersonic",
@@ -31897,7 +31897,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -31993,7 +31993,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -32280,7 +32280,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -32307,7 +32307,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "supersonic",
@@ -32500,7 +32500,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -32580,7 +32580,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -32956,7 +32956,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -32972,7 +32972,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -33070,7 +33070,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -33183,7 +33183,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -33591,7 +33591,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -33607,7 +33607,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -33721,7 +33721,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -33785,7 +33785,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tri-attack",
@@ -33833,7 +33833,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -34273,7 +34273,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -34289,7 +34289,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "bite",
@@ -34417,7 +34417,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -34481,7 +34481,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -34561,7 +34561,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -35049,7 +35049,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -35065,7 +35065,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "bite",
@@ -35209,7 +35209,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -35257,7 +35257,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -35337,7 +35337,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -35809,7 +35809,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "scratch",
@@ -35841,7 +35841,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -35857,7 +35857,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -35873,7 +35873,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -36001,7 +36001,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -36017,7 +36017,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -36129,7 +36129,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -36257,7 +36257,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -36665,7 +36665,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "scratch",
@@ -36697,7 +36697,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -36713,7 +36713,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -36729,7 +36729,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -36857,7 +36857,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -36873,7 +36873,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -36953,7 +36953,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -37065,7 +37065,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -37553,7 +37553,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "scratch",
@@ -37585,7 +37585,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -37601,12 +37601,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thrash",
           "type": "normal",
-          "power": 120,
+          "power": 90,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -37633,7 +37633,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -37827,7 +37827,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -37891,7 +37891,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "fury-swipes",
@@ -37956,7 +37956,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -38428,7 +38428,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "scratch",
@@ -38460,7 +38460,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -38476,12 +38476,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thrash",
           "type": "normal",
-          "power": 120,
+          "power": 90,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -38508,7 +38508,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -38572,7 +38572,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -38717,7 +38717,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -38781,7 +38781,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "fury-swipes",
@@ -38829,7 +38829,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -38845,7 +38845,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -39339,7 +39339,7 @@
         {
           "name": "thrash",
           "type": "normal",
-          "power": 120,
+          "power": 90,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -39366,7 +39366,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -39469,7 +39469,7 @@
         {
           "name": "fire-spin",
           "type": "fire",
-          "power": 35,
+          "power": 15,
           "accuracy": 85,
           "pp": 15,
           "damage_class": "special",
@@ -39544,7 +39544,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -39608,7 +39608,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -39968,7 +39968,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -39984,7 +39984,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "bite",
@@ -40129,7 +40129,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -40193,7 +40193,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -40454,7 +40454,7 @@
         {
           "name": "thrash",
           "type": "normal",
-          "power": 120,
+          "power": 90,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -40486,7 +40486,7 @@
         {
           "name": "fire-spin",
           "type": "fire",
-          "power": 35,
+          "power": 15,
           "accuracy": 85,
           "pp": 15,
           "damage_class": "special",
@@ -40682,7 +40682,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mist",
@@ -40874,7 +40874,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -40986,7 +40986,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -41299,7 +41299,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -41315,7 +41315,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -41348,7 +41348,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "water-gun",
@@ -41444,7 +41444,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -41460,7 +41460,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -41572,7 +41572,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -41604,7 +41604,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "waterfall",
@@ -41668,7 +41668,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -42094,7 +42094,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -42110,7 +42110,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -42126,7 +42126,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -42142,7 +42142,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "water-gun",
@@ -42254,7 +42254,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -42270,7 +42270,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -42382,7 +42382,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -42414,7 +42414,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "waterfall",
@@ -42462,7 +42462,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -42934,7 +42934,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "fire-punch",
@@ -42998,7 +42998,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -43014,7 +43014,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -43030,7 +43030,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "counter",
@@ -43046,7 +43046,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -43062,7 +43062,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder-wave",
@@ -43078,7 +43078,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "toxic",
@@ -43142,7 +43142,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -43222,7 +43222,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "dream-eater",
@@ -43238,7 +43238,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -43286,7 +43286,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -43547,7 +43547,7 @@
         {
           "name": "knock-off",
           "type": "dark",
-          "power": 65,
+          "power": 20,
           "accuracy": 100,
           "pp": 20,
           "damage_class": "physical",
@@ -43678,7 +43678,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -43694,7 +43694,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -43710,7 +43710,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -43726,7 +43726,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "disable",
@@ -43774,7 +43774,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -43790,7 +43790,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder-wave",
@@ -43806,7 +43806,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "toxic",
@@ -43887,7 +43887,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -43968,7 +43968,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "kinesis",
@@ -44000,7 +44000,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -44048,7 +44048,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -44501,7 +44501,7 @@
         {
           "name": "knock-off",
           "type": "dark",
-          "power": 65,
+          "power": 20,
           "accuracy": 100,
           "pp": 20,
           "damage_class": "physical",
@@ -44552,7 +44552,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -44568,7 +44568,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -44584,7 +44584,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -44600,7 +44600,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "disable",
@@ -44664,7 +44664,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -44680,7 +44680,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder-wave",
@@ -44696,7 +44696,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "toxic",
@@ -44777,7 +44777,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -44858,7 +44858,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "kinesis",
@@ -44890,7 +44890,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -44938,7 +44938,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -45392,7 +45392,7 @@
         {
           "name": "knock-off",
           "type": "dark",
-          "power": 65,
+          "power": 20,
           "accuracy": 100,
           "pp": 20,
           "damage_class": "physical",
@@ -45459,7 +45459,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -45475,7 +45475,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "rolling-kick",
@@ -45507,7 +45507,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -45523,7 +45523,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -45717,7 +45717,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -45781,7 +45781,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "fire-blast",
@@ -45846,7 +45846,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -46270,7 +46270,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -46286,7 +46286,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -46302,7 +46302,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -46318,7 +46318,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -46398,7 +46398,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -46495,7 +46495,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -46543,7 +46543,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "fire-blast",
@@ -46591,7 +46591,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -46607,7 +46607,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -47079,7 +47079,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -47095,7 +47095,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -47111,7 +47111,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -47127,7 +47127,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -47223,7 +47223,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -47320,7 +47320,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -47368,7 +47368,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "fire-blast",
@@ -47416,7 +47416,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -47432,7 +47432,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -47926,7 +47926,7 @@
         {
           "name": "vine-whip",
           "type": "grass",
-          "power": 45,
+          "power": 35,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -47969,7 +47969,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "acid",
@@ -48113,7 +48113,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -48209,7 +48209,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -48521,7 +48521,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -48558,7 +48558,7 @@
         {
           "name": "vine-whip",
           "type": "grass",
-          "power": 45,
+          "power": 35,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -48601,7 +48601,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "acid",
@@ -48745,7 +48745,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -48809,7 +48809,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -49153,7 +49153,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -49174,7 +49174,7 @@
         {
           "name": "vine-whip",
           "type": "grass",
-          "power": 45,
+          "power": 35,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -49201,7 +49201,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -49217,7 +49217,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "hyper-beam",
@@ -49313,7 +49313,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -49377,7 +49377,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -49866,7 +49866,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -49914,7 +49914,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "poison-sting",
@@ -50090,7 +50090,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -50234,7 +50234,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -50547,7 +50547,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -50595,7 +50595,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "poison-sting",
@@ -50771,7 +50771,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -50883,7 +50883,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -51250,7 +51250,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -51277,7 +51277,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -51326,7 +51326,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -51342,7 +51342,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -51439,7 +51439,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -51487,7 +51487,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "self-destruct",
@@ -51585,7 +51585,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -51914,12 +51914,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -51946,7 +51946,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -51995,7 +51995,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -52011,7 +52011,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -52108,7 +52108,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -52156,7 +52156,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "self-destruct",
@@ -52237,7 +52237,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -52253,7 +52253,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -52582,7 +52582,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -52598,12 +52598,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -52630,7 +52630,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -52711,7 +52711,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -52727,7 +52727,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -52824,7 +52824,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -52872,7 +52872,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "self-destruct",
@@ -52953,7 +52953,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -52969,7 +52969,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -53329,7 +53329,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "take-down",
@@ -53350,7 +53350,7 @@
         {
           "name": "thrash",
           "type": "normal",
-          "power": 120,
+          "power": 90,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -53479,7 +53479,7 @@
         {
           "name": "fire-spin",
           "type": "fire",
-          "power": 35,
+          "power": 15,
           "accuracy": 85,
           "pp": 15,
           "damage_class": "special",
@@ -53570,7 +53570,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -53635,7 +53635,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flame-wheel",
@@ -53915,7 +53915,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "take-down",
@@ -53947,7 +53947,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -54064,7 +54064,7 @@
         {
           "name": "fire-spin",
           "type": "fire",
-          "power": 35,
+          "power": 15,
           "accuracy": 85,
           "pp": 15,
           "damage_class": "special",
@@ -54139,7 +54139,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -54204,7 +54204,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -54401,7 +54401,7 @@
         {
           "name": "thrash",
           "type": "normal",
-          "power": 120,
+          "power": 90,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -54522,7 +54522,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -54549,7 +54549,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -54565,7 +54565,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -54709,7 +54709,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "earthquake",
@@ -54806,7 +54806,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -54870,7 +54870,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -54918,7 +54918,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "snore",
@@ -55360,7 +55360,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -55376,7 +55376,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "headbutt",
@@ -55397,7 +55397,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -55424,7 +55424,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -55440,7 +55440,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -55584,7 +55584,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -55600,7 +55600,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -55632,7 +55632,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "earthquake",
@@ -55729,7 +55729,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -55809,7 +55809,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -55857,7 +55857,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "curse",
@@ -56351,7 +56351,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -56378,7 +56378,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "supersonic",
@@ -56507,7 +56507,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -56619,7 +56619,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -56857,7 +56857,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -56884,7 +56884,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "supersonic",
@@ -57029,7 +57029,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -57141,7 +57141,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -57503,7 +57503,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -57519,7 +57519,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -57615,7 +57615,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -57695,7 +57695,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -57941,7 +57941,7 @@
         {
           "name": "knock-off",
           "type": "dark",
-          "power": 65,
+          "power": 20,
           "accuracy": 100,
           "pp": 20,
           "damage_class": "physical",
@@ -58073,7 +58073,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -58089,7 +58089,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -58233,7 +58233,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -58313,7 +58313,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -58642,7 +58642,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -58658,7 +58658,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -58786,7 +58786,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -58850,7 +58850,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -59274,7 +59274,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "take-down",
@@ -59306,7 +59306,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -59435,7 +59435,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -59456,7 +59456,7 @@
         {
           "name": "lick",
           "type": "ghost",
-          "power": 30,
+          "power": 20,
           "accuracy": 100,
           "pp": 30,
           "damage_class": "physical",
@@ -59516,7 +59516,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -59862,7 +59862,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "take-down",
@@ -59894,7 +59894,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -60023,7 +60023,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -60088,7 +60088,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -60398,7 +60398,7 @@
         {
           "name": "lick",
           "type": "ghost",
-          "power": 30,
+          "power": 20,
           "accuracy": 100,
           "pp": 30,
           "damage_class": "physical",
@@ -60529,7 +60529,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "disable",
@@ -60641,7 +60641,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -60726,7 +60726,7 @@
         {
           "name": "lick",
           "type": "ghost",
-          "power": 30,
+          "power": 20,
           "accuracy": 100,
           "pp": 30,
           "damage_class": "physical",
@@ -60850,7 +60850,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -61243,7 +61243,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "disable",
@@ -61387,7 +61387,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -61531,7 +61531,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "rest",
@@ -61563,7 +61563,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -61905,7 +61905,7 @@
         {
           "name": "lick",
           "type": "ghost",
-          "power": 30,
+          "power": 20,
           "accuracy": 100,
           "pp": 30,
           "damage_class": "physical",
@@ -62009,7 +62009,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -62052,7 +62052,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -62197,7 +62197,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -62293,7 +62293,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "rest",
@@ -62325,7 +62325,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -62576,7 +62576,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "supersonic",
@@ -62704,7 +62704,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -62768,7 +62768,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "rest",
@@ -62800,7 +62800,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -63014,7 +63014,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -63273,7 +63273,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -63326,7 +63326,7 @@
         {
           "name": "lick",
           "type": "ghost",
-          "power": 30,
+          "power": 20,
           "accuracy": 100,
           "pp": 30,
           "damage_class": "physical",
@@ -63419,7 +63419,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -63956,7 +63956,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -63993,7 +63993,7 @@
         {
           "name": "lick",
           "type": "ghost",
-          "power": 30,
+          "power": 20,
           "accuracy": 100,
           "pp": 30,
           "damage_class": "physical",
@@ -64037,7 +64037,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "rest",
@@ -64069,7 +64069,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -64574,7 +64574,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -64590,7 +64590,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -64606,7 +64606,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -64622,7 +64622,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "hyper-beam",
@@ -64654,7 +64654,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -64670,7 +64670,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -64798,7 +64798,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -64846,12 +64846,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "lick",
           "type": "ghost",
-          "power": 30,
+          "power": 20,
           "accuracy": 100,
           "pp": 30,
           "damage_class": "physical",
@@ -64895,7 +64895,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "rest",
@@ -64927,7 +64927,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -65502,7 +65502,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -65529,7 +65529,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -65674,7 +65674,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -65788,7 +65788,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flail",
@@ -66134,7 +66134,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "fire-punch",
@@ -66198,7 +66198,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "headbutt",
@@ -66230,7 +66230,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -66246,7 +66246,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "disable",
@@ -66278,7 +66278,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -66294,7 +66294,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder-wave",
@@ -66310,7 +66310,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "toxic",
@@ -66407,7 +66407,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -66487,7 +66487,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "dream-eater",
@@ -66503,7 +66503,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "poison-gas",
@@ -66567,7 +66567,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -67007,7 +67007,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -67023,7 +67023,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "headbutt",
@@ -67055,7 +67055,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -67071,7 +67071,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "disable",
@@ -67119,7 +67119,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -67135,7 +67135,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder-wave",
@@ -67151,7 +67151,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "toxic",
@@ -67248,7 +67248,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -67312,7 +67312,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "dream-eater",
@@ -67328,7 +67328,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "poison-gas",
@@ -67392,7 +67392,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -67993,7 +67993,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -68009,7 +68009,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -68138,7 +68138,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -68223,7 +68223,7 @@
         {
           "name": "crabhammer",
           "type": "water",
-          "power": 100,
+          "power": 90,
           "accuracy": 90,
           "pp": 10,
           "damage_class": "physical",
@@ -68266,7 +68266,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -68449,7 +68449,7 @@
         {
           "name": "knock-off",
           "type": "dark",
-          "power": 65,
+          "power": 20,
           "accuracy": 100,
           "pp": 20,
           "damage_class": "physical",
@@ -68612,7 +68612,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -68660,7 +68660,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -68676,7 +68676,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -68820,7 +68820,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -68873,7 +68873,7 @@
         {
           "name": "crabhammer",
           "type": "water",
-          "power": 100,
+          "power": 90,
           "accuracy": 90,
           "pp": 10,
           "damage_class": "physical",
@@ -68916,7 +68916,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -69242,7 +69242,7 @@
         {
           "name": "knock-off",
           "type": "dark",
-          "power": 65,
+          "power": 20,
           "accuracy": 100,
           "pp": 20,
           "damage_class": "physical",
@@ -69282,7 +69282,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -69341,7 +69341,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -69389,7 +69389,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -69535,7 +69535,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -69804,7 +69804,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -69879,7 +69879,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -69927,7 +69927,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -70073,7 +70073,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -70353,7 +70353,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -70530,7 +70530,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -70596,7 +70596,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "barrage",
@@ -70644,7 +70644,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "rest",
@@ -70676,7 +70676,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -71052,7 +71052,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "hyper-beam",
@@ -71180,7 +71180,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -71260,7 +71260,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "barrage",
@@ -71308,7 +71308,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "rest",
@@ -71340,7 +71340,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -71764,7 +71764,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "swords-dance",
@@ -71797,7 +71797,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "headbutt",
@@ -71829,12 +71829,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thrash",
           "type": "normal",
-          "power": 120,
+          "power": 90,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -71974,7 +71974,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -71990,7 +71990,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -72086,7 +72086,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -72171,7 +72171,7 @@
         {
           "name": "skull-bash",
           "type": "normal",
-          "power": 130,
+          "power": 100,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -72247,7 +72247,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -72623,7 +72623,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "swords-dance",
@@ -72639,7 +72639,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -72655,7 +72655,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "headbutt",
@@ -72687,12 +72687,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thrash",
           "type": "normal",
-          "power": 120,
+          "power": 90,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -72848,7 +72848,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -72864,7 +72864,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -72960,7 +72960,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -73072,7 +73072,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -73088,7 +73088,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -73397,7 +73397,7 @@
         {
           "name": "skull-bash",
           "type": "normal",
-          "power": 130,
+          "power": 100,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -73496,7 +73496,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-kick",
@@ -73534,7 +73534,7 @@
         {
           "name": "jump-kick",
           "type": "fighting",
-          "power": 100,
+          "power": 70,
           "accuracy": 95,
           "pp": 10,
           "damage_class": "physical",
@@ -73577,7 +73577,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -73593,7 +73593,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "counter",
@@ -73609,7 +73609,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -73625,7 +73625,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -73705,7 +73705,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -73753,12 +73753,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "high-jump-kick",
           "type": "fighting",
-          "power": 130,
+          "power": 85,
           "accuracy": 90,
           "pp": 10,
           "damage_class": "physical",
@@ -73801,7 +73801,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -73817,7 +73817,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -74259,7 +74259,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -74275,7 +74275,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -74291,7 +74291,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "counter",
@@ -74324,7 +74324,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -74404,7 +74404,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -74436,7 +74436,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "rest",
@@ -74468,7 +74468,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -74484,7 +74484,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -74844,7 +74844,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "swords-dance",
@@ -74860,7 +74860,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -74924,7 +74924,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -74973,7 +74973,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "supersonic",
@@ -75101,7 +75101,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -75117,7 +75117,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -75245,7 +75245,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -75298,7 +75298,7 @@
         {
           "name": "lick",
           "type": "ghost",
-          "power": 30,
+          "power": 20,
           "accuracy": 100,
           "pp": 30,
           "damage_class": "physical",
@@ -75341,7 +75341,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "rest",
@@ -75373,7 +75373,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -75731,7 +75731,7 @@
         {
           "name": "knock-off",
           "type": "dark",
-          "power": 65,
+          "power": 20,
           "accuracy": 100,
           "pp": 20,
           "damage_class": "physical",
@@ -75851,7 +75851,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -75958,7 +75958,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -76183,7 +76183,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -76517,7 +76517,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -76624,7 +76624,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -76817,7 +76817,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -77291,7 +77291,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "take-down",
@@ -77323,7 +77323,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -77533,7 +77533,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -77614,7 +77614,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -78023,7 +78023,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "swords-dance",
@@ -78039,7 +78039,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -78087,7 +78087,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "horn-attack",
@@ -78151,7 +78151,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "take-down",
@@ -78183,7 +78183,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -78311,7 +78311,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -78327,7 +78327,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -78440,7 +78440,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -78504,7 +78504,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -78520,7 +78520,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -78992,7 +78992,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -79008,7 +79008,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -79024,7 +79024,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -79169,7 +79169,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -79185,7 +79185,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -79249,7 +79249,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -79329,7 +79329,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -79476,7 +79476,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -79997,7 +79997,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -80050,7 +80050,7 @@
         {
           "name": "vine-whip",
           "type": "grass",
-          "power": 45,
+          "power": 35,
           "accuracy": 100,
           "pp": 25,
           "damage_class": "physical",
@@ -80077,7 +80077,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -80093,7 +80093,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "hyper-beam",
@@ -80286,7 +80286,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -80398,7 +80398,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -80775,7 +80775,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -80791,7 +80791,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -80807,7 +80807,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -81000,7 +81000,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -81144,7 +81144,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -81240,7 +81240,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -81729,7 +81729,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -81921,7 +81921,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -82033,7 +82033,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flail",
@@ -82329,7 +82329,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -82489,7 +82489,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -82585,7 +82585,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -82993,7 +82993,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -83169,7 +83169,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -83250,7 +83250,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flail",
@@ -83594,7 +83594,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -83754,7 +83754,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -83819,7 +83819,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flail",
@@ -84152,7 +84152,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -84179,7 +84179,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "water-gun",
@@ -84307,7 +84307,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -84371,7 +84371,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -84548,7 +84548,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -84797,7 +84797,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "water-gun",
@@ -84909,7 +84909,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -84973,7 +84973,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -85101,7 +85101,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -85149,7 +85149,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -85346,7 +85346,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -85509,7 +85509,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -85525,7 +85525,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -85541,7 +85541,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -85557,7 +85557,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "psybeam",
@@ -85605,7 +85605,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -85621,7 +85621,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "solar-beam",
@@ -85669,7 +85669,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -85865,7 +85865,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "dream-eater",
@@ -85881,7 +85881,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -86502,7 +86502,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -86615,7 +86615,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -86712,7 +86712,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -87121,7 +87121,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "ice-punch",
@@ -87153,7 +87153,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -87186,7 +87186,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "ice-beam",
@@ -87251,7 +87251,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -87267,7 +87267,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "toxic",
@@ -87315,7 +87315,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -87379,12 +87379,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "lick",
           "type": "ghost",
-          "power": 30,
+          "power": 20,
           "accuracy": 100,
           "pp": 30,
           "damage_class": "physical",
@@ -87411,7 +87411,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "lovely-kiss",
@@ -87475,7 +87475,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -87866,7 +87866,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder-punch",
@@ -87898,7 +87898,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -87914,7 +87914,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -87930,7 +87930,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -87978,7 +87978,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -87994,7 +87994,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -88043,7 +88043,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -88124,7 +88124,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "screech",
@@ -88237,7 +88237,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -88500,7 +88500,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "fire-punch",
@@ -88532,7 +88532,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -88548,7 +88548,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -88564,7 +88564,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -88645,7 +88645,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -88661,7 +88661,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -88725,7 +88725,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -88838,7 +88838,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -89184,7 +89184,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -89200,7 +89200,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "hyper-beam",
@@ -89329,7 +89329,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -89409,7 +89409,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -89425,7 +89425,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -89775,7 +89775,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -89802,7 +89802,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "take-down",
@@ -89823,7 +89823,7 @@
         {
           "name": "thrash",
           "type": "normal",
-          "power": 120,
+          "power": 90,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -89850,7 +89850,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -90074,7 +90074,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -90139,7 +90139,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -90455,7 +90455,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -90538,12 +90538,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thrash",
           "type": "normal",
-          "power": 120,
+          "power": 90,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -90570,7 +90570,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -90779,7 +90779,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -90843,7 +90843,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -90923,7 +90923,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -91201,7 +91201,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -91318,7 +91318,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "growl",
@@ -91575,7 +91575,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -91639,7 +91639,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "rest",
@@ -92126,7 +92126,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -92153,7 +92153,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "take-down",
@@ -92185,7 +92185,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -92297,7 +92297,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -92345,7 +92345,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "curse",
@@ -92693,7 +92693,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -92720,7 +92720,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -92736,7 +92736,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -92960,7 +92960,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -93056,7 +93056,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -93500,7 +93500,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -93527,7 +93527,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -93543,7 +93543,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -93564,7 +93564,7 @@
         {
           "name": "pin-missile",
           "type": "bug",
-          "power": 25,
+          "power": 14,
           "accuracy": 95,
           "pp": 20,
           "damage_class": "physical",
@@ -93753,7 +93753,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -93817,7 +93817,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -94229,7 +94229,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -94256,7 +94256,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -94272,7 +94272,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "tail-whip",
@@ -94390,7 +94390,7 @@
         {
           "name": "fire-spin",
           "type": "fire",
-          "power": 35,
+          "power": 15,
           "accuracy": 85,
           "pp": 15,
           "damage_class": "special",
@@ -94465,7 +94465,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -94545,7 +94545,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -94926,7 +94926,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -94953,7 +94953,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "ice-beam",
@@ -95065,7 +95065,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -95145,7 +95145,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -95193,7 +95193,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -95289,7 +95289,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -95618,7 +95618,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -95634,7 +95634,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -95826,7 +95826,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -95955,7 +95955,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -96301,7 +96301,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -96317,7 +96317,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -96461,7 +96461,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "toxic",
@@ -96493,7 +96493,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -96605,7 +96605,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -96621,7 +96621,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -97079,7 +97079,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -97095,7 +97095,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -97272,7 +97272,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -97368,7 +97368,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -97384,7 +97384,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -97645,7 +97645,7 @@
         {
           "name": "knock-off",
           "type": "dark",
-          "power": 65,
+          "power": 20,
           "accuracy": 100,
           "pp": 20,
           "damage_class": "physical",
@@ -97809,7 +97809,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -97841,7 +97841,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "sand-attack",
@@ -97873,7 +97873,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -97889,7 +97889,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -97985,7 +97985,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "absorb",
@@ -98065,7 +98065,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -98145,7 +98145,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "slash",
@@ -98177,7 +98177,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -98630,7 +98630,7 @@
         {
           "name": "knock-off",
           "type": "dark",
-          "power": 65,
+          "power": 20,
           "accuracy": 100,
           "pp": 20,
           "damage_class": "physical",
@@ -98746,7 +98746,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "bite",
@@ -98907,7 +98907,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -98971,7 +98971,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -98987,7 +98987,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",
@@ -99428,7 +99428,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -99444,7 +99444,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "headbutt",
@@ -99465,7 +99465,7 @@
         {
           "name": "tackle",
           "type": "normal",
-          "power": 40,
+          "power": 35,
           "accuracy": 100,
           "pp": 35,
           "damage_class": "physical",
@@ -99607,7 +99607,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -99623,7 +99623,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -99767,7 +99767,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -99815,12 +99815,12 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "lick",
           "type": "ghost",
-          "power": 30,
+          "power": 20,
           "accuracy": 100,
           "pp": 30,
           "damage_class": "physical",
@@ -99896,7 +99896,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -100385,7 +100385,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "roar",
@@ -100515,7 +100515,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -100580,7 +100580,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mind-reader",
@@ -100908,7 +100908,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "roar",
@@ -101086,7 +101086,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -101167,7 +101167,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -101479,7 +101479,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "roar",
@@ -101549,7 +101549,7 @@
         {
           "name": "fire-spin",
           "type": "fire",
-          "power": 35,
+          "power": 15,
           "accuracy": 85,
           "pp": 15,
           "damage_class": "special",
@@ -101608,7 +101608,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -101688,7 +101688,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -102000,7 +102000,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "wrap",
@@ -102032,7 +102032,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -102274,7 +102274,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -102386,7 +102386,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -102730,7 +102730,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "wrap",
@@ -102762,7 +102762,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -102972,7 +102972,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -103052,7 +103052,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -103509,7 +103509,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "wrap",
@@ -103541,7 +103541,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "leer",
@@ -103799,7 +103799,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -103879,7 +103879,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -104415,7 +104415,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "mega-kick",
@@ -104431,7 +104431,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -104447,7 +104447,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -104463,7 +104463,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "disable",
@@ -104575,7 +104575,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -104591,7 +104591,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -104655,7 +104655,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -104752,7 +104752,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -104848,7 +104848,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "fire-blast",
@@ -104912,7 +104912,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "flash",
@@ -104960,7 +104960,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "protect",
@@ -105481,7 +105481,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "cut",
@@ -105529,7 +105529,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "body-slam",
@@ -105545,7 +105545,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-edge",
@@ -105561,7 +105561,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "roar",
@@ -105673,7 +105673,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "seismic-toss",
@@ -105689,7 +105689,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "strength",
@@ -105753,7 +105753,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thunder",
@@ -105850,7 +105850,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "double-team",
@@ -105963,7 +105963,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "dream-eater",
@@ -105979,7 +105979,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "transform",
@@ -106027,7 +106027,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "rest",
@@ -106059,7 +106059,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "substitute",
@@ -106075,7 +106075,7 @@
             "tutor"
           ],
           "level_learned_at": 0,
-          "tm_only": false
+          "tm_only": true
         },
         {
           "name": "thief",

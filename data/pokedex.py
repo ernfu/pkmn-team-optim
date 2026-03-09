@@ -72,6 +72,23 @@ GEN3_MOVE_TYPE_OVERRIDES = {
     "sweet-kiss": "normal",
 }
 
+# Moves whose base power changed after Gen 3; revert to Gen 3 values.
+GEN3_POWER_OVERRIDES = {
+    "jump-kick": 70,  # 70 → 100 in Gen 5
+    "high-jump-kick": 85,  # 85 → 130 in Gen 5
+    "hi-jump-kick": 85,  # 85 → 130 in Gen 5
+    "thrash": 90,  # 90 → 120 in Gen 5
+    "petal-dance": 70,  # 70 → 120 in Gen 5
+    "fire-spin": 15,  # 15 → 35 in Gen 5
+    "tackle": 35,  # 35 → 40 (Gen 5) → 50 (Gen 6)
+    "vine-whip": 35,  # 35 → 45 in Gen 6
+    "knock-off": 20,  # 20 → 65 in Gen 6
+    "lick": 20,  # 20 → 30 in Gen 6
+    "pin-missile": 14,  # 14 → 25 in Gen 6
+    "skull-bash": 100,  # 100 → 130 in Gen 6
+    "crabhammer": 90,  # 90 → 100 in Gen 6
+}
+
 KANTO_LEGENDARIES = {"articuno", "zapdos", "moltres", "mewtwo", "mew"}
 
 KANTO_FULLY_EVOLVED = {
@@ -432,13 +449,15 @@ def compile_version_group(version_group: str) -> Path:
             md = dict(move_cache[mname])
             if md["type"] == "fairy":
                 md["type"] = GEN3_MOVE_TYPE_OVERRIDES.get(mname, "normal")
+            if mname in GEN3_POWER_OVERRIDES:
+                md["power"] = GEN3_POWER_OVERRIDES[mname]
             if md["power"] is None and mname in VARIABLE_POWER_ESTIMATES:
                 md["power"] = VARIABLE_POWER_ESTIMATES[mname]
             md["is_multi_turn"] = mname in MULTI_TURN_MOVES
             md["recoil_pct"] = RECOIL_MOVES.get(mname, 0)
             md["is_low_priority"] = mname in LOW_PRIORITY_MOVES
             learn_methods = rm["learn_methods"]
-            tm_only = learn_methods == ["machine"]
+            tm_only = learn_methods == ["machine"] or learn_methods == ["tutor"]
             moves.append(
                 {
                     **md,
