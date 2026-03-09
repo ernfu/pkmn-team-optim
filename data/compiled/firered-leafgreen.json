@@ -2585,7 +2585,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -3409,7 +3409,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -4335,7 +4335,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -5242,7 +5242,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -6083,7 +6083,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -6992,7 +6992,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -11097,7 +11097,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -11920,7 +11920,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -13931,7 +13931,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -14669,7 +14669,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -15494,7 +15494,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -16132,7 +16132,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -16786,7 +16786,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -17576,7 +17576,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -18469,7 +18469,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -19241,7 +19241,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -20168,7 +20168,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -21264,7 +21264,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -22019,7 +22019,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -22911,7 +22911,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -23989,7 +23989,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -24967,7 +24967,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -25826,7 +25826,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -26479,7 +26479,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -27356,7 +27356,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -28215,7 +28215,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -32289,7 +32289,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -33029,7 +33029,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -35012,7 +35012,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -35702,7 +35702,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -36424,7 +36424,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -37281,7 +37281,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -38206,7 +38206,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -39114,7 +39114,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -40041,7 +40041,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -40985,7 +40985,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -41862,7 +41862,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -42499,7 +42499,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -43255,7 +43255,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -43995,7 +43995,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -44854,7 +44854,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -48408,7 +48408,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -49250,7 +49250,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -50125,7 +50125,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -54492,7 +54492,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -55201,7 +55201,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -55960,7 +55960,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -58026,7 +58026,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -59005,7 +59005,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -64246,7 +64246,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -65037,7 +65037,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -69565,7 +69565,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -72194,7 +72194,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -72918,7 +72918,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -76363,7 +76363,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -77290,7 +77290,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -79730,7 +79730,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -82156,7 +82156,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -83118,7 +83118,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -85969,7 +85969,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -94663,7 +94663,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -97790,7 +97790,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -98493,7 +98493,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -99317,7 +99317,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -100089,7 +100089,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -103081,7 +103081,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -103923,7 +103923,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
@@ -112160,7 +112160,7 @@
         {
           "name": "dig",
           "type": "ground",
-          "power": 80,
+          "power": 60,
           "accuracy": 100,
           "pp": 10,
           "damage_class": "physical",
