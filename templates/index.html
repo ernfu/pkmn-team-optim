@@ -293,6 +293,11 @@
                 <label for="allow-legendaries">Allow Legendaries</label>
             </div>
 
+            <div class="checkbox-field">
+                <input type="checkbox" id="no-4x-weakness">
+                <label for="no-4x-weakness">Exclude 4x Weakness Pokémon</label>
+            </div>
+
             <div class="field">
                 <label>Lock Pokemon</label>
                 <div class="add-row">
@@ -565,6 +570,7 @@ async function runOptimize() {
         duplicate_type_discount: parseInt(document.getElementById('dup-type-discount').value) / 100,
         speed_bonus: parseInt(document.getElementById('speed-bonus').value) / 100,
         allow_legendaries: document.getElementById('allow-legendaries').checked,
+        no_4x_weakness: document.getElementById('no-4x-weakness').checked,
         locked_pokemon: lockedPokemon,
         locked_moves: lockedMoves,
         must_have_moves: mustHaveMoves,

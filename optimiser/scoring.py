@@ -70,6 +70,17 @@ def is_super_effective(atk_type: str, def_type: str) -> bool:
     return def_type in SE_CHART.get(atk_type, set())
 
 
+def has_4x_weakness(types: list[str]) -> bool:
+    """Return True if a dual-type Pokémon has any 4x weakness."""
+    if len(types) < 2:
+        return False
+    t1, t2 = types[0], types[1]
+    return any(
+        t1 in se_targets and t2 in se_targets
+        for se_targets in SE_CHART.values()
+    )
+
+
 def compute_scores(
     pokemon_pool: list[dict],
     acc_exponent: float = 2.0,

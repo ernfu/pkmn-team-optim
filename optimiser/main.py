@@ -8,7 +8,7 @@ from pathlib import Path
 
 from data.pokedex import FRLG_UNLIMITED_TMS
 
-from .scoring import ALL_TYPES, PHYSICAL_TYPES, compute_scores, SE_CHART
+from .scoring import ALL_TYPES, PHYSICAL_TYPES, compute_scores, has_4x_weakness, SE_CHART
 from .solver import Params, optimise
 
 DATA_PATH = (
@@ -16,12 +16,16 @@ DATA_PATH = (
 )
 
 
-def load_pokemon(path: Path, no_legendaries: bool) -> list[dict]:
+def load_pokemon(
+    path: Path, no_legendaries: bool, no_4x_weakness: bool = False
+) -> list[dict]:
     """Load compiled JSON and filter to fully-evolved Pokémon."""
     data = json.loads(path.read_text())
     pool = [p for p in data["pokemon"] if p["is_fully_evolved"]]
     if no_legendaries:
         pool = [p for p in pool if not p["is_legendary"]]
+    if no_4x_weakness:
+        pool = [p for p in pool if not has_4x_weakness(p["types"])]
     return pool
 
 
@@ -151,6 +155,12 @@ def main():
         help="Allow legendaries in the pool",
     )
     parser.add_argument(
+        "--no-4x-weakness",
+        action="store_true",
+        default=False,
+        help="Exclude Pokémon with any 4x type weakness",
+    )
+    parser.add_argument(
         "--lock",
         action="append",
         default=[],
@@ -227,7 +237,8 @@ def main():
     )
 
     print(f"Loading data from {data_path}...")
-    pool = load_pokemon(data_path, params.no_legendaries)
+    no_4x = getattr(args, 'no_4x_weakness', False)
+    pool = load_pokemon(data_path, params.no_legendaries, no_4x_weakness=no_4x)
     print(f"Pool: {len(pool)} fully-evolved Pokémon")
 
     print("Pre-computing scores...")

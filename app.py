@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 from data.pokedex import FRLG_UNLIMITED_TMS
 from optimiser.main import DATA_PATH, load_pokemon
-from optimiser.scoring import ALL_TYPES, PHYSICAL_TYPES, compute_scores, is_super_effective
+from optimiser.scoring import ALL_TYPES, PHYSICAL_TYPES, compute_scores, has_4x_weakness, is_super_effective
 from optimiser.solver import Params, build_model, solve_model
 
 app = Flask(__name__)
@@ -36,14 +36,17 @@ def _get_pool_and_scores(
     no_legendaries: bool,
     acc_exponent: float,
     speed_bonus: float = 0.25,
+    no_4x_weakness: bool = False,
 ):
-    key = (no_legendaries, acc_exponent, speed_bonus)
+    key = (no_legendaries, acc_exponent, speed_bonus, no_4x_weakness)
     if key not in _score_cache:
         pool = (
             [p for p in _all_pokemon if not p["is_legendary"]]
             if no_legendaries
-            else _all_pokemon
+            else list(_all_pokemon)
         )
+        if no_4x_weakness:
+            pool = [p for p in pool if not has_4x_weakness(p["types"])]
         scores = compute_scores(
             pool,
             acc_exponent=acc_exponent,
@@ -99,6 +102,7 @@ def optimize():
     duplicate_type_discount = float(data.get("duplicate_type_discount", 0.2))
     speed_bonus = float(data.get("speed_bonus", 0.25))
     allow_legendaries = bool(data.get("allow_legendaries", False))
+    no_4x_weakness = bool(data.get("no_4x_weakness", False))
 
     locked_pokemon: dict[str, list[str]] = {}
     for name in data.get("locked_pokemon", []):
@@ -120,7 +124,7 @@ def optimize():
     )
 
     pool, scores = _get_pool_and_scores(
-        params.no_legendaries, acc_exponent, speed_bonus
+        params.no_legendaries, acc_exponent, speed_bonus, no_4x_weakness
     )
 
     t1 = time.perf_counter()
