@@ -126,10 +126,8 @@ where the per-move contribution $c_{p,m,t}$ is:
 
 $$
 c_{p,m,t} = \begin{cases}
-  \delta \cdot S_{p,m,t} \cdot y_{p,m}  +  (1-\delta) \cdot S_{p,m,t} \cdot f_{p,m}
-    & \text{if } m \in G_{p,\tau(m)},\ |G_{p,\tau(m)}| \geq 2 \\[4pt]
-  S_{p,m,t} \cdot y_{p,m}
-    & \text{otherwise}
+  \delta \cdot S_{p,m,t} \cdot y_{p,m}  +  (1-\delta) \cdot S_{p,m,t} \cdot f_{p,m} & \text{if } m \in G_{p,\tau(m)},\ |G_{p,\tau(m)}| \geq 2 \\
+  S_{p,m,t} \cdot y_{p,m} & \text{otherwise}
 \end{cases}
 $$
 
@@ -137,7 +135,7 @@ Moves with a unique attacking type on their Pokémon always contribute at full v
 
 ### 5.4 Move Type Diversity (full-credit model)
 
-For each Pokémon $p$ and each attacking type $\tau$ with two or more candidate moves, let $G_{p,\tau} \subseteq \mathcal{M}_p$ be the group. Introduce a continuous variable $f_{p,m} \in [0,1]$ for each move in the group:
+For each Pokémon $p$ and each attacking type $\tau$ with two or more candidate moves, let $`G_{p,\tau} \subseteq \mathcal{M}_p`$ be the group. Introduce a continuous variable $`f_{p,m} \in [0,1]`$ for each move in the group:
 
 $$
 f_{p,m} \leq y_{p,m} \qquad \forall\, m \in G_{p,\tau}
