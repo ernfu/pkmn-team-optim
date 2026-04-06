@@ -1,10 +1,20 @@
 """Flask web interface for the Gen 3 Pokemon Team Optimizer."""
 
+import json
 import logging
+import math
+import queue
+import threading
 import time
-from pathlib import Path
 
-from flask import Flask, jsonify, render_template, request
+from flask import (
+    Flask,
+    Response,
+    jsonify,
+    render_template,
+    request,
+    stream_with_context,
+)
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -18,7 +28,7 @@ from optimiser.scoring import (
     has_4x_weakness,
     is_super_effective,
 )
-from optimiser.solver import Params, build_model, solve_model
+from optimiser.solver import Params, _diagnose_infeasibility, build_model, solve_model
 
 app = Flask(__name__)
 
@@ -96,10 +106,14 @@ def api_all_moves():
     return jsonify(_all_moves_sorted)
 
 
-@app.route("/optimize", methods=["POST"])
-def optimize():
-    log.info("optimize: started")
-    t0 = time.perf_counter()
+def _sse(event, data):
+    """Format a single Server-Sent Event."""
+    return f"event: {event}\ndata: {json.dumps(data)}\n\n"
+
+
+@app.route("/optimize-stream", methods=["POST"])
+def optimize_stream():
+    """SSE endpoint that streams solver progress then the final result."""
     data = request.get_json()
 
     max_overlap = int(data.get("max_overlap", 1))
@@ -109,6 +123,7 @@ def optimize():
     speed_bonus = float(data.get("speed_bonus", 0.25))
     allow_legendaries = bool(data.get("allow_legendaries", False))
     no_4x_weakness = bool(data.get("no_4x_weakness", False))
+    exact_solve = bool(data.get("exact_solve", False))
 
     locked_pokemon: dict[str, list[str]] = {}
     for name in data.get("locked_pokemon", []):
@@ -138,19 +153,68 @@ def optimize():
     if excluded_pokemon:
         pool = [p for p in pool if p["name"] not in excluded_pokemon]
 
-    t1 = time.perf_counter()
-    model = build_model(pool, scores, params)
-    log.info("optimize: model build %.3fs", time.perf_counter() - t1)
+    time_limit = 600 if exact_solve else 120
 
-    t2 = time.perf_counter()
-    status, result, z_val, obj_val = solve_model(model)
-    log.info("optimize: solve %.3fs", time.perf_counter() - t2)
+    def generate():
+        yield _sse("phase", {"phase": "building"})
 
-    log.info("optimize: total %.3fs", time.perf_counter() - t0)
-    if status != "Optimal":
-        return jsonify({"status": status, "message": result})
+        model = build_model(pool, scores, params)
+        yield _sse("phase", {"phase": "solving"})
 
-    return jsonify(_build_result(result, pool, scores, z_val, obj_val))
+        progress_q = queue.Queue()
+        result_holder = [None]
+
+        def _run_solver():
+            def _on_progress(gap, nodes, elapsed):
+                progress_q.put(("progress", gap, int(nodes), round(elapsed, 2)))
+
+            result_holder[0] = solve_model(
+                model, progress_fn=_on_progress, exact_solve=exact_solve
+            )
+            progress_q.put(("done",))
+
+        t = threading.Thread(target=_run_solver, daemon=True)
+        t.start()
+
+        displayed_pct = 0.0
+
+        while True:
+            try:
+                msg = progress_q.get(timeout=0.25)
+            except queue.Empty:
+                continue
+            if msg[0] == "done":
+                break
+            _, gap, nodes, elapsed = msg
+            safe_gap = gap if math.isfinite(gap) else None
+
+            target = min(95.0, 95.0 * elapsed / time_limit) if nodes > 0 else 0.0
+
+            if target > displayed_pct:
+                displayed_pct = target
+
+            yield _sse(
+                "progress",
+                {
+                    "pct": round(displayed_pct, 1),
+                    "gap": safe_gap,
+                    "nodes": nodes,
+                    "time": elapsed,
+                },
+            )
+
+        status, result, z_val, obj_val = result_holder[0]
+        if status != "Optimal":
+            _, diag_msg, _ = _diagnose_infeasibility(params)
+            yield _sse("error", {"status": status, "message": diag_msg})
+        else:
+            yield _sse("result", _build_result(result, pool, scores, z_val, obj_val))
+
+    return Response(
+        stream_with_context(generate()),
+        content_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 def _gen3_damage(power, atk_base, move_type, poke_types, defender_base=100):
@@ -200,7 +264,9 @@ def _build_result(team, pool, scores, z_val, obj_val=None):
             )
             has_se = any(is_super_effective(m_type, t) for t in ALL_TYPES)
             best_se = (
-                _gen3_damage(effective_power, atk_base, m_type, p["types"]) if has_se else 0
+                _gen3_damage(effective_power, atk_base, m_type, p["types"])
+                if has_se
+                else 0
             )
             moves.append(
                 {
