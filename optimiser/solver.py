@@ -211,13 +211,40 @@ def build_model(pokemon_pool, scores, params):
     )
 
 
-def solve_model(model):
+def solve_model(model, progress_fn=None, exact_solve=False):
     """
     Solve a built Model.
 
     Returns (status, team_list | error_message, z_value, objective_value).
+
+    If *progress_fn* is supplied it is called with (mip_gap, node_count,
+    running_time) whenever HiGHS emits a MIP log line.
+
+    If *exact_solve* is True the solver gets a 10-minute time limit
     """
-    model.prob.solve(pulp.HiGHS(msg=0, gapRel=0.01, timeLimit=30))
+    if exact_solve:
+        solver_kwargs = dict(msg=0, gapRel=0, timeLimit=600)
+    else:
+        solver_kwargs = dict(msg=0, gapRel=0.001, timeLimit=120)
+
+    if progress_fn is not None:
+        import highspy
+
+        _last_t = [0.0]
+
+        def _cb(callback_type, message, data_out, data_in, user_data):
+            t = data_out.running_time
+            if t - _last_t[0] < 0.5:
+                return
+            _last_t[0] = t
+            progress_fn(data_out.mip_gap, data_out.mip_node_count, t)
+
+        solver_kwargs["callbackTuple"] = (_cb, None)
+        solver_kwargs["callbacksToActivate"] = [
+            highspy.cb.HighsCallbackType.kCallbackMipInterrupt,
+        ]
+
+    model.prob.solve(pulp.HiGHS(**solver_kwargs))
 
     if model.prob.status != pulp.constants.LpStatusOptimal:
         return "Infeasible", None, 0, 0
