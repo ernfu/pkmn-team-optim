@@ -91,6 +91,26 @@
         }
         @keyframes spin{to{transform:rotate(360deg)}}
 
+        .progress-wrap{max-width:480px;margin:0 auto}
+        .progress-phase{font-size:.9rem;color:#c9d1d9;margin-bottom:.75rem}
+        .progress-track{
+            background:#21262d;border:1px solid #30363d;border-radius:6px;
+            height:22px;overflow:hidden;position:relative;
+        }
+        .progress-fill{
+            height:100%;background:linear-gradient(90deg,#238636,#2ea043);
+            border-radius:5px;width:0%;
+            transition:width .4s ease-out;
+        }
+        .progress-pct{
+            position:absolute;inset:0;display:flex;align-items:center;
+            justify-content:center;font-size:.75rem;font-weight:700;color:#f0f6fc;
+        }
+        .progress-stats{
+            margin-top:.5rem;font-size:.75rem;color:#6e7681;
+            display:flex;justify-content:center;gap:1.5rem;
+        }
+
         #results{display:none}
         .results-header{
             display:flex;align-items:center;justify-content:space-between;
@@ -295,6 +315,15 @@
                     The slowest gets 1.0×.
                 </div>
             </div>
+
+            <div class="checkbox-field">
+                <input type="checkbox" id="exact-solve">
+                <label for="exact-solve">Exact Solve</label>
+            </div>
+            <div class="hint" style="margin-top:-.5rem;margin-bottom:1rem">
+                Find a provably optimal solution (0% MIP gap, 600s time limit).<br>
+                Slow but guarantees the best result.
+            </div>
         </div>
 
         <div class="card">
@@ -366,8 +395,14 @@
     </div>
 
     <div id="loading" hidden>
-        <div class="spinner"></div>
-        <p style="margin-top:1rem">Running MILP solver&hellip;</p>
+        <div class="progress-wrap">
+            <div class="progress-phase" id="progress-phase">Preparing&hellip;</div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+                <div class="progress-pct" id="progress-pct">0%</div>
+            </div>
+            <div class="progress-stats" id="progress-stats"></div>
+        </div>
     </div>
 
     <div id="error" hidden></div>
@@ -436,7 +471,7 @@ const STORAGE_KEY = 'gen3_optim_state';
 const DEFAULTS = {
     maxOverlap: 1, minRedundancy: 2, accExponent: 2.0,
     dupTypeDiscount: 20, speedBonus: 25,
-    allowLegendaries: false, no4xWeakness: false,
+    allowLegendaries: false, no4xWeakness: false, exactSolve: false,
     lockedPokemon: [], lockedMoves: [], mustHaveMoves: [],
     mustHaveTypes: [], excludedPokemon: [],
 };
@@ -450,6 +485,7 @@ function saveState() {
         speedBonus: parseInt(document.getElementById('speed-bonus').value),
         allowLegendaries: document.getElementById('allow-legendaries').checked,
         no4xWeakness: document.getElementById('no-4x-weakness').checked,
+        exactSolve: document.getElementById('exact-solve').checked,
         lockedPokemon, lockedMoves, mustHaveMoves, mustHaveTypes, excludedPokemon,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -474,6 +510,7 @@ function restoreState() {
 
     document.getElementById('allow-legendaries').checked = s.allowLegendaries ?? DEFAULTS.allowLegendaries;
     document.getElementById('no-4x-weakness').checked = s.no4xWeakness ?? DEFAULTS.no4xWeakness;
+    document.getElementById('exact-solve').checked = s.exactSolve ?? DEFAULTS.exactSolve;
 
     lockedPokemon = s.lockedPokemon ?? [];
     lockedMoves = s.lockedMoves ?? [];
@@ -501,6 +538,7 @@ function resetState() {
     document.getElementById('speed-bonus-value').textContent = DEFAULTS.speedBonus + '%';
     document.getElementById('allow-legendaries').checked = DEFAULTS.allowLegendaries;
     document.getElementById('no-4x-weakness').checked = DEFAULTS.no4xWeakness;
+    document.getElementById('exact-solve').checked = DEFAULTS.exactSolve;
 
     lockedPokemon = [];
     lockedMoves = [];
@@ -539,6 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('allow-legendaries').addEventListener('change', saveState);
     document.getElementById('no-4x-weakness').addEventListener('change', saveState);
+    document.getElementById('exact-solve').addEventListener('change', saveState);
     document.getElementById('add-exclude-btn').addEventListener('click', addExcludedPokemon);
     document.getElementById('exclude-poke-input').addEventListener('keydown', e => {
         if (e.key === 'Enter') { e.preventDefault(); addExcludedPokemon(); }
@@ -703,6 +742,15 @@ function renderTags(elId, list, removeFn) {
     });
 }
 
+let _maxPct = 0;
+function setProgress(pct, phase, stats) {
+    if (pct > _maxPct) _maxPct = pct;
+    document.getElementById('progress-fill').style.width = _maxPct + '%';
+    document.getElementById('progress-pct').textContent = Math.round(_maxPct) + '%';
+    if (phase) document.getElementById('progress-phase').textContent = phase;
+    document.getElementById('progress-stats').textContent = stats || '';
+}
+
 async function runOptimize() {
     const btn = document.getElementById('optimize-btn');
     const loading = document.getElementById('loading');
@@ -713,6 +761,9 @@ async function runOptimize() {
     loading.hidden = false;
     results.style.display = 'none';
     errorDiv.hidden = true;
+    _maxPct = 0;
+    setProgress(0, 'Preparing\u2026', '');
+    loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     const payload = {
         max_overlap: parseInt(document.getElementById('max-overlap').value),
@@ -722,6 +773,7 @@ async function runOptimize() {
         speed_bonus: parseInt(document.getElementById('speed-bonus').value) / 100,
         allow_legendaries: document.getElementById('allow-legendaries').checked,
         no_4x_weakness: document.getElementById('no-4x-weakness').checked,
+        exact_solve: document.getElementById('exact-solve').checked,
         locked_pokemon: lockedPokemon,
         locked_moves: lockedMoves,
         must_have_moves: mustHaveMoves,
@@ -730,25 +782,59 @@ async function runOptimize() {
     };
 
     try {
-        const res = await fetch('/optimize', {
+        const res = await fetch('/optimize-stream', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
         });
-        const data = await res.json();
-        if (data.status !== 'Optimal') {
-            errorDiv.innerHTML = `<div class="error-msg">${data.message || 'Optimization failed.'}</div>`;
-            errorDiv.hidden = false;
-        } else {
-            renderResults(data);
-            results.style.display = 'block';
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buf = '';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buf += decoder.decode(value, { stream: true });
+
+            let boundary;
+            while ((boundary = buf.indexOf('\n\n')) !== -1) {
+                const block = buf.slice(0, boundary);
+                buf = buf.slice(boundary + 2);
+
+                let evtType = 'message', evtData = '';
+                for (const line of block.split('\n')) {
+                    if (line.startsWith('event: ')) evtType = line.slice(7);
+                    else if (line.startsWith('data: ')) evtData = line.slice(6);
+                }
+                if (!evtData) continue;
+
+                const d = JSON.parse(evtData);
+
+                if (evtType === 'progress') {
+                    if (d.nodes > 0) {
+                        const rawGap = typeof d.gap === 'number' ? d.gap : null;
+                        const gapLabel = rawGap != null ? (rawGap * 100).toFixed(1) + '%' : '\u2014';
+                        const stats = `Gap ${gapLabel}  \u00b7  ${d.nodes} nodes  \u00b7  ${d.time}s`;
+                        setProgress(d.pct, 'Solving MILP\u2026', stats);
+                    }
+                } else if (evtType === 'result') {
+                    setProgress(100, 'Done!');
+                    renderResults(d);
+                    results.style.display = 'block';
+                    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else if (evtType === 'error') {
+                    errorDiv.innerHTML = `<div class="error-msg">${d.message || 'Optimization failed.'}</div>`;
+                    errorDiv.hidden = false;
+                }
+            }
         }
     } catch (err) {
         errorDiv.innerHTML = `<div class="error-msg">Request failed: ${err.message}</div>`;
         errorDiv.hidden = false;
     } finally {
         btn.disabled = false;
-        loading.hidden = true;
+        setTimeout(() => { loading.hidden = true; }, 600);
     }
 }
 
