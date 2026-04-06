@@ -65,7 +65,6 @@ SE_CHART: dict[str, set[str]] = {
     "steel": {"ice", "rock"},
 }
 
-
 def is_super_effective(atk_type: str, def_type: str) -> bool:
     return def_type in SE_CHART.get(atk_type, set())
 

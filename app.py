@@ -1,5 +1,6 @@
 """Flask web interface for the Gen 3 Pokemon Team Optimizer."""
 
+from collections import defaultdict
 import json
 import logging
 import math
@@ -118,8 +119,8 @@ def optimize_stream():
 
     max_overlap = int(data.get("max_overlap", 1))
     min_redundancy = int(data.get("min_redundancy", 2))
+    max_same_type_moves = int(data.get("max_same_type_moves", 2))
     acc_exponent = float(data.get("acc_exponent", 2.0))
-    duplicate_type_discount = float(data.get("duplicate_type_discount", 0.2))
     speed_bonus = float(data.get("speed_bonus", 0.25))
     allow_legendaries = bool(data.get("allow_legendaries", False))
     no_4x_weakness = bool(data.get("no_4x_weakness", False))
@@ -136,7 +137,7 @@ def optimize_stream():
     params = Params(
         max_overlap=max_overlap,
         min_redundancy=min_redundancy,
-        duplicate_type_discount=duplicate_type_discount,
+        max_same_type_moves=max_same_type_moves,
         no_legendaries=not allow_legendaries,
         locked_pokemon=locked_pokemon,
         must_have_moves=[m.lower() for m in data.get("must_have_moves", [])],
@@ -163,10 +164,14 @@ def optimize_stream():
 
         progress_q = queue.Queue()
         result_holder = [None]
+        total_time_limit = time_limit * 3
 
         def _run_solver():
-            def _on_progress(gap, nodes, elapsed):
-                progress_q.put(("progress", gap, int(nodes), round(elapsed, 2)))
+            def _on_progress(stage, gap, nodes, elapsed):
+                if gap is None and nodes is None:
+                    progress_q.put(("phase", stage, round(elapsed, 2)))
+                else:
+                    progress_q.put(("progress", stage, gap, int(nodes), round(elapsed, 2)))
 
             result_holder[0] = solve_model(
                 model, progress_fn=_on_progress, exact_solve=exact_solve
@@ -185,10 +190,27 @@ def optimize_stream():
                 continue
             if msg[0] == "done":
                 break
-            _, gap, nodes, elapsed = msg
+            if msg[0] == "phase":
+                _, phase, elapsed = msg
+                target = min(95.0, 95.0 * elapsed / total_time_limit)
+                if target > displayed_pct:
+                    displayed_pct = target
+                yield _sse(
+                    "progress",
+                    {
+                        "pct": round(displayed_pct, 1),
+                        "gap": None,
+                        "nodes": 0,
+                        "time": elapsed,
+                        "phase": phase,
+                    },
+                )
+                continue
+
+            _, phase, gap, nodes, elapsed = msg
             safe_gap = gap if math.isfinite(gap) else None
 
-            target = min(95.0, 95.0 * elapsed / time_limit) if nodes > 0 else 0.0
+            target = min(95.0, 95.0 * elapsed / total_time_limit)
 
             if target > displayed_pct:
                 displayed_pct = target
@@ -200,15 +222,16 @@ def optimize_stream():
                     "gap": safe_gap,
                     "nodes": nodes,
                     "time": elapsed,
+                    "phase": phase,
                 },
             )
 
-        status, result, z_val, obj_val = result_holder[0]
+        status, result, z_val, power_val = result_holder[0]
         if status != "Optimal":
             _, diag_msg, _ = _diagnose_infeasibility(params)
             yield _sse("error", {"status": status, "message": diag_msg})
         else:
-            yield _sse("result", _build_result(result, pool, scores, z_val, obj_val))
+            yield _sse("result", _build_result(result, pool, scores, z_val, power_val))
 
     return Response(
         stream_with_context(generate()),
@@ -226,7 +249,7 @@ def _gen3_damage(power, atk_base, move_type, poke_types, defender_base=100):
     return damage * 2
 
 
-def _build_result(team, pool, scores, z_val, obj_val=None):
+def _build_result(team, pool, scores, z_val, power_val=None):
     poke_by_name = {p["name"]: p for p in pool}
     move_by_name: dict[str, dict] = {}
     for p in pool:
@@ -281,11 +304,33 @@ def _build_result(team, pool, scores, z_val, obj_val=None):
             )
         movesets.append({"pokemon": entry["name"], "moves": moves})
 
+    within_duplicate_total = 0
+    team_type_counts: dict[str, int] = defaultdict(int)
+    for entry in team:
+        poke_type_counts: dict[str, int] = defaultdict(int)
+        for mname in entry["moves"]:
+            m_type = move_by_name.get(mname, {}).get("type")
+            if not m_type:
+                continue
+            poke_type_counts[m_type] += 1
+            team_type_counts[m_type] += 1
+        within_duplicate_total += sum(max(count - 1, 0) for count in poke_type_counts.values())
+
+    team_duplicate_total = sum(max(count - 1, 0) for count in team_type_counts.values())
+    diversity_val = within_duplicate_total + team_duplicate_total
+
+    if power_val is None:
+        power_val = sum(
+            scores.get((entry["name"], mname, t), 0)
+            for t in ALL_TYPES
+            for entry in team
+            for mname in entry["moves"]
+        )
+
     coverage = []
     weakest_type, weakest_val = None, float("inf")
     for t in ALL_TYPES:
         row = {"type": t, "cells": []}
-        row_total = 0
         for entry in team:
             p = poke_by_name[entry["name"]]
             best = 0
@@ -305,27 +350,18 @@ def _build_result(team, pool, scores, z_val, obj_val=None):
                 if dmg > best:
                     best = dmg
             row["cells"].append(best)
-            row_total += best
-        row["total"] = row_total
-        if row_total < weakest_val:
-            weakest_val, weakest_type = row_total, t
+        row["total"] = max(row["cells"]) if row["cells"] else 0
+        if row["total"] < weakest_val:
+            weakest_val, weakest_type = row["total"], t
         coverage.append(row)
-
-    tiebreaker = (obj_val - z_val) if obj_val is not None else 0
-    if obj_val and obj_val > 0:
-        z_pct = z_val / obj_val * 100
-        tb_pct = tiebreaker / obj_val * 100
-    else:
-        z_pct = 100.0
-        tb_pct = 0.0
 
     return {
         "status": "Optimal",
         "z_val": round(z_val, 1),
-        "obj_val": round(obj_val, 1) if obj_val is not None else None,
-        "z_pct": round(z_pct, 2),
-        "tiebreaker": round(tiebreaker, 1),
-        "tb_pct": round(tb_pct, 2),
+        "power_val": round(power_val, 1) if power_val is not None else None,
+        "diversity_val": int(diversity_val),
+        "within_duplicate_total": int(within_duplicate_total),
+        "team_duplicate_total": int(team_duplicate_total),
         "roster": roster,
         "movesets": movesets,
         "coverage": coverage,
@@ -358,23 +394,21 @@ def api_predict():
     scores = compute_scores(pool, acc_exponent=acc_exponent)
 
     z_val = min(
-        sum(
-            scores.get((entry["name"], mn, t), 0)
-            for entry in team
-            for mn in entry["moves"]
+        max(
+            max((scores.get((e["name"], mn, t), 0) for mn in e["moves"]), default=0)
+            for e in team
         )
         for t in ALL_TYPES
     )
 
-    total_power = sum(
-        scores.get((entry["name"], mn, t), 0)
+    power_val = sum(
+        scores.get((e["name"], mn, t), 0)
         for t in ALL_TYPES
-        for entry in team
-        for mn in entry["moves"]
+        for e in team
+        for mn in e["moves"]
     )
-    obj_val = z_val + 1e-4 * total_power
 
-    result = _build_result(team, pool, scores, z_val=z_val, obj_val=obj_val)
+    result = _build_result(team, pool, scores, z_val=z_val, power_val=power_val)
     result["status"] = "OK"
     return jsonify(result)
 

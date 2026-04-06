@@ -1,26 +1,28 @@
 """
-Single-phase MILP solver for Gen 3 team optimisation using PuLP.
+Lexicographic MILP solver for Gen 3 team optimisation using PuLP.
 
-Regularised max-min: maximise z + ε·total_power, where z is a lower bound
-on coverage for every defending type.  This finds the best worst-case
-coverage and breaks ties in favour of higher total firepower.
+Stage 1 maximises z, a lower bound on single-attacker coverage for every
+defending type. Stage 2 minimises duplicate move types both within each
+Pokémon and across the team. Stage 3 breaks remaining ties in favour of
+higher total firepower.
 """
 
 from collections import defaultdict
 from dataclasses import dataclass, field
+import time
 
 import pulp
 
 from .scoring import ALL_TYPES
 
-EPSILON = 1e-4
+PIN_TOLERANCE = 1e-6
 
 
 @dataclass
 class Params:
     max_overlap: int = 1
     min_redundancy: int = 2
-    duplicate_type_discount: float = 0.2
+    max_same_type_moves: int = 2
     no_legendaries: bool = True
     locked_pokemon: dict[str, list[str]] = field(default_factory=dict)
     must_have_moves: list[str] = field(default_factory=list)
@@ -35,9 +37,14 @@ class Model:
     prob: pulp.LpProblem
     x: dict
     y: dict
+    u: dict
     z: pulp.LpVariable
     poke_names: list[str]
     moves_by_poke: dict[str, list[str]]
+    total_power: pulp.LpAffineExpression
+    within_duplicates: dict
+    team_duplicates: dict
+    diversity_penalty: pulp.LpAffineExpression
 
 
 def _build_index(pokemon_pool, scores, unlimited_tms):
@@ -84,6 +91,40 @@ def _add_tm_constraints(prob, y, single_use_tm_users):
             )
 
 
+def _solve_with_current_objective(
+    prob, solver_kwargs, progress_fn=None, elapsed_offset=0.0, stage_label=""
+):
+    """Solve the current model objective and return (success, elapsed_seconds)."""
+    run_kwargs = dict(solver_kwargs)
+
+    if progress_fn is not None:
+        import highspy
+
+        last_t = [0.0]
+
+        def _cb(callback_type, message, data_out, data_in, user_data):
+            t = data_out.running_time
+            if t - last_t[0] < 0.5:
+                return
+            last_t[0] = t
+            progress_fn(
+                stage_label,
+                data_out.mip_gap,
+                data_out.mip_node_count,
+                elapsed_offset + t,
+            )
+
+        run_kwargs["callbackTuple"] = (_cb, None)
+        run_kwargs["callbacksToActivate"] = [
+            highspy.cb.HighsCallbackType.kCallbackMipInterrupt,
+        ]
+
+    start = time.perf_counter()
+    prob.solve(pulp.HiGHS(**run_kwargs))
+    elapsed = time.perf_counter() - start
+    return prob.status == pulp.constants.LpStatusOptimal, elapsed
+
+
 def build_model(pokemon_pool, scores, params):
     """
     Build the MILP model without solving it.
@@ -108,37 +149,91 @@ def build_model(pokemon_pool, scores, params):
         for p in poke_names
         for m in moves_by_poke[p]
     )
-    prob += z + EPSILON * total_power
+    prob += z
 
     # -- structural --
     prob += pulp.lpSum(x[p] for p in poke_names) == 6, "team_size"
 
     for p in poke_names:
         prob += (
-            pulp.lpSum(y[p, m] for m in moves_by_poke[p]) <= 4 * x[p],
-            f"max_moves_{p}",
+            pulp.lpSum(y[p, m] for m in moves_by_poke[p]) == 4 * x[p],
+            f"exact_moves_{p}",
         )
         for m in moves_by_poke[p]:
             prob += y[p, m] <= x[p], f"move_req_{p}_{m}"
 
-    # -- move type diversity: at most 1 same-type move gets full credit --
-    discount = params.duplicate_type_discount
-    full = {}
+    # -- move-type diversity bookkeeping --
+    within_duplicates = {}
+    team_type_groups: dict[str, list[tuple[str, str]]] = defaultdict(list)
 
-    if discount < 1.0:
-        for p in poke_names:
-            type_groups: dict[str, list[str]] = defaultdict(list)
-            for m in moves_by_poke[p]:
-                type_groups[move_type_of[p][m]].append(m)
-            for mtype, mlist in type_groups.items():
-                if len(mlist) >= 2:
-                    for m in mlist:
-                        full[p, m] = pulp.LpVariable(f"full_{p}_{m}", 0, 1)
-                        prob += full[p, m] <= y[p, m], f"full_req_{p}_{m}"
-                    prob += (
-                        pulp.lpSum(full[p, m] for m in mlist) <= 1,
-                        f"one_full_{p}_{mtype}",
-                    )
+    for p in poke_names:
+        type_groups: dict[str, list[str]] = defaultdict(list)
+        for m in moves_by_poke[p]:
+            mtype = move_type_of[p][m]
+            type_groups[mtype].append(m)
+            team_type_groups[mtype].append((p, m))
+
+        for mtype, mlist in type_groups.items():
+            if params.max_same_type_moves < 4 and len(mlist) > params.max_same_type_moves:
+                prob += (
+                    pulp.lpSum(y[p, m] for m in mlist)
+                    <= params.max_same_type_moves,
+                    f"type_cap_{p}_{mtype}",
+                )
+
+            dup_var = pulp.LpVariable(f"dup_within_{p}_{mtype}", lowBound=0)
+            prob += (
+                dup_var >= pulp.lpSum(y[p, m] for m in mlist) - 1,
+                f"dup_within_lb_{p}_{mtype}",
+            )
+            within_duplicates[p, mtype] = dup_var
+
+    team_duplicates = {}
+    for mtype, pairs in team_type_groups.items():
+        dup_var = pulp.LpVariable(f"dup_team_{mtype}", lowBound=0)
+        prob += (
+            dup_var >= pulp.lpSum(y[p, m] for p, m in pairs) - 1,
+            f"dup_team_lb_{mtype}",
+        )
+        team_duplicates[mtype] = dup_var
+
+    diversity_penalty = (
+        pulp.lpSum(within_duplicates.values()) + pulp.lpSum(team_duplicates.values())
+    )
+
+    # -- action-selection: each Pokémon uses at most one move per matchup --
+    w = {}
+    se_moves_by_poke_type: dict[tuple[str, str], list[str]] = defaultdict(list)
+
+    for p in poke_names:
+        for m in moves_by_poke[p]:
+            for t in ALL_TYPES:
+                if scores.get((p, m, t), 0) > 0:
+                    w[p, m, t] = pulp.LpVariable(f"w_{p}_{m}_{t}", 0, 1)
+                    prob += w[p, m, t] <= y[p, m], f"w_req_{p}_{m}_{t}"
+                    se_moves_by_poke_type[p, t].append(m)
+
+    for (p, t), mlist in se_moves_by_poke_type.items():
+        if len(mlist) >= 2:
+            prob += (
+                pulp.lpSum(w[p, m, t] for m in mlist) <= 1,
+                f"one_move_{p}_{t}",
+            )
+
+    # -- single-attacker: only one Pokémon contributes damage per type --
+    u = {}
+    pokes_with_se: dict[str, list[str]] = defaultdict(list)
+
+    for p, t in se_moves_by_poke_type:
+        u[p, t] = pulp.LpVariable(f"u_{p}_{t}", cat="Binary")
+        prob += u[p, t] <= x[p], f"u_on_team_{p}_{t}"
+        pokes_with_se[t].append(p)
+
+    for t, plist in pokes_with_se.items():
+        prob += pulp.lpSum(u[p, t] for p in plist) <= 1, f"one_attacker_{t}"
+
+    for p, m, t in w:
+        prob += w[p, m, t] <= u[p, t], f"w_att_{p}_{m}_{t}"
 
     # -- min coverage per type (z is the worst-case lower bound) --
     for t in ALL_TYPES:
@@ -146,14 +241,8 @@ def build_model(pokemon_pool, scores, params):
         for p in poke_names:
             for m in moves_by_poke[p]:
                 s = scores.get((p, m, t), 0)
-                if s == 0:
-                    continue
-                if (p, m) in full:
-                    terms.append(
-                        discount * s * y[p, m] + (1 - discount) * s * full[p, m]
-                    )
-                else:
-                    terms.append(s * y[p, m])
+                if s > 0:
+                    terms.append(s * w[p, m, t])
         prob += z <= pulp.lpSum(terms), f"min_cov_{t}"
 
     # -- type overlap cap --
@@ -205,9 +294,14 @@ def build_model(pokemon_pool, scores, params):
         prob=prob,
         x=x,
         y=y,
+        u=u,
         z=z,
         poke_names=poke_names,
         moves_by_poke=moves_by_poke,
+        total_power=total_power,
+        within_duplicates=within_duplicates,
+        team_duplicates=team_duplicates,
+        diversity_penalty=diversity_penalty,
     )
 
 
@@ -215,10 +309,10 @@ def solve_model(model, progress_fn=None, exact_solve=False):
     """
     Solve a built Model.
 
-    Returns (status, team_list | error_message, z_value, objective_value).
+    Returns (status, team_list | error_message, z_value, power_value).
 
-    If *progress_fn* is supplied it is called with (mip_gap, node_count,
-    running_time) whenever HiGHS emits a MIP log line.
+    If *progress_fn* is supplied it is called with
+    (stage_label, mip_gap, node_count, running_time).
 
     If *exact_solve* is True the solver gets a 10-minute time limit
     """
@@ -227,26 +321,58 @@ def solve_model(model, progress_fn=None, exact_solve=False):
     else:
         solver_kwargs = dict(msg=0, gapRel=0.001, timeLimit=120)
 
+    elapsed_total = 0.0
+
+    model.prob.setObjective(model.z)
     if progress_fn is not None:
-        import highspy
+        progress_fn("Stage 1/3: Maximize coverage", None, None, elapsed_total)
+    ok, elapsed = _solve_with_current_objective(
+        model.prob,
+        solver_kwargs,
+        progress_fn=progress_fn,
+        elapsed_offset=elapsed_total,
+        stage_label="Stage 1/3: Maximize coverage",
+    )
+    elapsed_total += elapsed
+    if not ok:
+        return "Infeasible", None, 0, 0
 
-        _last_t = [0.0]
+    z_star = pulp.value(model.z)
+    model.prob += model.z >= z_star - PIN_TOLERANCE, "pin_z_star"
 
-        def _cb(callback_type, message, data_out, data_in, user_data):
-            t = data_out.running_time
-            if t - _last_t[0] < 0.5:
-                return
-            _last_t[0] = t
-            progress_fn(data_out.mip_gap, data_out.mip_node_count, t)
+    model.prob.sense = pulp.LpMinimize
+    model.prob.setObjective(model.diversity_penalty)
+    if progress_fn is not None:
+        progress_fn("Stage 2/3: Minimize duplicates", None, None, elapsed_total)
+    ok, elapsed = _solve_with_current_objective(
+        model.prob,
+        solver_kwargs,
+        progress_fn=progress_fn,
+        elapsed_offset=elapsed_total,
+        stage_label="Stage 2/3: Minimize duplicates",
+    )
+    elapsed_total += elapsed
+    if not ok:
+        return "Infeasible", None, 0, 0
 
-        solver_kwargs["callbackTuple"] = (_cb, None)
-        solver_kwargs["callbacksToActivate"] = [
-            highspy.cb.HighsCallbackType.kCallbackMipInterrupt,
-        ]
+    diversity_star = pulp.value(model.diversity_penalty)
+    model.prob += (
+        model.diversity_penalty <= diversity_star + PIN_TOLERANCE,
+        "pin_diversity_star",
+    )
 
-    model.prob.solve(pulp.HiGHS(**solver_kwargs))
-
-    if model.prob.status != pulp.constants.LpStatusOptimal:
+    model.prob.sense = pulp.LpMaximize
+    model.prob.setObjective(model.total_power)
+    if progress_fn is not None:
+        progress_fn("Stage 3/3: Maximize firepower", None, None, elapsed_total)
+    ok, elapsed = _solve_with_current_objective(
+        model.prob,
+        solver_kwargs,
+        progress_fn=progress_fn,
+        elapsed_offset=elapsed_total,
+        stage_label="Stage 3/3: Maximize firepower",
+    )
+    if not ok:
         return "Infeasible", None, 0, 0
 
     team = []
@@ -258,8 +384,8 @@ def solve_model(model, progress_fn=None, exact_solve=False):
             team.append({"name": p, "moves": chosen_moves})
 
     z_val = pulp.value(model.z)
-    obj_val = pulp.value(model.prob.objective)
-    return "Optimal", team, z_val, obj_val
+    power_val = pulp.value(model.total_power)
+    return "Optimal", team, z_val, power_val
 
 
 def optimise(pokemon_pool, scores, params):

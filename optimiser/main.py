@@ -98,7 +98,7 @@ def display_team(team, pokemon_pool, scores):
     header = (
         f"  {'Def Type':<12}"
         + "".join(f"{n:>10}" for n in short_names)
-        + f"{'TOTAL':>10}"
+        + f"{'BEST':>10}"
     )
     print(header)
     print("  " + "-" * (12 + 10 * (len(team) + 1)))
@@ -118,20 +118,20 @@ def display_team(team, pokemon_pool, scores):
                     best = s
             row_vals.append(best)
 
-        row_total = sum(row_vals)
-        type_totals[t] = row_total
+        row_best = max(row_vals) if row_vals else 0.0
+        type_totals[t] = row_best
 
-        if row_total < weakest_val:
-            weakest_val = row_total
+        if row_best < weakest_val:
+            weakest_val = row_best
             weakest_type = t
 
         cells = "".join(f"{v:>10.0f}" if v > 0 else f"{'—':>10}" for v in row_vals)
-        print(f"  {t.capitalize():<12}{cells}{row_total:>10.0f}")
+        print(f"  {t.capitalize():<12}{cells}{row_best:>10.0f}")
 
     print()
     if weakest_type:
         print(
-            f"  Weakest link: {weakest_type.capitalize()} (total SE score = {weakest_val:.0f})"
+            f"  Weakest link: {weakest_type.capitalize()} (best attacker SE score = {weakest_val:.0f})"
         )
     print()
 
@@ -151,6 +151,12 @@ def main():
         type=int,
         default=2,
         help="Min SE (Pokémon, move) pairs per defending type (default: 2)",
+    )
+    parser.add_argument(
+        "--max-same-type-moves",
+        type=int,
+        default=2,
+        help="Max moves of the same attacking type per Pokémon (default: 2)",
     )
     parser.add_argument(
         "--no-legendaries",
@@ -205,12 +211,6 @@ def main():
         help="Accuracy penalty exponent: (acc/100)^exp. Higher = harsher on low-acc (default: 2.0)",
     )
     parser.add_argument(
-        "--duplicate-type-discount",
-        type=float,
-        default=0.2,
-        help="How much a 2nd move of the same type counts (0=avoid, 1=full value, default: 0.2)",
-    )
-    parser.add_argument(
         "--speed-bonus",
         type=float,
         default=0.25,
@@ -244,7 +244,7 @@ def main():
     params = Params(
         max_overlap=args.max_overlap,
         min_redundancy=args.min_redundancy,
-        duplicate_type_discount=args.duplicate_type_discount,
+        max_same_type_moves=args.max_same_type_moves,
         no_legendaries=no_legendaries,
         locked_pokemon=locked_pokemon,
         must_have_moves=[m.lower() for m in args.must_have],
@@ -269,7 +269,7 @@ def main():
     )
     print(f"Score entries: {len(scores)} (acc exponent: {args.acc_exponent})")
 
-    print("\n--- Optimising (regularised max-min) ---")
+    print("\n--- Optimising (lexicographic max-min) ---")
     status, result, z_val, _obj_val = optimise(pool, scores, params)
 
     if status != "Optimal":

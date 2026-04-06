@@ -1,8 +1,10 @@
 # Optimisation Problem - Gen 3 Pokémon Team Optimizer
 
-A regularised **max-min Mixed-Integer Linear Program (MILP)** that selects a 6-Pokémon team maximising worst-case super-effective damage, solved with PuLP (HiGHS).
+A lexicographic **max-min Mixed-Integer Linear Program (MILP)** that selects a 6-Pokémon team maximising worst-case super-effective damage from a **single attacker**, solved with PuLP (HiGHS).
 
-The core idea: pick 6 Pokémon and assign each up to 4 moves to maximise the *weakest* super-effective damage across all 17 defending types. This is a combinatorial optimisation - brute-force over $\binom{73}{6} \approx 7 \times 10^8$ team combinations (73 full evolves, pick 6) with $\sim 20^4$ moveset assignments each is infeasible, so we formulate it as a MILP and let a branch-and-bound solver handle it.
+The main goal is to find a team where each Pokémon is a strong multi-type specialist, and the team collectively covers all types with best-in-class attackers.
+
+MILP idea: pick 6 Pokémon and assign each up to 4 moves to maximise the *weakest* best-single-attacker damage across all 17 defending types. Only one Pokémon battles at a time (matching gameplay), so damage against a type is determined by the team's strongest specialist, not the sum of all members. Brute-force over $\binom{73}{6} \approx 7 \times 10^8$ team combinations (73 full evolves, pick 6) with $\sim 20^4$ moveset assignments each is infeasible, so we formulate it as a MILP and let a branch-and-bound solver handle it.
 
 ---
 
@@ -58,37 +60,94 @@ This means a Pokémon with high Atk but low Sp.Atk gets poor scores for Fire/Wat
 |---|---|---|---|
 | $x_p$ | Binary | $\|\mathcal{P}\| \approx 73$ | 1 if Pokémon $p$ is on the team |
 | $y_{p,m}$ | Binary | $\sum_p \|\mathcal{M}_p\| \approx 1600$ | 1 if move $m$ is in $p$'s moveset |
-| $z$ | Continuous | 1 | Auxiliary: the worst-case damage value we're maximising |
-| $f_{p,m}$ | Continuous $[0, 1]$ | varies | 1 if move $m$ gets full credit (vs. discounted; see §5.4) |
+| $u_{p,t}$ | Binary | ~500 (one per SE-reachable pair) | 1 if Pokémon $p$ is the designated attacker against type $t$ (see §5.5) |
+| $z$ | Continuous | 1 | Auxiliary: the worst-case single-attacker damage we're maximising |
+| $w_{p,m,t}$ | Continuous $[0, 1]$ | ~4000 (one per SE triple) | 1 if Pokémon $p$ uses move $m$ against defending type $t$ (see §5.3–5.4) |
 
-The $y$ variables dominate - ~1600 binary variables is modest for a MILP but enough that the LP relaxation gap matters for solve time.
+The $y$ and $u$ variables are binary; $y$ dominates branching (~1600 vars) while $u$ adds ~500 more for the attacker-assignment. The $w$ variables are continuous and don't add branching complexity.
 
 ---
 
 ## 4 Objective
 
+The solver now uses a **lexicographic** objective sequence instead of a weighted tie-break:
+
+### Stage 1: Maximise worst-case coverage
+
 $$
-\max \quad z  +  \varepsilon \sum_{t \in \mathcal{T}} \sum_{p \in \mathcal{P}} \sum_{m \in \mathcal{M}_p} S_{p,m,t} \, y_{p,m}
+\max \quad z
 $$
 
-where $\varepsilon = 10^{-4}$.
+- **$z$** - the worst-case single-attacker damage. This remains the primary optimisation goal.
 
+### Stage 2: Minimise duplicate attacking types
 
+For each Pokémon $p$ and attacking type $\tau$, define the selected move count:
 
-- **$z$** - the worst-case damage. Maximising this directly is the primary goal.
-- **$\varepsilon \cdot \text{total power}$** - a regularisation/tie-breaker. Many teams can achieve the same $z^*$; this selects the one with the highest total SE firepower. The small $\varepsilon$ ensures this never overrides a genuine improvement to worst-case damage (since individual $S$ values are in the thousands, $\varepsilon \cdot \text{total} \ll z$ for any meaningful difference in $z$).
+$$
+n_{p,\tau} = \sum_{\substack{m \in \mathcal{M}_p \\ \tau(m) = \tau}} y_{p,m}
+$$
 
-### Equivalence to max-min
+Introduce within-Pokémon duplicate variables:
 
-The natural formulation is $\max \min_{t} \text{damage}(t)$, but $\min(\cdot)$ is non-linear. The standard epigraph trick replaces it: introduce $z \in \mathbb{R}$ and add one constraint per type:
+$$
+d^{\text{within}}_{p,\tau} \ge 0
+$$
+
+$$
+d^{\text{within}}_{p,\tau} \ge n_{p,\tau} - 1 \qquad \forall\, p \in \mathcal{P},\, \tau \in \mathcal{T}
+$$
+
+For each attacking type $\tau$, define the full-team usage count:
+
+$$
+N_{\tau} = \sum_{p \in \mathcal{P}} \sum_{\substack{m \in \mathcal{M}_p \\ \tau(m) = \tau}} y_{p,m}
+$$
+
+Introduce team-wide duplicate variables:
+
+$$
+d^{\text{team}}_{\tau} \ge 0
+$$
+
+$$
+d^{\text{team}}_{\tau} \ge N_{\tau} - 1 \qquad \forall\, \tau \in \mathcal{T}
+$$
+
+The diversity stage minimises:
+
+$$
+\min \quad
+\sum_{p \in \mathcal{P}} \sum_{\tau \in \mathcal{T}} d^{\text{within}}_{p,\tau}
+\;+\;
+\sum_{\tau \in \mathcal{T}} d^{\text{team}}_{\tau}
+$$
+
+This penalises excess repeats beyond the first copy of an attacking type, both within a single moveset and across the whole team, without introducing a user-facing weight.
+
+### Stage 3: Maximise total firepower
+
+After fixing the optimal values from Stages 1 and 2, the solver maximises:
+
+$$
+\max \quad \sum_{t \in \mathcal{T}} \sum_{p \in \mathcal{P}} \sum_{m \in \mathcal{M}_p} S_{p,m,t} \, y_{p,m}
+$$
+
+This is a pure tie-break among equally strong and equally diverse teams, so there is no need for an $\varepsilon$-style magic coefficient.
+
+### Equivalence to max-min-max
+
+The natural formulation is $\max \min_{t} \max_{p} d_{p,t}$ — maximise the worst-case damage when only the best single attacker fights each type. Both $\min$ and $\max$ are non-linear.
+
+The outer $\min$ is linearised with the standard epigraph trick: introduce $z \in \mathbb{R}$ and add one constraint per type:
 
 $$
 z \leq \text{damage}(t) \qquad \forall\, t \in \mathcal{T}
 $$
 
-Since $z$ is being maximised, the solver pushes it up until it's tight against the binding (weakest) type. At optimality, $z^* = \min_t \text{damage}(t)$.
+The inner $\max_p$ is linearised via binary attacker-assignment variables $u_{p,t}$ (see §5.5): only one Pokémon's damage contributes per type, so `damage(t)` effectively equals the designated attacker's best move score.
 
-This is a standard LP/MILP pattern - any max-min or min-max over a finite set can be linearised this way. The regularisation term doesn't affect the equivalence since $\varepsilon$ is small enough that it can't compensate for a unit decrease in $z$.
+At optimality, $z^* = \min_t \max_p d_{p,t}$.
 
 ---
 
@@ -116,42 +175,85 @@ The first constraint is a *big-M* style coupling: if $x_p = 0$ (Pokémon not sel
 
 ### 5.3 Min Damage (defines z)
 
-For every defending type $t$, the team's effective damage must be at least $z$. The damage contribution of each move depends on whether it belongs to a duplicate-type group (§5.4):
+For every defending type $t$, the designated attacker's damage must be at least $z$:
 
 $$
-z  \leq  \sum_{p \in \mathcal{P}} \sum_{m \in \mathcal{M}_p} c_{p,m,t} \qquad \forall\, t \in \mathcal{T}
+z  \leq  \sum_{p \in \mathcal{P}} \sum_{m \in \mathcal{M}_p} S_{p,m,t} \cdot w_{p,m,t} \qquad \forall\, t \in \mathcal{T}
 $$
 
-where the per-move contribution $c_{p,m,t}$ is:
+Structurally this is the same sum as before, but the attacker-assignment constraints (§5.5) force $w_{p,m,t} = 0$ for every Pokémon except the one designated attacker. The effective value is therefore $\max_p \max_m S_{p,m,t} \cdot y_{p,m}$ — the best single Pokémon's best move. This matches gameplay where only one Pokémon battles at a time.
+
+### 5.4 Best Move Per Matchup (action-selection model)
+
+For each SE triple $(p, m, t)$ where $S_{p,m,t} > 0$, introduce a continuous variable $w_{p,m,t} \in [0, 1]$ representing whether Pokémon $p$ uses move $m$ against defending type $t$.
+
+A move can only be used if it is in the Pokémon's selected moveset:
 
 $$
-c_{p,m,t} = \begin{cases}
-  \delta \cdot S_{p,m,t} \cdot y_{p,m}  +  (1-\delta) \cdot S_{p,m,t} \cdot f_{p,m} & \text{if } m \in G_{p,\tau(m)},\ |G_{p,\tau(m)}| \geq 2 \\
-  S_{p,m,t} \cdot y_{p,m} & \text{otherwise}
-\end{cases}
+w_{p,m,t} \leq y_{p,m} \qquad \forall\, p,\, m,\, t \text{ with } S_{p,m,t} > 0
 $$
 
-Moves with a unique attacking type on their Pokémon always contribute at full value. Moves that share an attacking type with another candidate are split into a guaranteed base ($\delta$ fraction) and a bonus ($(1-\delta)$ fraction) that only the full-credit move receives. See §5.4.
-
-### 5.4 Move Type Diversity (full-credit model)
-
-For each Pokémon $p$ and each attacking type $\tau$ with two or more candidate moves, let $`G_{p,\tau} \subseteq \mathcal{M}_p`$ be the group. Introduce a continuous variable $`f_{p,m} \in [0,1]`$ for each move in the group:
+A move can only be used if this Pokémon is the designated attacker against type $t$ (see §5.5):
 
 $$
-f_{p,m} \leq y_{p,m} \qquad \forall\, m \in G_{p,\tau}
+w_{p,m,t} \leq u_{p,t} \qquad \forall\, p,\, m,\, t \text{ with } S_{p,m,t} > 0
+$$
+
+Each Pokémon uses at most one move per matchup:
+
+$$
+\sum_{\substack{m \in \mathcal{M}_p \\ S_{p,m,t} > 0}} w_{p,m,t} \leq 1 \qquad \forall\, p \in \mathcal{P},\, t \in \mathcal{T}
+$$
+
+Since $z$ is being maximised and each type constraint (§5.3) benefits from larger $w$ values, the solver automatically sets $w_{p,m^*,t} = 1$ for the highest-scoring selected move $m^*$ of the designated attacker and $w_{p,m,t} = 0$ for the rest (including all non-designated Pokémon, forced to 0 by the $u$ constraint). This gives exactly $d_{p,t} = \max_{m} \{S_{p,m,t} \cdot y_{p,m}\}$ for the chosen attacker without needing $w$ to be binary — the LP relaxation is exact because "pick the best of $N$" is solved greedily.
+
+Note that the same Pokémon can use different moves against different defending types (e.g., Blaziken uses Brick Break vs Steel but Blaze Kick vs Grass). The 4-move constraint (§5.2) still matters because it determines which moves are available across all matchups.
+
+### 5.5 Single-Attacker Assignment
+
+Only one Pokémon contributes damage per defending type, matching gameplay where a single Pokémon battles at a time. For each $(p, t)$ pair where $p$ has at least one SE move against $t$, introduce a binary variable $u_{p,t}$.
+
+At most one Pokémon is the designated attacker per type:
+
+$$
+\sum_{\substack{p \in \mathcal{P} \\ \exists\, m: S_{p,m,t} > 0}} u_{p,t} \leq 1 \qquad \forall\, t \in \mathcal{T}
+$$
+
+The attacker must be on the team:
+
+$$
+u_{p,t} \leq x_p \qquad \forall\, p,\, t
+$$
+
+We use $\leq 1$ rather than $= 1$ to avoid infeasibility when no selected Pokémon has SE coverage against a type. At optimality the solver always picks exactly one attacker (since maximising $z$ wants damage as high as possible).
+
+The SE redundancy constraint (§5.9) ensures backup attackers exist even though only one contributes to the objective. The final firepower stage then prefers stronger backups among teams that already tie on coverage and diversity.
+
+### 5.6 Move-Type Diversity
+
+Each Pokémon may carry at most $c$ moves of the same attacking type:
+
+$$
+\sum_{\substack{m \in \mathcal{M}_p \\ \tau(m) = \tau_0}} y_{p,m} \leq c \qquad \forall\, p \in \mathcal{P},\, \tau_0 \in \mathcal{T}
+$$
+
+Default $c = 2$. Under the single-attacker model (§5.5) the action-selection variables $w$ already pick the best move per matchup, so a 2nd move of the same type can never outperform a diverse move. This constraint forces the solver to fill remaining slots with coverage for other types rather than redundant same-type moves. At $c = 1$ every move slot covers a distinct type; at $c = 4$ the constraint is inactive.
+
+### 5.7 Team-Wide Move-Type Diversity
+
+In addition to the per-Pokémon cap above, the solver also discourages repeating the same attacking type across the whole team. For each attacking type $\tau$:
+
+$$
+N_{\tau} = \sum_{p \in \mathcal{P}} \sum_{\substack{m \in \mathcal{M}_p \\ \tau(m) = \tau}} y_{p,m}
 $$
 
 $$
-\sum_{m \in G_{p,\tau}} f_{p,m} \leq 1
+d^{\text{team}}_{\tau} \ge N_{\tau} - 1, \qquad d^{\text{team}}_{\tau} \ge 0
 $$
 
-At most one move per type group gets full credit. Every selected move in the group contributes at least $\delta \cdot S_{p,m,t}$ (the base fraction); the single full-credit move contributes the remaining $(1-\delta) \cdot S_{p,m,t}$ on top.
+These variables are not hard constraints by themselves; they are minimised in Objective Stage 2. A team can still repeat a type when coverage demands it, but the optimiser now prefers spreading attacking types when coverage is otherwise tied.
 
-Since we are maximising, the solver sets $f_{p,m} = 1$ for whichever move in the group scores highest against the binding (weakest) damage constraint. This is exact — unlike an average-based penalty, it correctly discounts the specific second move rather than approximating.
-
-$\delta$ is the `duplicate_type_discount` parameter (default 0.2). At $\delta = 0$ the second same-type move contributes nothing (equivalent to a hard ban); at $\delta = 1$ no penalty is applied.
-
-### 5.5 Type Overlap Cap
+### 5.8 Type Overlap Cap
 
 At most $n$ Pokémon on the team may share any single type:
 
@@ -161,7 +263,7 @@ $$
 
 Default $n = 1$.
 
-### 5.6 Super-Effective Redundancy
+### 5.9 Super-Effective Redundancy
 
 At least $k$ (Pokémon, move) pairs with a super-effective move against every defending type:
 
@@ -171,7 +273,7 @@ $$
 
 Default $k = 2$.
 
-### 5.7 Single-Use TM Uniqueness
+### 5.10 Single-Use TM Uniqueness
 
 For each single-use TM move (TMs not in the unlimited set), at most one Pokémon may learn it:
 
@@ -181,7 +283,7 @@ $$
 
 Unlimited TMs (purchasable repeatedly in FRLG): Ice Beam, Thunderbolt, Flamethrower, Iron Tail, Hyper Beam, Dig, Brick Break, Rest, Secret Power, Attract, Roar.
 
-### 5.8 User Constraints
+### 5.11 User Constraints
 
 **Lock Pokémon** - Force $p$ onto the team:
 
@@ -213,9 +315,10 @@ The MILP is solved with **PuLP** using the **HiGHS** solver (`pip install highsp
 
 After PuLP builds the model and HiGHS preprocesses it:
 
-- ~1750 rows (constraints), ~1670 columns (variables), ~985 binary
-- The $f_{p,m}$ variables are continuous but bounded $[0,1]$ and coupled to binary $y_{p,m}$ variables, so they don't add branching complexity
-- LP relaxation solves instantly; the gap between LP relaxation and best integer solution is typically ~10%
+- ~10,500 rows (constraints), ~6,100 columns (variables), ~1,500 binary
+- The ~500 binary $u_{p,t}$ attacker-assignment variables add branching complexity alongside the ~985 $x$ and $y$ variables
+- The ~4000 $w_{p,m,t}$ variables are continuous $[0,1]$ and don't add branching complexity
+- The ~4000 $w \leq u$ linking constraints are the main row-count increase vs. the sum-based formulation
 
 ---
 
@@ -225,11 +328,10 @@ After PuLP builds the model and HiGHS preprocesses it:
 |---|---|---|---|
 | `max_overlap` | $n$ | 1 | How many team members can share a type. Lower values tighten the feasible region - can make the problem infeasible if too restrictive. |
 | `min_redundancy` | $k$ | 2 | At least $k$ Pokémon must have a SE move against each enemy type. Higher values add harder constraints; $k \geq 3$ often infeasible. |
+| `max_same_type_moves` | $c$ | 2 | Max moves of the same attacking type per Pokémon. At 1, every slot must be a different type; at 4, no restriction. Forces move diversity. |
 | `acc_exponent` | $\alpha$ | 2.0 | Accuracy penalty: mult = $(\text{acc}/100)^\alpha$. At 2.0, 85% acc → 0.72×, 70% acc → 0.49×. Only affects pre-computed scores, not the MILP structure. |
-| `duplicate_type_discount` | $\delta$ | 0.2 | Discount for a 2nd same-type move. At 0.2, the 2nd move only gets 20% credit. At 0 the full-credit constraint becomes a hard ban; at 1 the $f$ variables are omitted entirely. |
 | `speed_bonus` | $\beta$ | 0.25 | Bonus for fast Pokémon. At 0.25, the fastest gets $1.25\times$ damage, the slowest gets $1.0\times$. Linear interpolation. |
 | `low_priority_factor` | $\gamma$ | 0.3 | Multiplier for negative-priority moves (e.g., Focus Punch). 0.3 = 30% credit. Not exposed in CLI/UI. |
-| Regularisation | $\varepsilon$ | $10^{-4}$ | Tie-break weight. Must be small enough that $\varepsilon \cdot \text{total power} < 1$ unit of $z$ improvement. |
 
 ### Known Limitations
 

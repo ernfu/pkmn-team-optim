@@ -91,24 +91,10 @@
         }
         @keyframes spin{to{transform:rotate(360deg)}}
 
-        .progress-wrap{max-width:480px;margin:0 auto}
-        .progress-phase{font-size:.9rem;color:#c9d1d9;margin-bottom:.75rem}
-        .progress-track{
-            background:#21262d;border:1px solid #30363d;border-radius:6px;
-            height:22px;overflow:hidden;position:relative;
-        }
-        .progress-fill{
-            height:100%;background:linear-gradient(90deg,#238636,#2ea043);
-            border-radius:5px;width:0%;
-            transition:width .4s ease-out;
-        }
-        .progress-pct{
-            position:absolute;inset:0;display:flex;align-items:center;
-            justify-content:center;font-size:.75rem;font-weight:700;color:#f0f6fc;
-        }
+        .progress-wrap{max-width:480px;margin:0 auto;text-align:center}
+        .progress-phase{font-size:.95rem;color:#c9d1d9;margin-bottom:.5rem}
         .progress-stats{
-            margin-top:.5rem;font-size:.75rem;color:#6e7681;
-            display:flex;justify-content:center;gap:1.5rem;
+            font-size:.8rem;color:#6e7681;
         }
 
         #results{display:none}
@@ -282,24 +268,21 @@
             </div>
 
             <div class="field">
+                <label for="max-same-type-moves">Max Same-Type Moves</label>
+                <div class="range-row">
+                    <input type="range" id="max-same-type-moves" min="1" max="4" value="2" step="1">
+                    <span class="range-value" id="max-same-type-moves-value">2</span>
+                </div>
+                <div class="hint">Max moves of the same attacking type per Pokémon. The solver also prefers team-wide move-type spread as an internal tie-break.</div>
+            </div>
+
+            <div class="field">
                 <label for="acc-exponent">Accuracy Penalty</label>
                 <input type="number" id="acc-exponent" value="2.0" min="0" max="5" step="0.5">
                 <div class="hint">
                     Accuracy penalty mult = (accuracy ÷ 100)<sup>penalty</sup>.<br>
                     At 2.0, a 100% accurate move has mult 1.0 on damage, 85% has mult 0.72, <br>
                     70% has mult 0.49.
-                </div>
-            </div>
-
-            <div class="field">
-                <label for="dup-type-discount">Same-Type Move Penalty</label>
-                <div class="range-row">
-                    <input type="range" id="dup-type-discount" min="0" max="100" value="20" step="10">
-                    <span class="range-value" id="dup-type-value">20%</span>
-                </div>
-                <div class="hint">
-                    Discount mult for 2nd same-type move.<br>
-                    At 20%: 2nd same-type move only has 20% of original damage.
                 </div>
             </div>
 
@@ -397,10 +380,6 @@
     <div id="loading" hidden>
         <div class="progress-wrap">
             <div class="progress-phase" id="progress-phase">Preparing&hellip;</div>
-            <div class="progress-track">
-                <div class="progress-fill" id="progress-fill"></div>
-                <div class="progress-pct" id="progress-pct">0%</div>
-            </div>
             <div class="progress-stats" id="progress-stats"></div>
         </div>
     </div>
@@ -469,8 +448,8 @@ const ALL_TYPES = [
 
 const STORAGE_KEY = 'gen3_optim_state';
 const DEFAULTS = {
-    maxOverlap: 1, minRedundancy: 2, accExponent: 2.0,
-    dupTypeDiscount: 20, speedBonus: 25,
+    maxOverlap: 1, minRedundancy: 2, maxSameTypeMoves: 2, accExponent: 2.0,
+    speedBonus: 25,
     allowLegendaries: false, no4xWeakness: false, exactSolve: false,
     lockedPokemon: [], lockedMoves: [], mustHaveMoves: [],
     mustHaveTypes: [], excludedPokemon: [],
@@ -480,8 +459,8 @@ function saveState() {
     const state = {
         maxOverlap: parseInt(document.getElementById('max-overlap').value),
         minRedundancy: parseInt(document.getElementById('min-redundancy').value),
+        maxSameTypeMoves: parseInt(document.getElementById('max-same-type-moves').value),
         accExponent: parseFloat(document.getElementById('acc-exponent').value),
-        dupTypeDiscount: parseInt(document.getElementById('dup-type-discount').value),
         speedBonus: parseInt(document.getElementById('speed-bonus').value),
         allowLegendaries: document.getElementById('allow-legendaries').checked,
         no4xWeakness: document.getElementById('no-4x-weakness').checked,
@@ -498,11 +477,12 @@ function restoreState() {
 
     document.getElementById('max-overlap').value = s.maxOverlap ?? DEFAULTS.maxOverlap;
     document.getElementById('min-redundancy').value = s.minRedundancy ?? DEFAULTS.minRedundancy;
-    document.getElementById('acc-exponent').value = s.accExponent ?? DEFAULTS.accExponent;
 
-    const dtd = s.dupTypeDiscount ?? DEFAULTS.dupTypeDiscount;
-    document.getElementById('dup-type-discount').value = dtd;
-    document.getElementById('dup-type-value').textContent = dtd + '%';
+    const mstm = s.maxSameTypeMoves ?? DEFAULTS.maxSameTypeMoves;
+    document.getElementById('max-same-type-moves').value = mstm;
+    document.getElementById('max-same-type-moves-value').textContent = mstm;
+
+    document.getElementById('acc-exponent').value = s.accExponent ?? DEFAULTS.accExponent;
 
     const sb = s.speedBonus ?? DEFAULTS.speedBonus;
     document.getElementById('speed-bonus').value = sb;
@@ -531,9 +511,9 @@ function resetState() {
 
     document.getElementById('max-overlap').value = DEFAULTS.maxOverlap;
     document.getElementById('min-redundancy').value = DEFAULTS.minRedundancy;
+    document.getElementById('max-same-type-moves').value = DEFAULTS.maxSameTypeMoves;
+    document.getElementById('max-same-type-moves-value').textContent = DEFAULTS.maxSameTypeMoves;
     document.getElementById('acc-exponent').value = DEFAULTS.accExponent;
-    document.getElementById('dup-type-discount').value = DEFAULTS.dupTypeDiscount;
-    document.getElementById('dup-type-value').textContent = DEFAULTS.dupTypeDiscount + '%';
     document.getElementById('speed-bonus').value = DEFAULTS.speedBonus;
     document.getElementById('speed-bonus-value').textContent = DEFAULTS.speedBonus + '%';
     document.getElementById('allow-legendaries').checked = DEFAULTS.allowLegendaries;
@@ -563,12 +543,12 @@ document.addEventListener('DOMContentLoaded', () => {
     Promise.all([loadPokemonList(), loadAllMoves()]);
     document.getElementById('allow-legendaries').addEventListener('change', loadPokemonList);
     document.getElementById('lock-move-poke').addEventListener('change', loadMovesForPoke);
-    document.getElementById('dup-type-discount').addEventListener('input', e => {
-        document.getElementById('dup-type-value').textContent = e.target.value + '%';
-        saveState();
-    });
     document.getElementById('speed-bonus').addEventListener('input', e => {
         document.getElementById('speed-bonus-value').textContent = e.target.value + '%';
+        saveState();
+    });
+    document.getElementById('max-same-type-moves').addEventListener('input', e => {
+        document.getElementById('max-same-type-moves-value').textContent = e.target.value;
         saveState();
     });
 
@@ -742,11 +722,7 @@ function renderTags(elId, list, removeFn) {
     });
 }
 
-let _maxPct = 0;
-function setProgress(pct, phase, stats) {
-    if (pct > _maxPct) _maxPct = pct;
-    document.getElementById('progress-fill').style.width = _maxPct + '%';
-    document.getElementById('progress-pct').textContent = Math.round(_maxPct) + '%';
+function setProgress(phase, stats) {
     if (phase) document.getElementById('progress-phase').textContent = phase;
     document.getElementById('progress-stats').textContent = stats || '';
 }
@@ -761,15 +737,14 @@ async function runOptimize() {
     loading.hidden = false;
     results.style.display = 'none';
     errorDiv.hidden = true;
-    _maxPct = 0;
-    setProgress(0, 'Preparing\u2026', '');
+    setProgress('Preparing\u2026', '');
     loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     const payload = {
         max_overlap: parseInt(document.getElementById('max-overlap').value),
         min_redundancy: parseInt(document.getElementById('min-redundancy').value),
+        max_same_type_moves: parseInt(document.getElementById('max-same-type-moves').value),
         acc_exponent: parseFloat(document.getElementById('acc-exponent').value),
-        duplicate_type_discount: parseInt(document.getElementById('dup-type-discount').value) / 100,
         speed_bonus: parseInt(document.getElementById('speed-bonus').value) / 100,
         allow_legendaries: document.getElementById('allow-legendaries').checked,
         no_4x_weakness: document.getElementById('no-4x-weakness').checked,
@@ -812,14 +787,13 @@ async function runOptimize() {
                 const d = JSON.parse(evtData);
 
                 if (evtType === 'progress') {
-                    if (d.nodes > 0) {
-                        const rawGap = typeof d.gap === 'number' ? d.gap : null;
-                        const gapLabel = rawGap != null ? (rawGap * 100).toFixed(1) + '%' : '\u2014';
-                        const stats = `Gap ${gapLabel}  \u00b7  ${d.nodes} nodes  \u00b7  ${d.time}s`;
-                        setProgress(d.pct, 'Solving MILP\u2026', stats);
-                    }
+                    const phase = d.phase || 'Solving MILP\u2026';
+                    const elapsed = typeof d.time === 'number' ? `${d.time}s elapsed` : '';
+                    setProgress(phase, elapsed);
+                } else if (evtType === 'phase') {
+                    setProgress(d.phase || 'Preparing\u2026', '');
                 } else if (evtType === 'result') {
-                    setProgress(100, 'Done!');
+                    setProgress('Done!');
                     renderResults(d);
                     results.style.display = 'block';
                     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -847,12 +821,12 @@ function renderResults(data, targetId, heading) {
 
     let zInfo = '';
     if (data.z_val != null) {
-        zInfo = `<span class="z-star">Objective z = ${data.z_val.toLocaleString()}</span>`;
-        if (data.obj_val != null && data.tb_pct != null) {
+        zInfo = `<span class="z-star">Coverage z = ${data.z_val.toLocaleString()}</span>`;
+        if (data.power_val != null && data.diversity_val != null) {
             zInfo = `<div class="z-breakdown">
-                <span class="z-star">Objective = ${data.obj_val.toLocaleString()}</span>
-                <span class="z-part"><span class="z-label">Coverage z</span> ${data.z_val.toLocaleString()} <span class="z-pct">(${data.z_pct}%)</span></span>
-                <span class="z-part"><span class="z-label">Tiebreaker</span> ${data.tiebreaker.toLocaleString()} <span class="z-pct">(${data.tb_pct}%)</span></span>
+                <span class="z-part"><span class="z-label">Coverage z</span> ${data.z_val.toLocaleString()}</span>
+                <span class="z-part"><span class="z-label">Diversity excess</span> ${data.diversity_val.toLocaleString()}</span>
+                <span class="z-part"><span class="z-label">Firepower</span> ${data.power_val.toLocaleString()}</span>
             </div>`;
         }
     }
@@ -907,7 +881,7 @@ function renderResults(data, targetId, heading) {
                 <tr>
                     <th>Def Type</th>
                     ${data.team_names.map(n => `<th>${n.slice(0,8)}</th>`).join('')}
-                    <th>Total</th>
+                    <th>Best</th>
                 </tr>`;
 
     for (const row of data.coverage) {
@@ -928,7 +902,7 @@ function renderResults(data, targetId, heading) {
         html += `
             <div class="weakest-callout">
                 Weakest link: <strong>${data.weakest.type}</strong>
-                (total HP damage = ${data.weakest.total.toLocaleString()})
+                (best attacker damage = ${data.weakest.total.toLocaleString()})
             </div>`;
     }
 

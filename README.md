@@ -2,11 +2,13 @@
 
 A MILP-based team optimizer for Pokémon FireRed/LeafGreen that finds the strongest 6-Pokémon team with full super-effective type coverage.
 
+The main goal is to find a team where each Pokémon is a strong multi-type specialist, and the team collectively covers all types with best-in-class attackers.
+
 ## How It Works
 
-The optimizer uses a single-phase regularised max-min mixed-integer linear program:
+The optimizer uses a lexicographic max-min mixed-integer linear program:
 
-**Objective**: Maximise `z + ε · total_power`, where `z` is a lower bound on coverage across all 17 defending types. This finds the team with the best worst-case type coverage, breaking ties in favour of higher total firepower.
+**Objective**: Solve lexicographically: first maximise coverage `z`, then minimise duplicate attacking types (both within each Pokémon and across the full team), then maximise total firepower. This finds the best worst-case type coverage without relying on exposed weight tuning.
 
 **Constraints**:
 
@@ -33,7 +35,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Then open [http://localhost:5001](http://localhost:5001). The web interface exposes all solver parameters and team constraints through an interactive dashboard.
+Then open [http://localhost:5001](http://localhost:5001). The web interface exposes the user-facing solver parameters and team constraints through an interactive dashboard.
 
 ## CLI Usage
 
@@ -45,8 +47,8 @@ python -m optimiser --lock-move charizard flamethrower       # force a move on a
 python -m optimiser --must-have earthquake                   # require Earthquake on someone
 python -m optimiser --max-overlap 2                          # allow 2 Pokémon sharing a type
 python -m optimiser --min-redundancy 1                       # relax SE redundancy to 1
+python -m optimiser --max-same-type-moves 1                  # force 4 distinct attacking types per Pokémon
 python -m optimiser --acc-exponent 3.0                       # harsher penalty on low-accuracy moves
-python -m optimiser --duplicate-type-discount 0.0            # 2nd same-type move gets 0% credit
 python -m optimiser --must-have-type water                   # require at least one Water-type Pokémon
 python -m optimiser --data path/to/custom.json               # use a custom compiled JSON file
 ```
@@ -69,7 +71,7 @@ gen3-optim/
     ├── __main__.py                        # python -m optimiser entry point
     ├── main.py                            # CLI, data loading, output display
     ├── scoring.py                         # Gen 3 type chart & score pre-computation
-    └── solver.py                          # Regularised max-min MILP (PuLP)
+    └── solver.py                          # Lexicographic max-min MILP (PuLP)
 ```
 
 ## Tunable Parameters
@@ -79,8 +81,8 @@ gen3-optim/
 | ------------------------- | ------- | ---------------------------------------------------------------------------------------- |
 | `max_overlap`             | 1       | How many team members can share a type. E.g. 2 means at most 2 Water-types.              |
 | `min_redundancy`          | 2       | At least this many Pokémon must have a super-effective move against each enemy type.      |
+| `max_same_type_moves`     | 2       | Max moves of the same attacking type per Pokémon. Lower values force broader movesets.    |
 | `acc_exponent`            | 2.0     | Accuracy penalty: mult = `(acc/100)^exp`. At 2.0, 85% acc → 0.72×, 70% acc → 0.49×.     |
-| `duplicate_type_discount` | 0.2     | Discount for a 2nd same-type move. At 0.2, the 2nd move only gets 20% credit.            |
 | `speed_bonus`             | 0.25    | Bonus for fast Pokémon. At 0.25, the fastest gets 1.25× damage, the slowest gets 1.0×.   |
 
 
