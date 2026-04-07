@@ -51,6 +51,7 @@ MOVE_SCORE_FACTORS: dict[str, float] = {
     "self-destruct": 0.35,
     "explosion": 0.35,
     "frustration": 0.1,
+    "overheat": 0.8,
 }
 
 # Gen 3 super-effective chart: attacking_type -> set of defending types it is SE against.
