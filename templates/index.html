@@ -86,6 +86,12 @@
             flex:1;background:#0d1117;border:1px solid #30363d;color:#e6edf3;
             padding:.5rem .75rem;border-radius:6px;font-size:.875rem;
         }
+        .shortcut-row{
+            display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;margin-top:.5rem;
+        }
+        .shortcut-label{
+            font-size:.75rem;color:#6e7681;
+        }
 
         .btn{
             padding:.5rem 1rem;border:none;border-radius:6px;
@@ -273,42 +279,16 @@
         <div class="card">
             <h2>Optimize Settings</h2>
             <div class="hint" style="margin-bottom:1rem">
-                Start with the default values below. Most runs only need the core coverage and scoring controls.
+                Start here. Most runs can leave Advanced Settings alone.
             </div>
 
-            <div class="section-title">Core Coverage</div>
-            <div class="field">
-                <label for="max-overlap">Max Shared Team Type</label>
-                <input type="number" id="max-overlap" value="1" min="1" max="6">
-                <div class="hint">How many team members can share a type. `2` means at most 2 Water-types.</div>
-            </div>
-
-            <div class="field">
-                <label for="min-redundancy">Min SE Backups Per Type</label>
-                <input type="number" id="min-redundancy" value="2" min="1" max="6">
-                <div class="hint">At least this many selected (Pokémon, move) pairs must be super-effective into each defending type.</div>
-            </div>
-
-            <div class="field">
-                <label for="max-same-type-moves">Max Repeated Move Type</label>
-                <div class="range-row">
-                    <input type="range" id="max-same-type-moves" min="1" max="4" value="2" step="1">
-                    <span class="range-value" id="max-same-type-moves-value">2</span>
-                </div>
-                <div class="hint">Caps how many moves of the same attacking type one Pokémon can carry. The solver still prefers broader type spread as a tie-break.</div>
-            </div>
-
-            <div class="section-title">Scoring</div>
-            <div class="hint" style="margin-bottom:.75rem">
-                These change the precomputed matchup scores, not the solver structure.
-            </div>
             <div class="field">
                 <label for="acc-exponent">Accuracy Penalty</label>
                 <input type="number" id="acc-exponent" value="2.0" min="0" max="5" step="0.5">
                 <div class="hint">
                     Accuracy penalty mult = (accuracy ÷ 100)<sup>penalty</sup>.<br>
-                    At 2.0, a 100% accurate move has mult 1.0 on damage, 85% has mult 0.72, <br>
-                    70% has mult 0.49.
+                    At 2.0, a 100% accurate move has mult 1.0 on damage, 85% acc moves has mult 0.72, <br>
+                    70% moves has mult 0.49.
                 </div>
             </div>
 
@@ -325,25 +305,37 @@
                 </div>
             </div>
 
-            <div class="section-title">Solver</div>
-            <div class="checkbox-field">
-                <input type="checkbox" id="exact-solve">
-                <label for="exact-solve">Provably Optimal Solve</label>
-            </div>
-            <div class="hint" style="margin-top:-.5rem;margin-bottom:1rem">
-                Find a provably optimal solution (0% MIP gap, 600s time limit).<br>
-                Slow but guarantees the best result.
-            </div>
-
             <details class="advanced-settings">
-                <summary>Advanced Role Controls</summary>
+                <summary>Advanced Settings</summary>
                 <div class="advanced-body">
                     <div class="hint" style="margin-bottom:.75rem">
-                        These only matter if you want to tune how matchup roles are assigned. Most runs can leave them alone.
+                        These are usually unnecessary. Defaults here are intentionally relaxed.
                     </div>
+
+                    <div class="field">
+                        <label for="max-overlap">Max Shared Team Type</label>
+                        <input type="number" id="max-overlap" value="3" min="1" max="6">
+                        <div class="hint">How many team members can share a type. `2` means at most 2 Water-types.</div>
+                    </div>
+
+                    <div class="field">
+                        <label for="min-redundancy">Min SE Backups Per Type</label>
+                        <input type="number" id="min-redundancy" value="1" min="1" max="6">
+                        <div class="hint">At least this many selected (Pokémon, move) pairs must be super-effective into each defending type.</div>
+                    </div>
+
+                    <div class="field">
+                        <label for="max-same-type-moves">Max Repeated Move Type</label>
+                        <div class="range-row">
+                            <input type="range" id="max-same-type-moves" min="1" max="4" value="4" step="1">
+                            <span class="range-value" id="max-same-type-moves-value">4</span>
+                        </div>
+                        <div class="hint">Caps how many moves of the same attacking type one Pokémon can carry. At `4`, this cap is inactive and diversity is left to the solver tie-break.</div>
+                    </div>
+
                     <div class="field">
                         <label for="min-role-types">Min Assigned Roles</label>
-                        <input type="number" id="min-role-types" value="2" min="0" max="2">
+                        <input type="number" id="min-role-types" value="1" min="0" max="2">
                         <div class="hint">How many defending types each selected Pokémon must "own". `0` removes the per-Pokémon quota.</div>
                     </div>
 
@@ -394,6 +386,11 @@
                 <div class="add-row">
                     <input type="text" id="must-have-input" list="all-moves-list" placeholder="Type to search...">
                     <button class="btn btn-sm btn-add" id="add-must-have-btn">Add</button>
+                </div>
+                <div class="shortcut-row">
+                    <span class="shortcut-label">Shortcut:</span>
+                    <button class="btn btn-sm btn-add" id="add-essential-hms-btn" type="button">Add Essential HMs</button>
+                    <span class="hint">Adds `fly`, `cut`, `surf`, `strength`, and `rock-smash`.</span>
                 </div>
                 <div class="tag-list" id="must-have-tags"></div>
             </div>
@@ -487,6 +484,7 @@ let lockedMoves = [];
 let mustHaveMoves = [];
 let mustHaveTypes = [];
 let excludedPokemon = [];
+const ESSENTIAL_HM_MOVES = ['fly', 'cut', 'surf', 'strength', 'rock-smash'];
 
 const ALL_TYPES = [
     'normal','fire','water','electric','grass','ice','fighting','poison',
@@ -495,10 +493,10 @@ const ALL_TYPES = [
 
 const STORAGE_KEY = 'gen3_optim_state';
 const DEFAULTS = {
-    maxOverlap: 1, minRedundancy: 2, maxSameTypeMoves: 2, minRoleTypes: 2,
+    maxOverlap: 3, minRedundancy: 1, maxSameTypeMoves: 4, minRoleTypes: 1,
     roleThresholdPct: 80, accExponent: 2.0,
     speedBonus: 25,
-    allowLegendaries: false, no4xWeakness: false, exactSolve: false,
+    allowLegendaries: false, no4xWeakness: false,
     lockedPokemon: [], lockedMoves: [], mustHaveMoves: [],
     mustHaveTypes: [], excludedPokemon: [],
 };
@@ -514,7 +512,6 @@ function saveState() {
         speedBonus: parseInt(document.getElementById('speed-bonus').value),
         allowLegendaries: document.getElementById('allow-legendaries').checked,
         no4xWeakness: document.getElementById('no-4x-weakness').checked,
-        exactSolve: document.getElementById('exact-solve').checked,
         lockedPokemon, lockedMoves, mustHaveMoves, mustHaveTypes, excludedPokemon,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -543,7 +540,6 @@ function restoreState() {
 
     document.getElementById('allow-legendaries').checked = s.allowLegendaries ?? DEFAULTS.allowLegendaries;
     document.getElementById('no-4x-weakness').checked = s.no4xWeakness ?? DEFAULTS.no4xWeakness;
-    document.getElementById('exact-solve').checked = s.exactSolve ?? DEFAULTS.exactSolve;
 
     lockedPokemon = s.lockedPokemon ?? [];
     lockedMoves = s.lockedMoves ?? [];
@@ -573,7 +569,6 @@ function resetState() {
     document.getElementById('speed-bonus-value').textContent = DEFAULTS.speedBonus + '%';
     document.getElementById('allow-legendaries').checked = DEFAULTS.allowLegendaries;
     document.getElementById('no-4x-weakness').checked = DEFAULTS.no4xWeakness;
-    document.getElementById('exact-solve').checked = DEFAULTS.exactSolve;
 
     lockedPokemon = [];
     lockedMoves = [];
@@ -612,7 +607,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('allow-legendaries').addEventListener('change', saveState);
     document.getElementById('no-4x-weakness').addEventListener('change', saveState);
-    document.getElementById('exact-solve').addEventListener('change', saveState);
     document.getElementById('add-exclude-btn').addEventListener('click', addExcludedPokemon);
     document.getElementById('exclude-poke-input').addEventListener('keydown', e => {
         if (e.key === 'Enter') { e.preventDefault(); addExcludedPokemon(); }
@@ -620,6 +614,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-lock-btn').addEventListener('click', addLockedPokemon);
     document.getElementById('add-lock-move-btn').addEventListener('click', addLockedMove);
     document.getElementById('add-must-have-btn').addEventListener('click', addMustHave);
+    document.getElementById('add-essential-hms-btn').addEventListener('click', addEssentialHms);
     document.getElementById('add-must-have-type-btn').addEventListener('click', addMustHaveType);
     document.getElementById('optimize-btn').addEventListener('click', runOptimize);
     document.getElementById('reset-btn').addEventListener('click', resetState);
@@ -744,6 +739,18 @@ function addMustHave() {
     saveState();
 }
 
+function addEssentialHms() {
+    let changed = false;
+    for (const move of ESSENTIAL_HM_MOVES) {
+        if (mustHaveMoves.includes(move)) continue;
+        mustHaveMoves.push(move);
+        changed = true;
+    }
+    if (!changed) return;
+    renderTags('must-have-tags', mustHaveMoves, removeMustHave);
+    saveState();
+}
+
 function removeMustHave(name) {
     mustHaveMoves = mustHaveMoves.filter(n => n !== name);
     renderTags('must-have-tags', mustHaveMoves, removeMustHave);
@@ -822,7 +829,6 @@ async function runOptimize() {
         speed_bonus: parseInt(document.getElementById('speed-bonus').value) / 100,
         allow_legendaries: document.getElementById('allow-legendaries').checked,
         no_4x_weakness: document.getElementById('no-4x-weakness').checked,
-        exact_solve: document.getElementById('exact-solve').checked,
         locked_pokemon: lockedPokemon,
         locked_moves: lockedMoves,
         must_have_moves: mustHaveMoves,

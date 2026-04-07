@@ -165,14 +165,14 @@ def main():
     parser.add_argument(
         "--max-overlap",
         type=int,
-        default=1,
-        help="Max Pokémon sharing any single type (default: 1)",
+        default=3,
+        help="Max Pokémon sharing any single type (default: 3)",
     )
     parser.add_argument(
         "--min-redundancy",
         type=int,
-        default=2,
-        help="Min SE (Pokémon, move) pairs per defending type (default: 2)",
+        default=1,
+        help="Min SE (Pokémon, move) pairs per defending type (default: 1)",
     )
     parser.add_argument(
         "--max-same-type-moves",
@@ -183,8 +183,8 @@ def main():
     parser.add_argument(
         "--min-role-types",
         type=int,
-        default=2,
-        help="Min defending types each selected Pokémon must cover as a role-holder (default: 2)",
+        default=1,
+        help="Min defending types each selected Pokémon must cover as a role-holder (default: 1)",
     )
     parser.add_argument(
         "--role-threshold-pct",

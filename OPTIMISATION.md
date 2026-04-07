@@ -366,10 +366,10 @@ Move pre-filtering and NVE-matchup skipping keep the model from growing further 
 
 | Parameter | Symbol | Default | Effect on solve |
 |---|---|---|---|
-| `max_overlap` | $n$ | 1 | How many team members can share a type. Lower values tighten the feasible region - can make the problem infeasible if too restrictive. |
-| `min_redundancy` | $k$ | 2 | At least $k$ selected $(\text{Pokémon}, \text{move})$ pairs must be super-effective against each enemy type. Higher values add harder constraints; $k \geq 3$ often infeasible. |
+| `max_overlap` | $n$ | 3 | How many team members can share a type. Lower values tighten the feasible region - can make the problem infeasible if too restrictive. |
+| `min_redundancy` | $k$ | 1 | At least $k$ selected $(\text{Pokémon}, \text{move})$ pairs must be super-effective against each enemy type. Higher values add harder constraints; $k \geq 3$ often infeasible. |
 | `max_same_type_moves` | $c$ | 2 | Max moves of the same attacking type per Pokémon. At 1, every slot must be a different type; at 4, no restriction. Forces move diversity. |
-| `min_role_types` | $r$ | 2 | Each selected Pokémon must be the designated attacker for at least $r$ defending types. Under the 17-type, 6-slot model this is only feasible for $r \le 2$; setting $r = 0$ removes only this quota. |
+| `min_role_types` | $r$ | 1 | Each selected Pokémon must be the designated attacker for at least $r$ defending types. Under the 17-type, 6-slot model this is only feasible for $r \le 2$; setting $r = 0$ removes only this quota. |
 | `role_threshold_pct` | $\rho$ | 80 | A designated attacker must use a super-effective move that scores at least $\rho\%$ of the global best score for that defending type. Lower values relax role ownership; higher values make roles stricter; at 0, any positive-scoring SE move qualifies. |
 | `acc_exponent` | $\alpha$ | 2.0 | Accuracy penalty: mult = $(\text{acc}/100)^\alpha$. At 2.0, 85% acc → 0.72×, 70% acc → 0.49×. Only affects pre-computed scores, not the MILP structure. |
 | `speed_bonus` | $\beta$ | 0.25 | Bonus for fast Pokémon. At 0.25, the fastest gets $1.25\times$ damage, the slowest gets $1.0\times$. Linear interpolation. |

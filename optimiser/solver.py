@@ -16,14 +16,15 @@ import pulp
 from .scoring import ALL_TYPES, is_super_effective
 
 PIN_TOLERANCE = 1e-6
+SOLVER_TIME_LIMIT_SECONDS = 600
 
 
 @dataclass
 class Params:
-    max_overlap: int = 1
-    min_redundancy: int = 2
+    max_overlap: int = 3
+    min_redundancy: int = 1
     max_same_type_moves: int = 2
-    min_role_types: int = 2
+    min_role_types: int = 1
     role_threshold_pct: float = 80.0
     no_legendaries: bool = True
     locked_pokemon: dict[str, list[str]] = field(default_factory=dict)
@@ -371,7 +372,7 @@ def build_model(pokemon_pool, scores, params):
     )
 
 
-def solve_model(model, progress_fn=None, exact_solve=False):
+def solve_model(model, progress_fn=None):
     """
     Solve a built Model.
 
@@ -379,13 +380,8 @@ def solve_model(model, progress_fn=None, exact_solve=False):
 
     If *progress_fn* is supplied it is called with
     (stage_label, mip_gap, node_count, running_time).
-
-    If *exact_solve* is True the solver gets a 10-minute time limit
     """
-    if exact_solve:
-        solver_kwargs = dict(msg=0, gapRel=0, timeLimit=600)
-    else:
-        solver_kwargs = dict(msg=0, gapRel=0.001, timeLimit=120)
+    solver_kwargs = dict(msg=0, gapRel=0, timeLimit=SOLVER_TIME_LIMIT_SECONDS)
 
     elapsed_total = 0.0
 
@@ -460,23 +456,66 @@ def optimise(pokemon_pool, scores, params):
     return solve_model(model)
 
 
-def _diagnose_infeasibility(params):
+def _diagnose_infeasibility(
+    params, *, no_4x_weakness: bool = False, excluded_pokemon=None
+):
     suggestions = []
     if params.min_redundancy >= 2:
         suggestions.append(
-            f"Lower min SE redundancy (currently k={params.min_redundancy})"
+            "Lower 'Min SE Backups Per Type' in "
+            "'Optimize Settings > Advanced Settings' "
+            f"(currently {params.min_redundancy})"
         )
-    if params.min_role_types >= 2:
+    if params.max_same_type_moves < 4:
         suggestions.append(
-            f"Lower min role types per Pokémon (currently r={params.min_role_types})"
+            "Raise 'Max Repeated Move Type' in "
+            "'Optimize Settings > Advanced Settings' "
+            f"(currently {params.max_same_type_moves})"
         )
-    if params.role_threshold_pct > 60:
+    if params.min_role_types > 0:
         suggestions.append(
-            "Lower role threshold percentage "
-            f"(currently {params.role_threshold_pct:.0f}% of best)"
+            "Lower 'Min Assigned Roles' in "
+            "'Optimize Settings > Advanced Settings' "
+            f"(currently {params.min_role_types})"
         )
-    if params.max_overlap <= 2:
-        suggestions.append(f"Raise max type overlap (currently n={params.max_overlap})")
+    if params.role_threshold_pct > 0:
+        suggestions.append(
+            "Lower 'Role Strength Threshold (% of Best)' in "
+            "'Optimize Settings > Advanced Settings' "
+            f"(currently {params.role_threshold_pct:.0f}%)"
+        )
+    if params.max_overlap < 6:
+        suggestions.append(
+            "Raise 'Max Shared Team Type' in "
+            "'Optimize Settings > Advanced Settings' "
+            f"(currently {params.max_overlap})"
+        )
+    if params.locked_pokemon:
+        suggestions.append(
+            "Remove some entries from 'Team Constraints > Lock Pokemon' or "
+            "'Team Constraints > Lock Moves'"
+        )
+    if params.must_have_moves:
+        suggestions.append(
+            "Remove some entries from 'Team Constraints > Must-Have Moves'"
+        )
+    if params.must_have_types:
+        suggestions.append(
+            "Remove some entries from 'Team Constraints > Must-Have Types'"
+        )
+    if excluded_pokemon:
+        suggestions.append(
+            "Remove some entries from 'Team Constraints > Exclude Pokemon'"
+        )
+    if no_4x_weakness:
+        suggestions.append(
+            "Turn off 'Team Constraints > Exclude 4x Weakness Pokemon'"
+        )
+    if not suggestions:
+        suggestions.append(
+            "Relax one of the controls in 'Optimize Settings' or remove a restrictive "
+            "entry from 'Team Constraints'"
+        )
     msg = "Optimisation is infeasible. Suggestions:\n" + "\n".join(
         f"  - {s}" for s in suggestions
     )

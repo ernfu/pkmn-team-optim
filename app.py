@@ -6,7 +6,6 @@ import logging
 import math
 import queue
 import threading
-import time
 
 from flask import (
     Flask,
@@ -30,7 +29,13 @@ from optimiser.scoring import (
     filter_dominated_moves,
     has_4x_weakness,
 )
-from optimiser.solver import Params, _diagnose_infeasibility, build_model, solve_model
+from optimiser.solver import (
+    SOLVER_TIME_LIMIT_SECONDS,
+    Params,
+    _diagnose_infeasibility,
+    build_model,
+    solve_model,
+)
 
 app = Flask(__name__)
 
@@ -132,16 +137,15 @@ def optimize_stream():
     """SSE endpoint that streams solver progress then the final result."""
     data = request.get_json()
 
-    max_overlap = int(data.get("max_overlap", 1))
-    min_redundancy = int(data.get("min_redundancy", 2))
-    max_same_type_moves = int(data.get("max_same_type_moves", 2))
-    min_role_types = int(data.get("min_role_types", 2))
+    max_overlap = int(data.get("max_overlap", 3))
+    min_redundancy = int(data.get("min_redundancy", 1))
+    max_same_type_moves = int(data.get("max_same_type_moves", 4))
+    min_role_types = int(data.get("min_role_types", 1))
     role_threshold_pct = float(data.get("role_threshold_pct", 80.0))
     acc_exponent = float(data.get("acc_exponent", 2.0))
     speed_bonus = float(data.get("speed_bonus", 0.25))
     allow_legendaries = bool(data.get("allow_legendaries", False))
     no_4x_weakness = bool(data.get("no_4x_weakness", False))
-    exact_solve = bool(data.get("exact_solve", False))
 
     locked_pokemon: dict[str, list[str]] = {}
     for name in data.get("locked_pokemon", []):
@@ -179,8 +183,6 @@ def optimize_stream():
     if excluded_pokemon:
         pool = [p for p in pool if p["name"] not in excluded_pokemon]
 
-    time_limit = 600 if exact_solve else 120
-
     def generate():
         yield _sse("phase", {"phase": "building"})
 
@@ -189,7 +191,7 @@ def optimize_stream():
 
         progress_q = queue.Queue()
         result_holder = [None]
-        total_time_limit = time_limit * 3
+        total_time_limit = SOLVER_TIME_LIMIT_SECONDS * 3
 
         def _run_solver():
             def _on_progress(stage, gap, nodes, elapsed):
@@ -200,9 +202,7 @@ def optimize_stream():
                         ("progress", stage, gap, int(nodes), round(elapsed, 2))
                     )
 
-            result_holder[0] = solve_model(
-                model, progress_fn=_on_progress, exact_solve=exact_solve
-            )
+            result_holder[0] = solve_model(model, progress_fn=_on_progress)
             progress_q.put(("done",))
 
         t = threading.Thread(target=_run_solver, daemon=True)
@@ -255,7 +255,11 @@ def optimize_stream():
 
         status, result, z_val, power_val = result_holder[0]
         if status != "Optimal":
-            _, diag_msg, _ = _diagnose_infeasibility(params)
+            _, diag_msg, _ = _diagnose_infeasibility(
+                params,
+                no_4x_weakness=no_4x_weakness,
+                excluded_pokemon=excluded_pokemon,
+            )
             yield _sse("error", {"status": status, "message": diag_msg})
         else:
             yield _sse("result", _build_result(result, pool, scores, z_val, power_val))

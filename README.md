@@ -82,10 +82,10 @@ gen3-optim/
 
 | Param                     | Default | Description                                                                              |
 | ------------------------- | ------- | ---------------------------------------------------------------------------------------- |
-| `max_overlap`             | 1       | How many team members can share a type. E.g. 2 means at most 2 Water-types.              |
-| `min_redundancy`          | 2       | At least this many selected (Pokémon, move) pairs must be super-effective against each enemy type. |
+| `max_overlap`             | 3       | How many team members can share a type. E.g. 2 means at most 2 Water-types.              |
+| `min_redundancy`          | 1       | At least this many selected (Pokémon, move) pairs must be super-effective against each enemy type. |
 | `max_same_type_moves`     | 2       | Max moves of the same attacking type per Pokémon. Lower values force broader movesets.    |
-| `min_role_types`          | 2       | Each selected Pokémon must be the designated role-holder for at least this many defending types. Set `0` to remove the per-Pokémon quota. |
+| `min_role_types`          | 1       | Each selected Pokémon must be the designated role-holder for at least this many defending types. Set `0` to remove the per-Pokémon quota. |
 | `role_threshold_pct`      | 80      | A designated attacker must use a super-effective move that scores at least this percent of the global best for that defending type. Set `0` to allow any positive-scoring SE move. |
 | `acc_exponent`            | 2.0     | Accuracy penalty: mult = `(acc/100)^exp`. At 2.0, 85% acc → 0.72×, 70% acc → 0.49×.     |
 | `speed_bonus`             | 0.25    | Bonus for fast Pokémon. At 0.25, the fastest gets 1.25× damage, the slowest gets 1.0×.   |
