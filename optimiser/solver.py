@@ -113,8 +113,6 @@ def _build_role_qualifiers(
     for p in poke_names:
         for def_type in ALL_TYPES:
             threshold = pct * best_score_by_type[def_type]
-            if threshold <= 0:
-                continue
             moves = [
                 m
                 for m in moves_by_poke[p]
@@ -223,6 +221,9 @@ def build_model(pokemon_pool, scores, params):
                     f"type_cap_{p}_{mtype}",
                 )
 
+            if len(mlist) < 2:
+                continue
+
             dup_var = pulp.LpVariable(f"dup_within_{p}_{mtype}", lowBound=0)
             prob += (
                 dup_var >= pulp.lpSum(y[p, m] for m in mlist) - 1,
@@ -280,6 +281,9 @@ def build_model(pokemon_pool, scores, params):
     for p, m, t in w:
         prob += w[p, m, t] <= u[p, t], f"w_att_{p}_{m}_{t}"
 
+    # Role-qualified moves always define who may be the designated attacker.
+    # The optional min_role_types quota only controls how many such roles each
+    # selected Pokémon must own; it does not disable this filter.
     for p, t in damaging_moves_by_poke_type:
         qualifying_moves = role_qualifiers.get((p, t), [])
         if qualifying_moves:

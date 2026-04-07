@@ -178,17 +178,17 @@ $$
 
 ### 5.2 Move–Pokémon Coupling
 
-Each Pokémon carries at most 4 moves, and only if selected:
+Each selected Pokémon carries exactly 4 moves, and unselected Pokémon carry none:
 
 $$
-\sum_{m \in \mathcal{M}_p} y_{p,m} \leq 4\, x_p \qquad \forall\, p \in \mathcal{P}
+\sum_{m \in \mathcal{M}_p} y_{p,m} = 4\, x_p \qquad \forall\, p \in \mathcal{P}
 $$
 
 $$
 y_{p,m} \leq x_p \qquad \forall\, p \in \mathcal{P},\ m \in \mathcal{M}_p
 $$
 
-The first constraint is a *big-M* style coupling: if $x_p = 0$ (Pokémon not selected), all its $y$ variables are forced to 0. The second set is redundant given the first but tightens the LP relaxation - without it, fractional $x_p$ values can activate more $y$ variables than they should, widening the gap.
+The first constraint enforces the 4-move moveset structure directly while also coupling move selection to team selection: if $x_p = 0$ (Pokémon not selected), all its $y$ variables are forced to 0; if $x_p = 1$, exactly four moves must be chosen. The second set is redundant given the first but tightens the LP relaxation - without it, fractional $x_p$ values can activate more $y$ variables than they should, widening the gap.
 
 ### 5.3 Min Damage (defines z)
 
@@ -244,14 +244,14 @@ $$
 
 We use $\leq 1$ rather than $= 1$ to avoid infeasibility when no selected Pokémon has any non-immune damaging move against a type. At optimality the solver always picks exactly one attacker (since maximising $z$ wants damage as high as possible).
 
-When role-aware diversity is enabled, a designated attacker also needs an actual qualifying move for that matchup:
+Designated attackers are always restricted to actual qualifying super-effective moves for that matchup:
 
 $$
 u_{p,t} \leq \sum_{\substack{m \in \mathcal{M}_p \\ \text{effectiveness}_{m,t} = 2.0 \\ S_{p,m,t} \ge \theta_t}} w_{p,m,t}
 \qquad \forall\, p,\, t
 $$
 
-This means a Pokémon only receives role credit for type $t$ if it actively uses a selected super-effective move that is within the configured percentage of the global best score for that type.
+This means a Pokémon can only be the designated attacker for type $t$ if it actively uses a selected super-effective move that is within the configured percentage of the global best score for that type. Setting $\rho = 0$ makes any positive-scoring super-effective move qualify. The optional per-Pokémon role quota in §5.11 controls how many roles each selected Pokémon must own; it does not disable this qualifying-move filter.
 
 The SE redundancy constraint (§5.9) ensures super-effective backup attackers exist even though only one attacker contributes to the Stage 1 objective. The final firepower stage then prefers stronger all-around non-immune firepower among teams that already tie on coverage and diversity.
 
@@ -319,7 +319,7 @@ $$
 
 Default $r = 2$.
 
-Because there are 17 defending types and exactly 6 team slots, this constraint is only feasible for $r \le 2$ under the single-attacker formulation.
+Because there are 17 defending types and exactly 6 team slots, this constraint is only feasible for $r \le 2$ under the single-attacker formulation. Setting $r = 0$ disables this quota, but the qualifying-move filter from §5.5 still determines who may own a role.
 
 ### 5.12 User Constraints
 
@@ -369,8 +369,8 @@ Move pre-filtering and NVE-matchup skipping keep the model from growing further 
 | `max_overlap` | $n$ | 1 | How many team members can share a type. Lower values tighten the feasible region - can make the problem infeasible if too restrictive. |
 | `min_redundancy` | $k$ | 2 | At least $k$ selected $(\text{Pokémon}, \text{move})$ pairs must be super-effective against each enemy type. Higher values add harder constraints; $k \geq 3$ often infeasible. |
 | `max_same_type_moves` | $c$ | 2 | Max moves of the same attacking type per Pokémon. At 1, every slot must be a different type; at 4, no restriction. Forces move diversity. |
-| `min_role_types` | $r$ | 2 | Each selected Pokémon must be the designated attacker for at least $r$ defending types. Under the 17-type, 6-slot model this is only feasible for $r \le 2$. |
-| `role_threshold_pct` | $\rho$ | 80 | A role only counts if the selected move is super-effective and scores at least $\rho\%$ of the global best score for that defending type. Lower values relax role ownership; higher values make roles stricter. |
+| `min_role_types` | $r$ | 2 | Each selected Pokémon must be the designated attacker for at least $r$ defending types. Under the 17-type, 6-slot model this is only feasible for $r \le 2$; setting $r = 0$ removes only this quota. |
+| `role_threshold_pct` | $\rho$ | 80 | A designated attacker must use a super-effective move that scores at least $\rho\%$ of the global best score for that defending type. Lower values relax role ownership; higher values make roles stricter; at 0, any positive-scoring SE move qualifies. |
 | `acc_exponent` | $\alpha$ | 2.0 | Accuracy penalty: mult = $(\text{acc}/100)^\alpha$. At 2.0, 85% acc → 0.72×, 70% acc → 0.49×. Only affects pre-computed scores, not the MILP structure. |
 | `speed_bonus` | $\beta$ | 0.25 | Bonus for fast Pokémon. At 0.25, the fastest gets $1.25\times$ damage, the slowest gets $1.0\times$. Linear interpolation. |
 | `low_priority_factor` | $\gamma$ | 0.3 | Multiplier for negative-priority moves (e.g., Focus Punch). 0.3 = 30% credit. Not exposed in CLI/UI. |

@@ -14,7 +14,7 @@ The optimizer uses a lexicographic max-min mixed-integer linear program:
 
 - **Type overlap cap** - no more than `n` Pokémon sharing any single type (default 1)
 - **SE redundancy** - at least `k` selected (Pokémon, move) pairs that are super-effective against every defending type (default 2)
-- **Role-aware diversity** - each selected Pokémon must be the designated attacker for at least `r` defending types using a super-effective move that scores within `p%` of the global best for that type (defaults: `r=2`, `p=80`)
+- **Role-aware diversity** - designated attackers must use a qualifying super-effective move that scores within `p%` of the global best for that type, and each selected Pokémon must own at least `r` such roles when the quota is enabled (defaults: `r=2`, `p=80`)
 
 Each move is scored by: `power × accuracy × STAB × type effectiveness × stat × speed × recoil × priority × move-specific discount`, using Gen 3-accurate mechanics (physical/special determined by type, not move). Before scoring, non-machine/non-tutor attacking moves are heuristically pruned per Pokémon within each attacking type: any move below 80% of that type's best effective-power score is removed, while TM/HM/tutor moves and user-locked moves are preserved. The score table stores only neutral-or-better (≥1×) matchups; not-very-effective and immune entries are skipped. Stages 1 and 3 optimise over that score set, while the redundancy constraint still targets super-effective coverage. Self-damaging moves (Double-Edge, Take-Down, Submission) are penalised proportionally to their recoil, `Explosion`/`Self-Destruct` are further discounted because they KO the user, `Frustration` is mildly discounted because it assumes deliberately minimized friendship, and unreliable negative-priority moves (Focus Punch) are heavily discounted.
 
@@ -85,8 +85,8 @@ gen3-optim/
 | `max_overlap`             | 1       | How many team members can share a type. E.g. 2 means at most 2 Water-types.              |
 | `min_redundancy`          | 2       | At least this many selected (Pokémon, move) pairs must be super-effective against each enemy type. |
 | `max_same_type_moves`     | 2       | Max moves of the same attacking type per Pokémon. Lower values force broader movesets.    |
-| `min_role_types`          | 2       | Each selected Pokémon must be the designated role-holder for at least this many defending types. |
-| `role_threshold_pct`      | 80      | A role only counts if the selected move is super-effective and scores at least this percent of the global best for that defending type. |
+| `min_role_types`          | 2       | Each selected Pokémon must be the designated role-holder for at least this many defending types. Set `0` to remove the per-Pokémon quota. |
+| `role_threshold_pct`      | 80      | A designated attacker must use a super-effective move that scores at least this percent of the global best for that defending type. Set `0` to allow any positive-scoring SE move. |
 | `acc_exponent`            | 2.0     | Accuracy penalty: mult = `(acc/100)^exp`. At 2.0, 85% acc → 0.72×, 70% acc → 0.49×.     |
 | `speed_bonus`             | 0.25    | Bonus for fast Pokémon. At 0.25, the fastest gets 1.25× damage, the slowest gets 1.0×.   |
 

@@ -47,6 +47,24 @@
             min-width:3rem;text-align:right;
         }
         .hint{font-size:.75rem;color:#6e7681;margin-top:.2rem}
+        .section-title{
+            font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+            color:#8b949e;margin:1.35rem 0 .75rem;
+        }
+        .section-title:first-of-type{margin-top:0}
+        .advanced-settings{
+            margin-top:1rem;padding-top:1rem;border-top:1px solid #30363d;
+        }
+        .advanced-settings summary{
+            cursor:pointer;list-style:none;font-size:.875rem;font-weight:600;color:#c9d1d9;
+        }
+        .advanced-settings summary::-webkit-details-marker{display:none}
+        .advanced-settings summary::after{
+            content:'+';
+            float:right;color:#58a6ff;font-size:1rem;line-height:1;
+        }
+        .advanced-settings[open] summary::after{content:'-'}
+        .advanced-body{margin-top:1rem}
 
         .checkbox-field{
             display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;
@@ -253,41 +271,37 @@
     <div id="tab-optimize" class="tab-content active">
     <div class="config-grid">
         <div class="card">
-            <h2>Solver Parameters</h2>
+            <h2>Optimize Settings</h2>
+            <div class="hint" style="margin-bottom:1rem">
+                Start with the default values below. Most runs only need the core coverage and scoring controls.
+            </div>
 
+            <div class="section-title">Core Coverage</div>
             <div class="field">
-                <label for="max-overlap">Max Same-Type Pokémon</label>
+                <label for="max-overlap">Max Shared Team Type</label>
                 <input type="number" id="max-overlap" value="1" min="1" max="6">
-                <div class="hint">How many team members can share a type. 2 means at most 2 Water-types.</div>
+                <div class="hint">How many team members can share a type. `2` means at most 2 Water-types.</div>
             </div>
 
             <div class="field">
-                <label for="min-redundancy">Min SE Coverage Redundancy</label>
+                <label for="min-redundancy">Min SE Backups Per Type</label>
                 <input type="number" id="min-redundancy" value="2" min="1" max="6">
-                <div class="hint">At least this many selected (Pokémon, move) pairs must be super-effective against each enemy type.</div>
+                <div class="hint">At least this many selected (Pokémon, move) pairs must be super-effective into each defending type.</div>
             </div>
 
             <div class="field">
-                <label for="max-same-type-moves">Max Same-Type Moves</label>
+                <label for="max-same-type-moves">Max Repeated Move Type</label>
                 <div class="range-row">
                     <input type="range" id="max-same-type-moves" min="1" max="4" value="2" step="1">
                     <span class="range-value" id="max-same-type-moves-value">2</span>
                 </div>
-                <div class="hint">Max moves of the same attacking type per Pokémon. The solver also prefers team-wide move-type spread as an internal tie-break.</div>
+                <div class="hint">Caps how many moves of the same attacking type one Pokémon can carry. The solver still prefers broader type spread as a tie-break.</div>
             </div>
 
-            <div class="field">
-                <label for="min-role-types">Min Role Types Per Pokémon</label>
-                <input type="number" id="min-role-types" value="2" min="0" max="2">
-                <div class="hint">Each selected Pokémon must be the designated role-holder for at least this many defending types. `2` is the recommended default; `0` disables the role quota.</div>
+            <div class="section-title">Scoring</div>
+            <div class="hint" style="margin-bottom:.75rem">
+                These change the precomputed matchup scores, not the solver structure.
             </div>
-
-            <div class="field">
-                <label for="role-threshold-pct">Role Threshold (% of Best)</label>
-                <input type="number" id="role-threshold-pct" value="80" min="0" max="100" step="5">
-                <div class="hint">A matchup only counts toward a Pokémon's role quota if one of its selected moves is super-effective and scores at least this percentage of the global best score for that defending type.</div>
-            </div>
-
             <div class="field">
                 <label for="acc-exponent">Accuracy Penalty</label>
                 <input type="number" id="acc-exponent" value="2.0" min="0" max="5" step="0.5">
@@ -311,14 +325,35 @@
                 </div>
             </div>
 
+            <div class="section-title">Solver</div>
             <div class="checkbox-field">
                 <input type="checkbox" id="exact-solve">
-                <label for="exact-solve">Exact Solve</label>
+                <label for="exact-solve">Provably Optimal Solve</label>
             </div>
             <div class="hint" style="margin-top:-.5rem;margin-bottom:1rem">
                 Find a provably optimal solution (0% MIP gap, 600s time limit).<br>
                 Slow but guarantees the best result.
             </div>
+
+            <details class="advanced-settings">
+                <summary>Advanced Role Controls</summary>
+                <div class="advanced-body">
+                    <div class="hint" style="margin-bottom:.75rem">
+                        These only matter if you want to tune how matchup roles are assigned. Most runs can leave them alone.
+                    </div>
+                    <div class="field">
+                        <label for="min-role-types">Min Assigned Roles</label>
+                        <input type="number" id="min-role-types" value="2" min="0" max="2">
+                        <div class="hint">How many defending types each selected Pokémon must "own". `0` removes the per-Pokémon quota.</div>
+                    </div>
+
+                    <div class="field">
+                        <label for="role-threshold-pct">Role Strength Threshold (% of Best)</label>
+                        <input type="number" id="role-threshold-pct" value="80" min="0" max="100" step="5">
+                        <div class="hint">A Pokémon can only own a matchup if one of its chosen super-effective moves scores at least this close to the best score for that defending type.</div>
+                    </div>
+                </div>
+            </details>
         </div>
 
         <div class="card">
@@ -350,6 +385,7 @@
                     <select id="lock-move-move"><option value="">Move&hellip;</option></select>
                     <button class="btn btn-sm btn-add" id="add-lock-move-btn">Add</button>
                 </div>
+                <div class="hint">Use this only after locking a Pokémon. For team-wide move requirements, use Must-Have Moves below.</div>
                 <div class="tag-list" id="locked-moves-tags"></div>
             </div>
 
@@ -404,9 +440,8 @@
         <div class="config-grid">
             <div class="card">
                 <h2>Settings</h2>
-                <div class="checkbox-field">
-                    <input type="checkbox" id="pred-allow-legendaries">
-                    <label for="pred-allow-legendaries">Allow Legendaries</label>
+                <div class="hint" style="margin-bottom:1rem">
+                    Uses the same Pokémon list as Optimize, including its legendary filter.
                 </div>
                 <div class="field">
                     <label for="pred-acc-exponent">Accuracy Penalty</label>
@@ -604,8 +639,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadPokemonList() {
-    const leg = document.getElementById('allow-legendaries').checked ||
-                document.getElementById('pred-allow-legendaries').checked;
+    const leg = document.getElementById('allow-legendaries').checked;
     const res = await fetch(`/api/pokemon?allow_legendaries=${leg}`);
     pokemonList = await res.json();
     document.getElementById('pokemon-list').innerHTML =
@@ -867,7 +901,7 @@ function renderResults(data, targetId, heading) {
         if (data.power_val != null && data.diversity_val != null) {
             zInfo = `<div class="z-breakdown">
                 <span class="z-part"><span class="z-label">Coverage z</span> ${data.z_val.toLocaleString()}</span>
-                <span class="z-part"><span class="z-label">Diversity excess</span> ${data.diversity_val.toLocaleString()}</span>
+                <span class="z-part"><span class="z-label">Duplicate penalty</span> ${data.diversity_val.toLocaleString()}</span>
                 <span class="z-part"><span class="z-label">Firepower</span> ${data.power_val.toLocaleString()}</span>
             </div>`;
         }
@@ -1085,7 +1119,6 @@ async function runPredict() {
 
 document.getElementById('pred-add-slot-btn').addEventListener('click', predAddSlot);
 document.getElementById('predict-btn').addEventListener('click', runPredict);
-document.getElementById('pred-allow-legendaries').addEventListener('change', loadPokemonList);
 </script>
 </body>
 </html>
