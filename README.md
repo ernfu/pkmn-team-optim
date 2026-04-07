@@ -8,14 +8,15 @@ The main goal is to find a team where each Pokémon is a strong multi-type speci
 
 The optimizer uses a lexicographic max-min mixed-integer linear program:
 
-**Objective**: Solve lexicographically: first maximise coverage `z`, then minimise duplicate attacking types (both within each Pokémon and across the full team), then maximise total firepower. This finds the best worst-case type coverage without relying on exposed weight tuning.
+**Objective**: Solve lexicographically: first maximise coverage `z` across all non-immune single-type matchups, then minimise duplicate attacking types (both within each Pokémon and across the full team), then maximise total non-immune firepower. This finds the best worst-case type coverage without relying on exposed weight tuning.
 
 **Constraints**:
 
 - **Type overlap cap** - no more than `n` Pokémon sharing any single type (default 1)
-- **SE redundancy** - at least `k` Pokémon with a super-effective move against every defending type (default 2)
+- **SE redundancy** - at least `k` selected (Pokémon, move) pairs that are super-effective against every defending type (default 2)
+- **Role-aware diversity** - each selected Pokémon must be the designated attacker for at least `r` defending types using a super-effective move that scores within `p%` of the global best for that type (defaults: `r=2`, `p=80`)
 
-Each move is scored by: `power × accuracy × STAB × type effectiveness × stat × speed × recoil × priority`, using Gen 3-accurate mechanics (physical/special determined by type, not move). Self-damaging moves (Double-Edge, Take-Down, Submission) are penalised proportionally to their recoil, and unreliable negative-priority moves (Focus Punch) are heavily discounted.
+Each move is scored by: `power × accuracy × STAB × type effectiveness × stat × speed × recoil × priority × move-specific discount`, using Gen 3-accurate mechanics (physical/special determined by type, not move). Before scoring, non-machine/non-tutor attacking moves are heuristically pruned per Pokémon within each attacking type: any move below 80% of that type's best effective-power score is removed, while TM/HM/tutor moves and user-locked moves are preserved. The score table stores only neutral-or-better (≥1×) matchups; not-very-effective and immune entries are skipped. Stages 1 and 3 optimise over that score set, while the redundancy constraint still targets super-effective coverage. Self-damaging moves (Double-Edge, Take-Down, Submission) are penalised proportionally to their recoil, `Explosion`/`Self-Destruct` are further discounted because they KO the user, `Frustration` is mildly discounted because it assumes deliberately minimized friendship, and unreliable negative-priority moves (Focus Punch) are heavily discounted.
 
 See OPTIMISATION.md for full description on the MILP problem.
 
@@ -48,6 +49,8 @@ python -m optimiser --must-have earthquake                   # require Earthquak
 python -m optimiser --max-overlap 2                          # allow 2 Pokémon sharing a type
 python -m optimiser --min-redundancy 1                       # relax SE redundancy to 1
 python -m optimiser --max-same-type-moves 1                  # force 4 distinct attacking types per Pokémon
+python -m optimiser --min-role-types 1                       # require each selected mon to own at least 1 matchup role
+python -m optimiser --role-threshold-pct 90                  # only count roles that are within 90% of best
 python -m optimiser --acc-exponent 3.0                       # harsher penalty on low-accuracy moves
 python -m optimiser --must-have-type water                   # require at least one Water-type Pokémon
 python -m optimiser --data path/to/custom.json               # use a custom compiled JSON file
@@ -80,8 +83,10 @@ gen3-optim/
 | Param                     | Default | Description                                                                              |
 | ------------------------- | ------- | ---------------------------------------------------------------------------------------- |
 | `max_overlap`             | 1       | How many team members can share a type. E.g. 2 means at most 2 Water-types.              |
-| `min_redundancy`          | 2       | At least this many Pokémon must have a super-effective move against each enemy type.      |
+| `min_redundancy`          | 2       | At least this many selected (Pokémon, move) pairs must be super-effective against each enemy type. |
 | `max_same_type_moves`     | 2       | Max moves of the same attacking type per Pokémon. Lower values force broader movesets.    |
+| `min_role_types`          | 2       | Each selected Pokémon must be the designated role-holder for at least this many defending types. |
+| `role_threshold_pct`      | 80      | A role only counts if the selected move is super-effective and scores at least this percent of the global best for that defending type. |
 | `acc_exponent`            | 2.0     | Accuracy penalty: mult = `(acc/100)^exp`. At 2.0, 85% acc → 0.72×, 70% acc → 0.49×.     |
 | `speed_bonus`             | 0.25    | Bonus for fast Pokémon. At 0.25, the fastest gets 1.25× damage, the slowest gets 1.0×.   |
 

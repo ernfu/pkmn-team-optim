@@ -192,6 +192,8 @@ MULTI_TURN_MOVES = {
     "skull-bash",
     "sky-attack",
     "razor-wind",
+    "dream-eater",
+    "future-sight",
 }
 
 RECOIL_MOVES = {

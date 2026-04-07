@@ -12,6 +12,8 @@ from .scoring import (
     ALL_TYPES,
     PHYSICAL_TYPES,
     compute_scores,
+    estimate_damage,
+    filter_dominated_moves,
     has_4x_weakness,
     SE_CHART,
 )
@@ -65,7 +67,7 @@ def display_team(team, pokemon_pool, scores):
         p = poke_by_name[entry["name"]]
         print(f"\n  {p['name'].upper()}")
         print(
-            f"  {'Move':<20} {'Type':<10} {'Pwr':>5} {'Acc':>5} {'Cat':<8} {'Best SE':>8}"
+            f"  {'Move':<20} {'Type':<10} {'Pwr':>5} {'Acc':>5} {'Cat':<8} {'Best Dmg':>8}"
         )
         print("  " + "-" * 62)
         for mname in entry["moves"]:
@@ -78,20 +80,28 @@ def display_team(team, pokemon_pool, scores):
             power_adj = effective_power / 2 if is_mt else effective_power
             acc = md.get("accuracy") or 100
             cat = "Phys" if m_type in PHYSICAL_TYPES else "Spec"
+            atk_base = (
+                p["base_stats"]["attack"]
+                if m_type in PHYSICAL_TYPES
+                else p["base_stats"]["special-attack"]
+            )
 
-            best_se = max(
-                (scores.get((p["name"], mname, t), 0) for t in ALL_TYPES),
+            best_damage = max(
+                (
+                    estimate_damage(effective_power, atk_base, m_type, p["types"], t)
+                    for t in ALL_TYPES
+                ),
                 default=0,
             )
             suffix = "*" if is_mt else ("×" if multi_hit > 1 else "")
             power_display = f"{power_adj:.0f}{suffix}"
             print(
                 f"  {mname:<20} {m_type.capitalize():<10} {power_display:>5} "
-                f"{acc:>5} {cat:<8} {best_se:>8.0f}"
+                f"{acc:>5} {cat:<8} {best_damage:>8.0f}"
             )
 
     # -- Coverage matrix --
-    print("\n\n  TYPE COVERAGE MATRIX  (best SE score per cell, 0 = no SE move)")
+    print("\n\n  TYPE COVERAGE MATRIX  (best damage per cell, 0 = no damaging move)")
     print()
 
     short_names = [e["name"][:8] for e in team]
@@ -111,11 +121,23 @@ def display_team(team, pokemon_pool, scores):
         row_vals = []
         for entry in team:
             p_name = entry["name"]
+            p = poke_by_name[p_name]
             best = 0.0
             for mname in entry["moves"]:
-                s = scores.get((p_name, mname, t), 0)
-                if s > best:
-                    best = s
+                md = move_by_name.get(mname, {})
+                m_type = md.get("type")
+                m_power = md.get("power", 0) or 0
+                if not m_type or m_power <= 0:
+                    continue
+                effective_power = m_power * md.get("multi_hit", 1.0)
+                atk_base = (
+                    p["base_stats"]["attack"]
+                    if m_type in PHYSICAL_TYPES
+                    else p["base_stats"]["special-attack"]
+                )
+                dmg = estimate_damage(effective_power, atk_base, m_type, p["types"], t)
+                if dmg > best:
+                    best = dmg
             row_vals.append(best)
 
         row_best = max(row_vals) if row_vals else 0.0
@@ -131,7 +153,7 @@ def display_team(team, pokemon_pool, scores):
     print()
     if weakest_type:
         print(
-            f"  Weakest link: {weakest_type.capitalize()} (best attacker SE score = {weakest_val:.0f})"
+            f"  Weakest link: {weakest_type.capitalize()} (best attacker damage = {weakest_val:.0f})"
         )
     print()
 
@@ -157,6 +179,18 @@ def main():
         type=int,
         default=2,
         help="Max moves of the same attacking type per Pokémon (default: 2)",
+    )
+    parser.add_argument(
+        "--min-role-types",
+        type=int,
+        default=2,
+        help="Min defending types each selected Pokémon must cover as a role-holder (default: 2)",
+    )
+    parser.add_argument(
+        "--role-threshold-pct",
+        type=float,
+        default=80.0,
+        help="A role counts only if the chosen move is super-effective and within this percent of the best score for that defending type (default: 80)",
     )
     parser.add_argument(
         "--no-legendaries",
@@ -245,6 +279,8 @@ def main():
         max_overlap=args.max_overlap,
         min_redundancy=args.min_redundancy,
         max_same_type_moves=args.max_same_type_moves,
+        min_role_types=args.min_role_types,
+        role_threshold_pct=args.role_threshold_pct,
         no_legendaries=no_legendaries,
         locked_pokemon=locked_pokemon,
         must_have_moves=[m.lower() for m in args.must_have],
@@ -261,6 +297,12 @@ def main():
         pool = [p for p in pool if p["name"] not in excluded]
     print(f"Pool: {len(pool)} fully-evolved Pokémon")
 
+    pool = filter_dominated_moves(
+        pool,
+        protected_moves_by_pokemon={
+            name: set(moves) for name, moves in params.locked_pokemon.items()
+        },
+    )
     print("Pre-computing scores...")
     scores = compute_scores(
         pool,

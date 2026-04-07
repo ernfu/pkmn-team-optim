@@ -1,8 +1,8 @@
 """
 Lexicographic MILP solver for Gen 3 team optimisation using PuLP.
 
-Stage 1 maximises z, a lower bound on single-attacker coverage for every
-defending type. Stage 2 minimises duplicate move types both within each
+Stage 1 maximises z, a lower bound on single-attacker damage for every
+defending type across all non-immune matchups. Stage 2 minimises duplicate move types both within each
 Pokémon and across the team. Stage 3 breaks remaining ties in favour of
 higher total firepower.
 """
@@ -13,7 +13,7 @@ import time
 
 import pulp
 
-from .scoring import ALL_TYPES
+from .scoring import ALL_TYPES, is_super_effective
 
 PIN_TOLERANCE = 1e-6
 
@@ -23,6 +23,8 @@ class Params:
     max_overlap: int = 1
     min_redundancy: int = 2
     max_same_type_moves: int = 2
+    min_role_types: int = 2
+    role_threshold_pct: float = 80.0
     no_legendaries: bool = True
     locked_pokemon: dict[str, list[str]] = field(default_factory=dict)
     must_have_moves: list[str] = field(default_factory=list)
@@ -91,6 +93,41 @@ def _add_tm_constraints(prob, y, single_use_tm_users):
             )
 
 
+def _build_role_qualifiers(
+    poke_names, moves_by_poke, move_type_of, scores, role_threshold_pct
+):
+    """Return qualifying moves for each (pokemon, defending_type) role.
+
+    A move qualifies if it is super-effective against the defending type and
+    its precomputed score is at least the configured percentage of the global
+    best score for that defending type.
+    """
+    pct = max(0.0, min(role_threshold_pct, 100.0)) / 100.0
+    best_score_by_type = {t: 0.0 for t in ALL_TYPES}
+
+    for (_, _, def_type), score in scores.items():
+        if score > best_score_by_type[def_type]:
+            best_score_by_type[def_type] = score
+
+    qualifying: dict[tuple[str, str], list[str]] = {}
+    for p in poke_names:
+        for def_type in ALL_TYPES:
+            threshold = pct * best_score_by_type[def_type]
+            if threshold <= 0:
+                continue
+            moves = [
+                m
+                for m in moves_by_poke[p]
+                if is_super_effective(move_type_of[p][m], def_type)
+                and scores.get((p, m, def_type), 0) > 0
+                and scores.get((p, m, def_type), 0) >= threshold
+            ]
+            if moves:
+                qualifying[p, def_type] = moves
+
+    return qualifying
+
+
 def _solve_with_current_objective(
     prob, solver_kwargs, progress_fn=None, elapsed_offset=0.0, stage_label=""
 ):
@@ -133,6 +170,9 @@ def build_model(pokemon_pool, scores, params):
     """
     idx = _build_index(pokemon_pool, scores, params.unlimited_tms)
     poke_names, poke_by_name, moves_by_poke, move_type_of, single_use_tm_users = idx
+    role_qualifiers = _build_role_qualifiers(
+        poke_names, moves_by_poke, move_type_of, scores, params.role_threshold_pct
+    )
 
     prob = pulp.LpProblem("TeamOptimiser", pulp.LpMaximize)
 
@@ -174,10 +214,12 @@ def build_model(pokemon_pool, scores, params):
             team_type_groups[mtype].append((p, m))
 
         for mtype, mlist in type_groups.items():
-            if params.max_same_type_moves < 4 and len(mlist) > params.max_same_type_moves:
+            if (
+                params.max_same_type_moves < 4
+                and len(mlist) > params.max_same_type_moves
+            ):
                 prob += (
-                    pulp.lpSum(y[p, m] for m in mlist)
-                    <= params.max_same_type_moves,
+                    pulp.lpSum(y[p, m] for m in mlist) <= params.max_same_type_moves,
                     f"type_cap_{p}_{mtype}",
                 )
 
@@ -197,23 +239,23 @@ def build_model(pokemon_pool, scores, params):
         )
         team_duplicates[mtype] = dup_var
 
-    diversity_penalty = (
-        pulp.lpSum(within_duplicates.values()) + pulp.lpSum(team_duplicates.values())
+    diversity_penalty = pulp.lpSum(within_duplicates.values()) + pulp.lpSum(
+        team_duplicates.values()
     )
 
     # -- action-selection: each Pokémon uses at most one move per matchup --
     w = {}
-    se_moves_by_poke_type: dict[tuple[str, str], list[str]] = defaultdict(list)
+    damaging_moves_by_poke_type: dict[tuple[str, str], list[str]] = defaultdict(list)
 
     for p in poke_names:
         for m in moves_by_poke[p]:
             for t in ALL_TYPES:
-                if scores.get((p, m, t), 0) > 0:
+                if (p, m, t) in scores:
                     w[p, m, t] = pulp.LpVariable(f"w_{p}_{m}_{t}", 0, 1)
                     prob += w[p, m, t] <= y[p, m], f"w_req_{p}_{m}_{t}"
-                    se_moves_by_poke_type[p, t].append(m)
+                    damaging_moves_by_poke_type[p, t].append(m)
 
-    for (p, t), mlist in se_moves_by_poke_type.items():
+    for (p, t), mlist in damaging_moves_by_poke_type.items():
         if len(mlist) >= 2:
             prob += (
                 pulp.lpSum(w[p, m, t] for m in mlist) <= 1,
@@ -222,27 +264,47 @@ def build_model(pokemon_pool, scores, params):
 
     # -- single-attacker: only one Pokémon contributes damage per type --
     u = {}
-    pokes_with_se: dict[str, list[str]] = defaultdict(list)
+    pokes_with_damage: dict[str, list[str]] = defaultdict(list)
 
-    for p, t in se_moves_by_poke_type:
+    for p, t in damaging_moves_by_poke_type:
         u[p, t] = pulp.LpVariable(f"u_{p}_{t}", cat="Binary")
         prob += u[p, t] <= x[p], f"u_on_team_{p}_{t}"
-        pokes_with_se[t].append(p)
+        pokes_with_damage[t].append(p)
 
-    for t, plist in pokes_with_se.items():
-        prob += pulp.lpSum(u[p, t] for p in plist) <= 1, f"one_attacker_{t}"
+    for t, plist in pokes_with_damage.items():
+        prob += (
+            pulp.lpSum(u[p, t] for p in plist) <= 1,
+            f"one_attacker_{t}",
+        )
 
     for p, m, t in w:
         prob += w[p, m, t] <= u[p, t], f"w_att_{p}_{m}_{t}"
+
+    for p, t in damaging_moves_by_poke_type:
+        qualifying_moves = role_qualifiers.get((p, t), [])
+        if qualifying_moves:
+            prob += (
+                u[p, t] <= pulp.lpSum(w[p, m, t] for m in qualifying_moves),
+                f"u_role_link_{p}_{t}",
+            )
+        else:
+            prob += u[p, t] == 0, f"u_role_forbidden_{p}_{t}"
+
+    if params.min_role_types > 0:
+        for p in poke_names:
+            prob += (
+                pulp.lpSum(u[p, t] for t in ALL_TYPES if (p, t) in u)
+                >= params.min_role_types * x[p],
+                f"min_role_types_{p}",
+            )
 
     # -- min coverage per type (z is the worst-case lower bound) --
     for t in ALL_TYPES:
         terms = []
         for p in poke_names:
             for m in moves_by_poke[p]:
-                s = scores.get((p, m, t), 0)
-                if s > 0:
-                    terms.append(s * w[p, m, t])
+                if (p, m, t) in w:
+                    terms.append(scores[p, m, t] * w[p, m, t])
         prob += z <= pulp.lpSum(terms), f"min_cov_{t}"
 
     # -- type overlap cap --
@@ -260,7 +322,7 @@ def build_model(pokemon_pool, scores, params):
             y[p, m]
             for p in poke_names
             for m in moves_by_poke[p]
-            if scores.get((p, m, t), 0) > 0
+            if is_super_effective(move_type_of[p][m], t)
         )
         prob += se_pairs >= params.min_redundancy, f"se_redundancy_{t}"
 
@@ -399,6 +461,15 @@ def _diagnose_infeasibility(params):
     if params.min_redundancy >= 2:
         suggestions.append(
             f"Lower min SE redundancy (currently k={params.min_redundancy})"
+        )
+    if params.min_role_types >= 2:
+        suggestions.append(
+            f"Lower min role types per Pokémon (currently r={params.min_role_types})"
+        )
+    if params.role_threshold_pct > 60:
+        suggestions.append(
+            "Lower role threshold percentage "
+            f"(currently {params.role_threshold_pct:.0f}% of best)"
         )
     if params.max_overlap <= 2:
         suggestions.append(f"Raise max type overlap (currently n={params.max_overlap})")

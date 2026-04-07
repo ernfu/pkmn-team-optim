@@ -14,7 +14,7 @@ MILP idea: pick 6 Pokémon and assign each up to 4 moves to maximise the *weakes
 |---|---|
 | $\mathcal{P}$ | Pool of fully-evolved Pokémon (optionally excluding legendaries). Typically $\|\mathcal{P}\| \approx 73$. |
 | $\mathcal{T}$ | The 17 defending types: normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel |
-| $\mathcal{M}_p$ | Set of attacking moves available to Pokémon $p$ (power > 0). Varies per Pokémon; averages ~22 moves. |
+| $\mathcal{M}_p$ | Set of attacking moves available to Pokémon $p$ (power > 0, after dominated-move filtering). Varies per Pokémon; averages ~24 moves. |
 | $\tau(m)$ | Attacking type of move $m$ |
 | $\text{types}(p) \subseteq \mathcal{T}$ | Type(s) of Pokémon $p$ |
 
@@ -24,10 +24,12 @@ MILP idea: pick 6 Pokémon and assign each up to 4 moves to maximise the *weakes
 
 All $S_{p,m,t}$ values are computed before the solver runs - they become **constants** (coefficients) in the MILP, not decision variables. This keeps the formulation linear.
 
-For every triple $(p, m, t)$ where move $m$ is super-effective against defending type $t$:
+Before scoring, each Pokémon's moveset is pruned within each attacking type by a simple heuristic: among non-machine/non-tutor attacking moves, keep every move whose effective-power score is at least 80% of that type's best move for that Pokémon. TM/HM/tutor moves are left untouched to preserve resource semantics, and user-locked moves are always kept.
+
+For every triple $(p, m, t)$ where move $m$ deals at least neutral damage to defending type $t$ (effectiveness $\geq 1\times$):
 
 $$
-S_{p,m,t} = \text{power}_m^{*}  \cdot  \left(\frac{\text{acc}_m}{100}\right)^{\alpha}  \cdot  \text{STAB}_{p,m}  \cdot  2.0  \cdot  \text{stat}_{p,m}  \cdot  \text{speedFactor}_p  \cdot  \text{recoilFactor}_m  \cdot  \text{priorityFactor}_m
+S_{p,m,t} = \text{power}_m^{*}  \cdot  \left(\frac{\text{acc}_m}{100}\right)^{\alpha}  \cdot  \text{STAB}_{p,m}  \cdot  \text{effectiveness}_{m,t}  \cdot  \text{stat}_{p,m}  \cdot  \text{speedFactor}_p  \cdot  \text{recoilFactor}_m  \cdot  \text{priorityFactor}_m  \cdot  \text{moveFactor}_m
 $$
 
 | Term | Value | Notes |
@@ -35,13 +37,28 @@ $$
 | $\text{power}_m^{*}$ | Base power | Proportional to the numerator of the Gen 3 damage formula: $\lfloor\frac{(2L/5+2) \cdot \text{Atk} \cdot \text{Power}}{50 \cdot \text{Def}} + 2\rfloor \cdot \text{Modifier}$. Halved for recharge moves like Hyper Beam)  |
 | $(\text{acc}/100)^\alpha$ | Accuracy factor, $\alpha = 2.0$ default | Converts raw damage to *expected* damage per attempt. The exponent $\alpha > 1$ penalises low-accuracy moves more than a straight probability would - a design choice to reflect that missing matters more than the expected-value calculation suggests (tempo loss, wasted turn). |
 | $\text{STAB}_{p,m}$ | 1.5 or 1.0 | Same-type attack bonus, directly from the game formula |
-| $2.0$ | Constant | Super-effective multiplier. Only SE triples are stored, so this is always 2.0. |
+| $\text{effectiveness}_{m,t}$ | $1.0$ or $2.0$ | Gen 3 monotype effectiveness multiplier. Not-very-effective ($0.5\times$) and immune ($0\times$) matchups are omitted from the score table. |
 | $\text{stat}_{p,m}$ | Base Atk or Sp.Atk | The other half of the damage numerator. Multiplying $\text{stat} \times \text{power}$ is a valid proxy for ranking offensive output because the terms we drop - level factor $(2L/5+2)$, division by $50 \cdot \text{Def}$, the $+2$ floor constant - are either shared across all candidates or unknown (defender's defense). |
 | $\text{speedFactor}$ | See notes | Linear speed bonus: $1 + \beta \cdot (v_p - v_{\min}) / (v_{\max} - v_{\min})$ where $v$ is base speed. $\beta$ (`speed_bonus`, default 0.25) is the max bonus for the fastest Pokémon in the pool. Slowest gets 1.0×, fastest gets $(1+\beta)\times$. |
 | $\text{recoilFactor}_m$ | $1 - \text{recoilPct}$ | Penalises self-damaging moves proportionally to recoil. Double-Edge (33% recoil) gets 0.67×, Take-Down and Submission (25% recoil) get 0.75×. Non-recoil moves get 1.0×. |
 | $\text{priorityFactor}_m$ | $\gamma$ or 1.0 | Penalises negative-priority moves like Focus Punch which fail if the user is hit before attacking. $\gamma$ (`low_priority_factor`, default 0.3) applies to these moves; all others get 1.0×. |
+| $\text{moveFactor}_m$ | Move-specific | Hard-coded discounts for moves whose raw damage is misleading in this optimiser. `Explosion` and `Self-Destruct` get 0.35× because they KO the user, and `Frustration` gets 0.9× because it assumes deliberately minimized friendship. Most moves get 1.0×. |
 
-$S_{p,m,t} = 0$ whenever $m$ is **not** super-effective against $t$. Non-SE moves (neutral, resisted, immune) are invisible to the optimiser - it only cares about SE damage.
+$S_{p,m,t}$ is stored only for neutral ($1\times$) and super-effective ($2\times$) matchups. Not-very-effective ($0.5\times$) and immune ($0\times$) entries are omitted — a resisted matchup is almost never optimal when another team member can hit the same type neutrally or super-effectively. Stages 1 and 3 optimise over this score table, while the `min_redundancy` constraint still only uses the super-effective subset.
+
+For role-aware diversity, define the defending-type best score:
+
+$$
+S_t^{\max} = \max_{p \in \mathcal{P}} \max_{m \in \mathcal{M}_p} S_{p,m,t}
+$$
+
+and the role threshold:
+
+$$
+\theta_t = \rho \, S_t^{\max}
+$$
+
+where $\rho \in [0, 1]$ is the user-facing `role_threshold_pct / 100`. With the default 80%, a selected move must be super-effective and score at least $0.8 \cdot S_t^{\max}$ to count as a legitimate role-holder for defending type $t$.
 
 ### Gen 3 Physical / Special Split
 
@@ -59,12 +76,12 @@ This means a Pokémon with high Atk but low Sp.Atk gets poor scores for Fire/Wat
 | Variable | Type | Count | Purpose |
 |---|---|---|---|
 | $x_p$ | Binary | $\|\mathcal{P}\| \approx 73$ | 1 if Pokémon $p$ is on the team |
-| $y_{p,m}$ | Binary | $\sum_p \|\mathcal{M}_p\| \approx 1600$ | 1 if move $m$ is in $p$'s moveset |
-| $u_{p,t}$ | Binary | ~500 (one per SE-reachable pair) | 1 if Pokémon $p$ is the designated attacker against type $t$ (see §5.5) |
+| $y_{p,m}$ | Binary | $\sum_p \|\mathcal{M}_p\| \approx 1770$ | 1 if move $m$ is in $p$'s moveset |
+| $u_{p,t}$ | Binary | ~1215 (one per reachable pair at $\geq 1\times$) | 1 if Pokémon $p$ is the designated attacker against type $t$ (see §5.5) |
 | $z$ | Continuous | 1 | Auxiliary: the worst-case single-attacker damage we're maximising |
-| $w_{p,m,t}$ | Continuous $[0, 1]$ | ~4000 (one per SE triple) | 1 if Pokémon $p$ uses move $m$ against defending type $t$ (see §5.3–5.4) |
+| $w_{p,m,t}$ | Continuous $[0, 1]$ | ~24000 (one per $\geq 1\times$ triple) | 1 if Pokémon $p$ uses move $m$ against defending type $t$ (see §5.3–5.4) |
 
-The $y$ and $u$ variables are binary; $y$ dominates branching (~1600 vars) while $u$ adds ~500 more for the attacker-assignment. The $w$ variables are continuous and don't add branching complexity.
+The $y$ and $u$ variables are binary; $y$ dominates branching (~1770 vars) while $u$ adds ~1215 more for the attacker-assignment. The $w$ variables are continuous and don't add branching complexity.
 
 ---
 
@@ -127,7 +144,7 @@ This penalises excess repeats beyond the first copy of an attacking type, both w
 
 ### Stage 3: Maximise total firepower
 
-After fixing the optimal values from Stages 1 and 2, the solver maximises:
+After fixing the optimal values from Stages 1 and 2, the solver maximises total selected **non-immune** firepower:
 
 $$
 \max \quad \sum_{t \in \mathcal{T}} \sum_{p \in \mathcal{P}} \sum_{m \in \mathcal{M}_p} S_{p,m,t} \, y_{p,m}
@@ -185,7 +202,7 @@ Structurally this is the same sum as before, but the attacker-assignment constra
 
 ### 5.4 Best Move Per Matchup (action-selection model)
 
-For each SE triple $(p, m, t)$ where $S_{p,m,t} > 0$, introduce a continuous variable $w_{p,m,t} \in [0, 1]$ representing whether Pokémon $p$ uses move $m$ against defending type $t$.
+For each non-immune triple $(p, m, t)$ where $S_{p,m,t} > 0$, introduce a continuous variable $w_{p,m,t} \in [0, 1]$ representing whether Pokémon $p$ uses move $m$ against defending type $t$.
 
 A move can only be used if it is in the Pokémon's selected moveset:
 
@@ -211,7 +228,7 @@ Note that the same Pokémon can use different moves against different defending 
 
 ### 5.5 Single-Attacker Assignment
 
-Only one Pokémon contributes damage per defending type, matching gameplay where a single Pokémon battles at a time. For each $(p, t)$ pair where $p$ has at least one SE move against $t$, introduce a binary variable $u_{p,t}$.
+Only one Pokémon contributes damage per defending type, matching gameplay where a single Pokémon battles at a time. For each $(p, t)$ pair where $p$ has at least one non-immune damaging move against $t$, introduce a binary variable $u_{p,t}$.
 
 At most one Pokémon is the designated attacker per type:
 
@@ -225,9 +242,18 @@ $$
 u_{p,t} \leq x_p \qquad \forall\, p,\, t
 $$
 
-We use $\leq 1$ rather than $= 1$ to avoid infeasibility when no selected Pokémon has SE coverage against a type. At optimality the solver always picks exactly one attacker (since maximising $z$ wants damage as high as possible).
+We use $\leq 1$ rather than $= 1$ to avoid infeasibility when no selected Pokémon has any non-immune damaging move against a type. At optimality the solver always picks exactly one attacker (since maximising $z$ wants damage as high as possible).
 
-The SE redundancy constraint (§5.9) ensures backup attackers exist even though only one contributes to the objective. The final firepower stage then prefers stronger backups among teams that already tie on coverage and diversity.
+When role-aware diversity is enabled, a designated attacker also needs an actual qualifying move for that matchup:
+
+$$
+u_{p,t} \leq \sum_{\substack{m \in \mathcal{M}_p \\ \text{effectiveness}_{m,t} = 2.0 \\ S_{p,m,t} \ge \theta_t}} w_{p,m,t}
+\qquad \forall\, p,\, t
+$$
+
+This means a Pokémon only receives role credit for type $t$ if it actively uses a selected super-effective move that is within the configured percentage of the global best score for that type.
+
+The SE redundancy constraint (§5.9) ensures super-effective backup attackers exist even though only one attacker contributes to the Stage 1 objective. The final firepower stage then prefers stronger all-around non-immune firepower among teams that already tie on coverage and diversity.
 
 ### 5.6 Move-Type Diversity
 
@@ -283,7 +309,19 @@ $$
 
 Unlimited TMs (purchasable repeatedly in FRLG): Ice Beam, Thunderbolt, Flamethrower, Iron Tail, Hyper Beam, Dig, Brick Break, Rest, Secret Power, Attract, Roar.
 
-### 5.11 User Constraints
+### 5.11 Role-Aware Diversity
+
+Each selected Pokémon must own at least $r$ matchup roles:
+
+$$
+\sum_{t \in \mathcal{T}} u_{p,t} \ge r\,x_p \qquad \forall\, p \in \mathcal{P}
+$$
+
+Default $r = 2$.
+
+Because there are 17 defending types and exactly 6 team slots, this constraint is only feasible for $r \le 2$ under the single-attacker formulation.
+
+### 5.12 User Constraints
 
 **Lock Pokémon** - Force $p$ onto the team:
 
@@ -313,12 +351,14 @@ The MILP is solved with **PuLP** using the **HiGHS** solver (`pip install highsp
 
 ### Problem Size
 
-After PuLP builds the model and HiGHS preprocesses it:
+PuLP emits ~53,000 rows and ~27,600 columns; after HiGHS presolve this reduces to roughly:
 
-- ~10,500 rows (constraints), ~6,100 columns (variables), ~1,500 binary
-- The ~500 binary $u_{p,t}$ attacker-assignment variables add branching complexity alongside the ~985 $x$ and $y$ variables
-- The ~4000 $w_{p,m,t}$ variables are continuous $[0,1]$ and don't add branching complexity
-- The ~4000 $w \leq u$ linking constraints are the main row-count increase vs. the sum-based formulation
+- ~52,500 rows (constraints), ~27,000 columns (variables), ~3,060 binary
+- The ~1,215 binary $u_{p,t}$ attacker-assignment variables add branching complexity alongside the ~1,843 $x$ and $y$ variables
+- The ~24,000 $w_{p,m,t}$ variables are continuous $[0,1]$ and don't add branching complexity
+- The $w \leq y$ and $w \leq u$ linking constraints are the main row-count driver
+
+Move pre-filtering and NVE-matchup skipping keep the model from growing further — without them the score table would be ~40% larger.
 
 ---
 
@@ -327,8 +367,10 @@ After PuLP builds the model and HiGHS preprocesses it:
 | Parameter | Symbol | Default | Effect on solve |
 |---|---|---|---|
 | `max_overlap` | $n$ | 1 | How many team members can share a type. Lower values tighten the feasible region - can make the problem infeasible if too restrictive. |
-| `min_redundancy` | $k$ | 2 | At least $k$ Pokémon must have a SE move against each enemy type. Higher values add harder constraints; $k \geq 3$ often infeasible. |
+| `min_redundancy` | $k$ | 2 | At least $k$ selected $(\text{Pokémon}, \text{move})$ pairs must be super-effective against each enemy type. Higher values add harder constraints; $k \geq 3$ often infeasible. |
 | `max_same_type_moves` | $c$ | 2 | Max moves of the same attacking type per Pokémon. At 1, every slot must be a different type; at 4, no restriction. Forces move diversity. |
+| `min_role_types` | $r$ | 2 | Each selected Pokémon must be the designated attacker for at least $r$ defending types. Under the 17-type, 6-slot model this is only feasible for $r \le 2$. |
+| `role_threshold_pct` | $\rho$ | 80 | A role only counts if the selected move is super-effective and scores at least $\rho\%$ of the global best score for that defending type. Lower values relax role ownership; higher values make roles stricter. |
 | `acc_exponent` | $\alpha$ | 2.0 | Accuracy penalty: mult = $(\text{acc}/100)^\alpha$. At 2.0, 85% acc → 0.72×, 70% acc → 0.49×. Only affects pre-computed scores, not the MILP structure. |
 | `speed_bonus` | $\beta$ | 0.25 | Bonus for fast Pokémon. At 0.25, the fastest gets $1.25\times$ damage, the slowest gets $1.0\times$. Linear interpolation. |
 | `low_priority_factor` | $\gamma$ | 0.3 | Multiplier for negative-priority moves (e.g., Focus Punch). 0.3 = 30% credit. Not exposed in CLI/UI. |
@@ -336,6 +378,6 @@ After PuLP builds the model and HiGHS preprocesses it:
 ### Known Limitations
 
 - **Single-type defenders only.** The model treats each of the 17 types independently. Dual-type matchups (e.g., 4× against Ground/Flying, or immunity from Normal/Ghost) are not modelled.
-- **No immunities.** A score of 0 means "not super-effective," but the model doesn't distinguish "neutral" from "immune."
+- **Mixed objective emphasis.** Stages 1 and 3 now optimise over all non-immune monotype matchups, but `min_redundancy` still focuses only on super-effective coverage.
 - **No defensive stats.** HP, Def, Sp.Def are ignored - the model assumes every Pokémon survives long enough to attack.
 - **Speed is a proxy.** The linear bonus approximates the value of moving first but doesn't model actual speed tiers.

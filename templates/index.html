@@ -262,9 +262,9 @@
             </div>
 
             <div class="field">
-                <label for="min-redundancy">Min Super-Effective Move Types</label>
+                <label for="min-redundancy">Min SE Coverage Redundancy</label>
                 <input type="number" id="min-redundancy" value="2" min="1" max="6">
-                <div class="hint">At least this many Pokémon must have a super-effective move against each enemy type.</div>
+                <div class="hint">At least this many selected (Pokémon, move) pairs must be super-effective against each enemy type.</div>
             </div>
 
             <div class="field">
@@ -274,6 +274,18 @@
                     <span class="range-value" id="max-same-type-moves-value">2</span>
                 </div>
                 <div class="hint">Max moves of the same attacking type per Pokémon. The solver also prefers team-wide move-type spread as an internal tie-break.</div>
+            </div>
+
+            <div class="field">
+                <label for="min-role-types">Min Role Types Per Pokémon</label>
+                <input type="number" id="min-role-types" value="2" min="0" max="2">
+                <div class="hint">Each selected Pokémon must be the designated role-holder for at least this many defending types. `2` is the recommended default; `0` disables the role quota.</div>
+            </div>
+
+            <div class="field">
+                <label for="role-threshold-pct">Role Threshold (% of Best)</label>
+                <input type="number" id="role-threshold-pct" value="80" min="0" max="100" step="5">
+                <div class="hint">A matchup only counts toward a Pokémon's role quota if one of its selected moves is super-effective and scores at least this percentage of the global best score for that defending type.</div>
             </div>
 
             <div class="field">
@@ -448,7 +460,8 @@ const ALL_TYPES = [
 
 const STORAGE_KEY = 'gen3_optim_state';
 const DEFAULTS = {
-    maxOverlap: 1, minRedundancy: 2, maxSameTypeMoves: 2, accExponent: 2.0,
+    maxOverlap: 1, minRedundancy: 2, maxSameTypeMoves: 2, minRoleTypes: 2,
+    roleThresholdPct: 80, accExponent: 2.0,
     speedBonus: 25,
     allowLegendaries: false, no4xWeakness: false, exactSolve: false,
     lockedPokemon: [], lockedMoves: [], mustHaveMoves: [],
@@ -460,6 +473,8 @@ function saveState() {
         maxOverlap: parseInt(document.getElementById('max-overlap').value),
         minRedundancy: parseInt(document.getElementById('min-redundancy').value),
         maxSameTypeMoves: parseInt(document.getElementById('max-same-type-moves').value),
+        minRoleTypes: parseInt(document.getElementById('min-role-types').value),
+        roleThresholdPct: parseFloat(document.getElementById('role-threshold-pct').value),
         accExponent: parseFloat(document.getElementById('acc-exponent').value),
         speedBonus: parseInt(document.getElementById('speed-bonus').value),
         allowLegendaries: document.getElementById('allow-legendaries').checked,
@@ -481,6 +496,9 @@ function restoreState() {
     const mstm = s.maxSameTypeMoves ?? DEFAULTS.maxSameTypeMoves;
     document.getElementById('max-same-type-moves').value = mstm;
     document.getElementById('max-same-type-moves-value').textContent = mstm;
+
+    document.getElementById('min-role-types').value = s.minRoleTypes ?? DEFAULTS.minRoleTypes;
+    document.getElementById('role-threshold-pct').value = s.roleThresholdPct ?? DEFAULTS.roleThresholdPct;
 
     document.getElementById('acc-exponent').value = s.accExponent ?? DEFAULTS.accExponent;
 
@@ -513,6 +531,8 @@ function resetState() {
     document.getElementById('min-redundancy').value = DEFAULTS.minRedundancy;
     document.getElementById('max-same-type-moves').value = DEFAULTS.maxSameTypeMoves;
     document.getElementById('max-same-type-moves-value').textContent = DEFAULTS.maxSameTypeMoves;
+    document.getElementById('min-role-types').value = DEFAULTS.minRoleTypes;
+    document.getElementById('role-threshold-pct').value = DEFAULTS.roleThresholdPct;
     document.getElementById('acc-exponent').value = DEFAULTS.accExponent;
     document.getElementById('speed-bonus').value = DEFAULTS.speedBonus;
     document.getElementById('speed-bonus-value').textContent = DEFAULTS.speedBonus + '%';
@@ -552,7 +572,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveState();
     });
 
-    ['max-overlap','min-redundancy','acc-exponent'].forEach(id => {
+    ['max-overlap','min-redundancy','min-role-types','role-threshold-pct','acc-exponent'].forEach(id => {
         document.getElementById(id).addEventListener('change', saveState);
     });
     document.getElementById('allow-legendaries').addEventListener('change', saveState);
@@ -722,9 +742,26 @@ function renderTags(elId, list, removeFn) {
     });
 }
 
-function setProgress(phase, stats) {
+let _elapsedTimer = null;
+
+function _startElapsedTimer() {
+    _stopElapsedTimer();
+    const t0 = performance.now();
+    const statsEl = document.getElementById('progress-stats');
+    const tick = () => {
+        const s = ((performance.now() - t0) / 1000).toFixed(1);
+        statsEl.textContent = `${s}s elapsed`;
+    };
+    tick();
+    _elapsedTimer = setInterval(tick, 100);
+}
+
+function _stopElapsedTimer() {
+    if (_elapsedTimer) { clearInterval(_elapsedTimer); _elapsedTimer = null; }
+}
+
+function setProgress(phase) {
     if (phase) document.getElementById('progress-phase').textContent = phase;
-    document.getElementById('progress-stats').textContent = stats || '';
 }
 
 async function runOptimize() {
@@ -737,13 +774,16 @@ async function runOptimize() {
     loading.hidden = false;
     results.style.display = 'none';
     errorDiv.hidden = true;
-    setProgress('Preparing\u2026', '');
+    setProgress('Preparing\u2026');
+    _startElapsedTimer();
     loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     const payload = {
         max_overlap: parseInt(document.getElementById('max-overlap').value),
         min_redundancy: parseInt(document.getElementById('min-redundancy').value),
         max_same_type_moves: parseInt(document.getElementById('max-same-type-moves').value),
+        min_role_types: parseInt(document.getElementById('min-role-types').value),
+        role_threshold_pct: parseFloat(document.getElementById('role-threshold-pct').value),
         acc_exponent: parseFloat(document.getElementById('acc-exponent').value),
         speed_bonus: parseInt(document.getElementById('speed-bonus').value) / 100,
         allow_legendaries: document.getElementById('allow-legendaries').checked,
@@ -787,26 +827,28 @@ async function runOptimize() {
                 const d = JSON.parse(evtData);
 
                 if (evtType === 'progress') {
-                    const phase = d.phase || 'Solving MILP\u2026';
-                    const elapsed = typeof d.time === 'number' ? `${d.time}s elapsed` : '';
-                    setProgress(phase, elapsed);
+                    setProgress(d.phase || 'Solving MILP\u2026');
                 } else if (evtType === 'phase') {
-                    setProgress(d.phase || 'Preparing\u2026', '');
+                    setProgress(d.phase || 'Preparing\u2026');
                 } else if (evtType === 'result') {
+                    _stopElapsedTimer();
                     setProgress('Done!');
                     renderResults(d);
                     results.style.display = 'block';
                     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 } else if (evtType === 'error') {
+                    _stopElapsedTimer();
                     errorDiv.innerHTML = `<div class="error-msg">${d.message || 'Optimization failed.'}</div>`;
                     errorDiv.hidden = false;
                 }
             }
         }
     } catch (err) {
+        _stopElapsedTimer();
         errorDiv.innerHTML = `<div class="error-msg">Request failed: ${err.message}</div>`;
         errorDiv.hidden = false;
     } finally {
+        _stopElapsedTimer();
         btn.disabled = false;
         setTimeout(() => { loading.hidden = true; }, 600);
     }
@@ -855,7 +897,7 @@ function renderResults(data, targetId, heading) {
             <div class="moveset-card">
                 <div class="ms-header">${ms.pokemon}</div>
                 <table>
-                    <tr><th>Move</th><th>Type</th><th>Pwr</th><th>Acc</th><th>Cat</th><th>SE HP</th></tr>`;
+                    <tr><th>Move</th><th>Type</th><th>Pwr</th><th>Acc</th><th>Cat</th><th>Best Dmg</th></tr>`;
         for (const m of ms.moves) {
             html += `
                 <tr>
@@ -864,7 +906,7 @@ function renderResults(data, targetId, heading) {
                     <td>${m.is_multi_turn ? m.power + '*' : m.power}</td>
                     <td>${m.accuracy}</td>
                     <td>${m.category}</td>
-                    <td>${m.best_se.toLocaleString()}</td>
+                    <td>${m.best_damage.toLocaleString()}</td>
                 </tr>`;
         }
         html += '</table></div>';
@@ -876,7 +918,7 @@ function renderResults(data, targetId, heading) {
 
     html += `
         <div class="coverage-section">
-            <h3>Type Damage Matrix <small style="font-weight:400;color:#8b949e;font-size:.7em">(Lv100 attackers, 0 IV/0 EV &middot; Defender: base 100 Def/SpDef &middot; SE hits only)</small></h3>
+            <h3>Type Damage Matrix <small style="font-weight:400;color:#8b949e;font-size:.7em">(approx. Gen 3 damage &middot; all non-immune single-type matchups)</small></h3>
             <div class="matrix-wrap"><table>
                 <tr>
                     <th>Def Type</th>
