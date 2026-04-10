@@ -1,3 +1,4 @@
 .pokeapi_cache/
 __pycache__/
 *.pyc
+.pixi/
