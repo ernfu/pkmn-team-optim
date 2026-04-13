@@ -1,5 +1,5 @@
 """
-Lexicographic MILP solver for Gen 3 team optimisation using PuLP.
+Lexicographic MILP solver for Pokemon team optimisation using PuLP.
 
 Stage 1 maximises z, a lower bound on single-attacker damage for every
 defending type across all non-immune matchups. Stage 2 minimises duplicate move types both within each
@@ -13,7 +13,7 @@ import time
 
 import pulp
 
-from .scoring import ALL_TYPES, is_super_effective
+from .scoring import is_super_effective, types_for_generation
 
 PIN_TOLERANCE = 1e-6
 SOLVER_TIME_LIMIT_SECONDS = 600
@@ -30,6 +30,7 @@ class Params:
     locked_pokemon: dict[str, list[str]] = field(default_factory=dict)
     must_have_moves: list[str] = field(default_factory=list)
     must_have_types: list[str] = field(default_factory=list)
+    must_include_any_of_pokemon: list[str] = field(default_factory=list)
     unlimited_tms: set[str] = field(default_factory=set)
 
 
@@ -95,7 +96,7 @@ def _add_tm_constraints(prob, y, single_use_tm_users):
 
 
 def _build_role_qualifiers(
-    poke_names, moves_by_poke, move_type_of, scores, role_threshold_pct
+    poke_names, moves_by_poke, move_type_of, scores, role_threshold_pct, generation
 ):
     """Return qualifying moves for each (pokemon, defending_type) role.
 
@@ -104,7 +105,8 @@ def _build_role_qualifiers(
     best score for that defending type.
     """
     pct = max(0.0, min(role_threshold_pct, 100.0)) / 100.0
-    best_score_by_type = {t: 0.0 for t in ALL_TYPES}
+    defending_types = types_for_generation(generation)
+    best_score_by_type = {t: 0.0 for t in defending_types}
 
     for (_, _, def_type), score in scores.items():
         if score > best_score_by_type[def_type]:
@@ -112,12 +114,14 @@ def _build_role_qualifiers(
 
     qualifying: dict[tuple[str, str], list[str]] = {}
     for p in poke_names:
-        for def_type in ALL_TYPES:
+        for def_type in defending_types:
             threshold = pct * best_score_by_type[def_type]
             moves = [
                 m
                 for m in moves_by_poke[p]
-                if is_super_effective(move_type_of[p][m], def_type)
+                if is_super_effective(
+                    move_type_of[p][m], def_type, generation=generation
+                )
                 and scores.get((p, m, def_type), 0) > 0
                 and scores.get((p, m, def_type), 0) >= threshold
             ]
@@ -161,16 +165,22 @@ def _solve_with_current_objective(
     return prob.status == pulp.constants.LpStatusOptimal, elapsed
 
 
-def build_model(pokemon_pool, scores, params):
+def build_model(pokemon_pool, scores, params, generation: int = 3):
     """
     Build the MILP model without solving it.
 
     Returns a Model handle to pass to solve_model.
     """
+    defending_types = types_for_generation(generation)
     idx = _build_index(pokemon_pool, scores, params.unlimited_tms)
     poke_names, poke_by_name, moves_by_poke, move_type_of, single_use_tm_users = idx
     role_qualifiers = _build_role_qualifiers(
-        poke_names, moves_by_poke, move_type_of, scores, params.role_threshold_pct
+        poke_names,
+        moves_by_poke,
+        move_type_of,
+        scores,
+        params.role_threshold_pct,
+        generation,
     )
 
     prob = pulp.LpProblem("TeamOptimiser", pulp.LpMaximize)
@@ -184,7 +194,7 @@ def build_model(pokemon_pool, scores, params):
 
     total_power = pulp.lpSum(
         scores.get((p, m, t), 0) * y[p, m]
-        for t in ALL_TYPES
+        for t in defending_types
         for p in poke_names
         for m in moves_by_poke[p]
     )
@@ -251,7 +261,7 @@ def build_model(pokemon_pool, scores, params):
 
     for p in poke_names:
         for m in moves_by_poke[p]:
-            for t in ALL_TYPES:
+            for t in defending_types:
                 if (p, m, t) in scores:
                     w[p, m, t] = pulp.LpVariable(f"w_{p}_{m}_{t}", 0, 1)
                     prob += w[p, m, t] <= y[p, m], f"w_req_{p}_{m}_{t}"
@@ -298,13 +308,13 @@ def build_model(pokemon_pool, scores, params):
     if params.min_role_types > 0:
         for p in poke_names:
             prob += (
-                pulp.lpSum(u[p, t] for t in ALL_TYPES if (p, t) in u)
+                pulp.lpSum(u[p, t] for t in defending_types if (p, t) in u)
                 >= params.min_role_types * x[p],
                 f"min_role_types_{p}",
             )
 
     # -- min coverage per type (z is the worst-case lower bound) --
-    for t in ALL_TYPES:
+    for t in defending_types:
         terms = []
         for p in poke_names:
             for m in moves_by_poke[p]:
@@ -313,7 +323,7 @@ def build_model(pokemon_pool, scores, params):
         prob += z <= pulp.lpSum(terms), f"min_cov_{t}"
 
     # -- type overlap cap --
-    for t in ALL_TYPES:
+    for t in defending_types:
         pokes_of_type = [p for p in poke_names if t in poke_by_name[p]["types"]]
         if pokes_of_type:
             prob += (
@@ -322,12 +332,12 @@ def build_model(pokemon_pool, scores, params):
             )
 
     # -- SE redundancy --
-    for t in ALL_TYPES:
+    for t in defending_types:
         se_pairs = pulp.lpSum(
             y[p, m]
             for p in poke_names
             for m in moves_by_poke[p]
-            if is_super_effective(move_type_of[p][m], t)
+            if is_super_effective(move_type_of[p][m], t, generation=generation)
         )
         prob += se_pairs >= params.min_redundancy, f"se_redundancy_{t}"
 
@@ -346,16 +356,21 @@ def build_model(pokemon_pool, scores, params):
         carriers = [
             y[p, m] for p in poke_names for m in moves_by_poke[p] if m == must_move
         ]
-        if carriers:
-            prob += pulp.lpSum(carriers) >= 1, f"must_have_{must_move}"
+        prob += pulp.lpSum(carriers) >= 1, f"must_have_{must_move}"
 
     for must_type in params.must_have_types:
         pokes_of_type = [p for p in poke_names if must_type in poke_by_name[p]["types"]]
-        if pokes_of_type:
-            prob += (
-                pulp.lpSum(x[p] for p in pokes_of_type) >= 1,
-                f"must_have_type_{must_type}",
-            )
+        prob += (
+            pulp.lpSum(x[p] for p in pokes_of_type) >= 1,
+            f"must_have_type_{must_type}",
+        )
+
+    if params.must_include_any_of_pokemon:
+        candidate_names = set(params.must_include_any_of_pokemon)
+        prob += (
+            pulp.lpSum(x[p] for p in poke_names if p in candidate_names) == 1,
+            "must_include_any_of_pokemon",
+        )
 
     return Model(
         prob=prob,
@@ -450,16 +465,51 @@ def solve_model(model, progress_fn=None):
     return "Optimal", team, z_val, power_val
 
 
-def optimise(pokemon_pool, scores, params):
+def optimise(pokemon_pool, scores, params, generation: int = 3):
     """Convenience wrapper: build + solve in one call."""
-    model = build_model(pokemon_pool, scores, params)
+    model = build_model(pokemon_pool, scores, params, generation=generation)
     return solve_model(model)
 
 
 def _diagnose_infeasibility(
-    params, *, no_4x_weakness: bool = False, excluded_pokemon=None
+    params, *, pokemon_pool=None, no_4x_weakness: bool = False, excluded_pokemon=None
 ):
     suggestions = []
+    if pokemon_pool is not None:
+        available_types = {t for p in pokemon_pool for t in p.get("types", [])}
+        available_moves = {
+            move["name"] for p in pokemon_pool for move in p.get("moves", [])
+        }
+        missing_types = sorted(
+            must_type
+            for must_type in params.must_have_types
+            if must_type not in available_types
+        )
+        missing_pokemon = sorted(
+            name
+            for name in params.must_include_any_of_pokemon
+            if name not in {p["name"] for p in pokemon_pool}
+        )
+        missing_moves = sorted(
+            must_move
+            for must_move in params.must_have_moves
+            if must_move not in available_moves
+        )
+        if missing_moves:
+            suggestions.append(
+                "Requested Must-Have Moves are unavailable in the current pool: "
+                + ", ".join(missing_moves)
+            )
+        if missing_types:
+            suggestions.append(
+                "Requested Must-Have Types are unavailable in the current pool: "
+                + ", ".join(missing_types)
+            )
+        if missing_pokemon:
+            suggestions.append(
+                "Requested starter candidates are unavailable in the current pool: "
+                + ", ".join(missing_pokemon)
+            )
     if params.min_redundancy >= 2:
         suggestions.append(
             "Lower 'Min SE Backups Per Type' in "
@@ -497,20 +547,24 @@ def _diagnose_infeasibility(
         )
     if params.must_have_moves:
         suggestions.append(
-            "Remove some entries from 'Team Constraints > Must-Have Moves'"
+            "Remove or relax entries from 'Team Constraints > Must-Have Moves' "
+            f"(currently: {', '.join(params.must_have_moves)})"
         )
     if params.must_have_types:
         suggestions.append(
-            "Remove some entries from 'Team Constraints > Must-Have Types'"
+            "Remove or relax entries from 'Team Constraints > Must-Have Types' "
+            f"(currently: {', '.join(params.must_have_types)})"
+        )
+    if params.must_include_any_of_pokemon:
+        suggestions.append(
+            "Turn off 'Team Constraints > Must Include only One Starter'"
         )
     if excluded_pokemon:
         suggestions.append(
             "Remove some entries from 'Team Constraints > Exclude Pokemon'"
         )
     if no_4x_weakness:
-        suggestions.append(
-            "Turn off 'Team Constraints > Exclude 4x Weakness Pokemon'"
-        )
+        suggestions.append("Turn off 'Team Constraints > Exclude 4x Weakness Pokemon'")
     if not suggestions:
         suggestions.append(
             "Relax one of the controls in 'Optimize Settings' or remove a restrictive "
