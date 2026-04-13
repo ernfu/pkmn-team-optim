@@ -206,6 +206,13 @@
         }
         .weakest-callout strong{text-transform:capitalize;color:#f85149}
 
+        .btn-export{
+            background:#21262d;color:#c9d1d9;border:1px solid #30363d;
+            padding:.5rem 1.25rem;border-radius:6px;font-size:.85rem;font-weight:600;
+            cursor:pointer;transition:background .15s;
+        }
+        .btn-export:hover{background:#30363d}
+
         .error-msg{
             background:#161b22;border:1px solid rgba(248,81,73,.2);
             border-left:4px solid #f85149;border-radius:6px;
@@ -262,8 +269,8 @@
 <body>
 <div class="container">
     <header>
-        <h1>Gen 3 Pokemon Team Optimizer</h1>
-        <p>FireRed / LeafGreen &mdash; MILP-powered team builder</p>
+        <h1>Pokemon Team Optimizer</h1>
+        <p>Generation-aware, MILP-powered team builder</p>
     </header>
 
     <div class="tab-bar">
@@ -280,6 +287,19 @@
             <h2>Optimize Settings</h2>
             <div class="hint" style="margin-bottom:1rem">
                 Start here. Most runs can leave Advanced Settings alone.
+            </div>
+
+            <div class="field">
+                <label>Dataset</label>
+                <div style="display:flex;gap:.75rem">
+                    <select id="game-select" style="flex:1">
+                        <option value="">Loading&hellip;</option>
+                    </select>
+                    <select id="dex-select" style="flex:1">
+                        <option value="">Loading&hellip;</option>
+                    </select>
+                </div>
+                <div class="hint">Choose which game and dex variant to optimize against.</div>
             </div>
 
             <div class="field">
@@ -305,17 +325,17 @@
                 </div>
             </div>
 
+            <div class="field">
+                <label for="max-overlap">Max Same Type Per Team</label>
+                <input type="number" id="max-overlap" value="2" min="1" max="6">
+                <div class="hint">Limit how many team members can share a type. E.g. 2 means at most 2 Water-types on your team.</div>
+            </div>
+
             <details class="advanced-settings">
                 <summary>Advanced Settings</summary>
                 <div class="advanced-body">
                     <div class="hint" style="margin-bottom:.75rem">
                         These are usually unnecessary. Defaults here are intentionally relaxed.
-                    </div>
-
-                    <div class="field">
-                        <label for="max-overlap">Max Shared Team Type</label>
-                        <input type="number" id="max-overlap" value="3" min="1" max="6">
-                        <div class="hint">How many team members can share a type. `2` means at most 2 Water-types.</div>
                     </div>
 
                     <div class="field">
@@ -361,6 +381,14 @@
                 <label for="no-4x-weakness">Exclude 4x Weakness Pokémon</label>
             </div>
 
+            <div class="checkbox-field">
+                <input type="checkbox" id="must-include-starter">
+                <label for="must-include-starter">Must Include Only One Starter</label>
+            </div>
+            <div class="hint" style="margin:-.5rem 0 1rem 1.5rem">
+                Uses the fully evolved starter options for the selected dataset.
+            </div>
+
             <div class="field">
                 <label>Lock Pokemon</label>
                 <div class="add-row">
@@ -390,7 +418,7 @@
                 <div class="shortcut-row">
                     <span class="shortcut-label">Shortcut:</span>
                     <button class="btn btn-sm btn-add" id="add-essential-hms-btn" type="button">Add Essential HMs</button>
-                    <span class="hint">Adds `fly`, `cut`, `surf`, `strength`, and `rock-smash`.</span>
+                    <span class="hint" id="essential-hms-hint"></span>
                 </div>
                 <div class="tag-list" id="must-have-tags"></div>
             </div>
@@ -474,35 +502,56 @@ const TYPE_COLORS = {
     grass:'#7AC74C',ice:'#96D9D6',fighting:'#C22E28',poison:'#A33EA1',
     ground:'#E2BF65',flying:'#A98FF3',psychic:'#F95587',bug:'#A6B91A',
     rock:'#B6A136',ghost:'#735797',dragon:'#6F35FC',dark:'#705746',
-    steel:'#B7B7CE'
+    steel:'#B7B7CE',fairy:'#D685AD'
 };
 
 let pokemonList = [];
 let allMovesList = [];
+let datasetList = [];
+let datasetsByGame = {};
 let lockedPokemon = [];
 let lockedMoves = [];
 let mustHaveMoves = [];
 let mustHaveTypes = [];
 let excludedPokemon = [];
-const ESSENTIAL_HM_MOVES = ['fly', 'cut', 'surf', 'strength', 'rock-smash'];
-
-const ALL_TYPES = [
-    'normal','fire','water','electric','grass','ice','fighting','poison',
-    'ground','flying','psychic','bug','rock','ghost','dragon','dark','steel'
-];
+const ESSENTIAL_HM_MOVES_BY_GAME = {
+    'firered-leafgreen': ['fly', 'cut', 'surf', 'strength', 'rock-smash'],
+    'brilliant-diamond-shining-pearl': ['fly', 'cut', 'surf', 'strength', 'rock-smash', 'rock-climb', 'waterfall'],
+};
+function essentialHmMoves() {
+    const vg = currentVersionGroup();
+    for (const [prefix, moves] of Object.entries(ESSENTIAL_HM_MOVES_BY_GAME)) {
+        if (vg.startsWith(prefix)) return moves;
+    }
+    return ESSENTIAL_HM_MOVES_BY_GAME['firered-leafgreen'];
+}
+function refreshEssentialHmsHint() {
+    const moves = essentialHmMoves();
+    const formatted = moves.map(m => `\`${m}\``);
+    const last = formatted.pop();
+    document.getElementById('essential-hms-hint').textContent =
+        `Adds ${formatted.join(', ')}, and ${last}.`;
+}
+function refreshEssentialHmsVisibility() {
+    const vg = currentVersionGroup();
+    const hidden = vg.startsWith('brilliant-diamond-shining-pearl');
+    document.getElementById('add-essential-hms-btn').closest('.shortcut-row').style.display = hidden ? 'none' : '';
+}
 
 const STORAGE_KEY = 'gen3_optim_state';
 const DEFAULTS = {
-    maxOverlap: 3, minRedundancy: 1, maxSameTypeMoves: 4, minRoleTypes: 1,
+    versionGroup: 'firered-leafgreen-regional',
+    maxOverlap: 2, minRedundancy: 1, maxSameTypeMoves: 4, minRoleTypes: 1,
     roleThresholdPct: 80, accExponent: 2.0,
     speedBonus: 25,
-    allowLegendaries: false, no4xWeakness: false,
+    allowLegendaries: false, no4xWeakness: false, mustIncludeStarter: false,
     lockedPokemon: [], lockedMoves: [], mustHaveMoves: [],
     mustHaveTypes: [], excludedPokemon: [],
 };
 
 function saveState() {
     const state = {
+        versionGroup: document.getElementById('dex-select').value,
         maxOverlap: parseInt(document.getElementById('max-overlap').value),
         minRedundancy: parseInt(document.getElementById('min-redundancy').value),
         maxSameTypeMoves: parseInt(document.getElementById('max-same-type-moves').value),
@@ -512,6 +561,7 @@ function saveState() {
         speedBonus: parseInt(document.getElementById('speed-bonus').value),
         allowLegendaries: document.getElementById('allow-legendaries').checked,
         no4xWeakness: document.getElementById('no-4x-weakness').checked,
+        mustIncludeStarter: document.getElementById('must-include-starter').checked,
         lockedPokemon, lockedMoves, mustHaveMoves, mustHaveTypes, excludedPokemon,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -521,6 +571,14 @@ function restoreState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
     try { var s = JSON.parse(raw); } catch { return; }
+
+    const savedVg = s.versionGroup ?? DEFAULTS.versionGroup;
+    const savedDs = datasetList.find(d => d.version_group === savedVg);
+    if (savedDs) {
+        document.getElementById('game-select').value = savedDs.game_key || savedDs.version_group;
+        refreshDexSelect(savedVg);
+    }
+    refreshMustHaveTypeOptions();
 
     document.getElementById('max-overlap').value = s.maxOverlap ?? DEFAULTS.maxOverlap;
     document.getElementById('min-redundancy').value = s.minRedundancy ?? DEFAULTS.minRedundancy;
@@ -540,6 +598,7 @@ function restoreState() {
 
     document.getElementById('allow-legendaries').checked = s.allowLegendaries ?? DEFAULTS.allowLegendaries;
     document.getElementById('no-4x-weakness').checked = s.no4xWeakness ?? DEFAULTS.no4xWeakness;
+    document.getElementById('must-include-starter').checked = s.mustIncludeStarter ?? DEFAULTS.mustIncludeStarter;
 
     lockedPokemon = s.lockedPokemon ?? [];
     lockedMoves = s.lockedMoves ?? [];
@@ -558,6 +617,13 @@ function restoreState() {
 function resetState() {
     localStorage.removeItem(STORAGE_KEY);
 
+    const defaultDs = datasetList.find(d => d.version_group === DEFAULTS.versionGroup);
+    if (defaultDs) {
+        document.getElementById('game-select').value = defaultDs.game_key || defaultDs.version_group;
+        refreshDexSelect(DEFAULTS.versionGroup);
+    }
+    refreshMustHaveTypeOptions();
+
     document.getElementById('max-overlap').value = DEFAULTS.maxOverlap;
     document.getElementById('min-redundancy').value = DEFAULTS.minRedundancy;
     document.getElementById('max-same-type-moves').value = DEFAULTS.maxSameTypeMoves;
@@ -569,6 +635,7 @@ function resetState() {
     document.getElementById('speed-bonus-value').textContent = DEFAULTS.speedBonus + '%';
     document.getElementById('allow-legendaries').checked = DEFAULTS.allowLegendaries;
     document.getElementById('no-4x-weakness').checked = DEFAULTS.no4xWeakness;
+    document.getElementById('must-include-starter').checked = DEFAULTS.mustIncludeStarter;
 
     lockedPokemon = [];
     lockedMoves = [];
@@ -586,12 +653,122 @@ function resetState() {
     document.getElementById('results').style.display = 'none';
     document.getElementById('error').hidden = true;
 
-    loadPokemonList();
+    Promise.all([loadPokemonList(), loadAllMoves()]).then(() => {
+        sanitizeSelections();
+    });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    Promise.all([loadPokemonList(), loadAllMoves()]);
-    document.getElementById('allow-legendaries').addEventListener('change', loadPokemonList);
+function currentVersionGroup() {
+    return document.getElementById('dex-select').value || DEFAULTS.versionGroup;
+}
+
+function refreshDexSelect(preserveValue) {
+    const gameKey = document.getElementById('game-select').value;
+    const dexSel = document.getElementById('dex-select');
+    const variants = datasetsByGame[gameKey] || [];
+    dexSel.innerHTML = variants.map(d => {
+        const dexLabel = d.dex_type === 'national' ? 'National Dex' : 'Regional Dex';
+        return `<option value="${d.version_group}">${dexLabel}</option>`;
+    }).join('');
+    if (preserveValue && variants.some(d => d.version_group === preserveValue)) {
+        dexSel.value = preserveValue;
+    }
+}
+
+function currentDatasetMeta() {
+    const versionGroup = currentVersionGroup();
+    return datasetList.find(d => d.version_group === versionGroup) || null;
+}
+
+function availableTypesForCurrentDataset() {
+    return currentDatasetMeta()?.available_types || [];
+}
+
+function refreshMustHaveTypeOptions() {
+    const typeSel = document.getElementById('must-have-type-input');
+    const options = availableTypesForCurrentDataset();
+    typeSel.innerHTML = '<option value="">Select type\u2026</option>' +
+        options.map(t => `<option value="${t}">${t[0].toUpperCase() + t.slice(1)}</option>`).join('');
+}
+
+function sanitizeSelections() {
+    const validPokemon = new Set(pokemonList);
+    const validMoves = new Set(allMovesList);
+    const validTypes = new Set(availableTypesForCurrentDataset());
+
+    excludedPokemon = excludedPokemon.filter(name => validPokemon.has(name));
+    lockedPokemon = lockedPokemon.filter(name => validPokemon.has(name));
+    lockedMoves = lockedMoves.filter(lm =>
+        validPokemon.has(lm.pokemon) && lockedPokemon.includes(lm.pokemon)
+    );
+    mustHaveMoves = mustHaveMoves.filter(name => validMoves.has(name));
+    mustHaveTypes = mustHaveTypes.filter(name => validTypes.has(name));
+
+    renderTags('excluded-pokemon-tags', excludedPokemon, removeExcludedPokemon);
+    renderTags('locked-pokemon-tags', lockedPokemon, removeLockedPokemon);
+    renderLockedMoves();
+    renderTags('must-have-tags', mustHaveMoves, removeMustHave);
+    renderTags('must-have-type-tags', mustHaveTypes, removeMustHaveType);
+    refreshLockMovePokeSelect();
+}
+
+async function loadDatasets() {
+    const res = await fetch('/api/datasets');
+    const payload = await res.json();
+    datasetList = payload.datasets.filter(d => d.compiled);
+
+    datasetsByGame = {};
+    for (const d of datasetList) {
+        const key = d.game_key || d.version_group;
+        if (!datasetsByGame[key]) datasetsByGame[key] = [];
+        datasetsByGame[key].push(d);
+    }
+
+    const gameSel = document.getElementById('game-select');
+    const seen = new Set();
+    gameSel.innerHTML = '';
+    for (const d of datasetList) {
+        const key = d.game_key || d.version_group;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = `${d.game_label || d.label} (Gen ${d.generation})`;
+        gameSel.appendChild(opt);
+    }
+
+    if (!datasetList.some(d => d.version_group === DEFAULTS.versionGroup) && datasetList.length > 0) {
+        DEFAULTS.versionGroup = datasetList[0].version_group;
+    }
+
+    const defaultVg = payload.default_version_group || DEFAULTS.versionGroup;
+    const defaultDs = datasetList.find(d => d.version_group === defaultVg);
+    if (defaultDs) {
+        gameSel.value = defaultDs.game_key || defaultDs.version_group;
+    }
+    refreshDexSelect(defaultVg);
+}
+
+async function handleDatasetChange() {
+    await Promise.all([loadPokemonList(), loadAllMoves()]);
+    refreshMustHaveTypeOptions();
+    refreshEssentialHmsHint();
+    refreshEssentialHmsVisibility();
+    sanitizeSelections();
+    saveState();
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadDatasets();
+    restoreState();
+    await Promise.all([loadPokemonList(), loadAllMoves()]);
+    refreshEssentialHmsVisibility();
+    sanitizeSelections();
+    document.getElementById('game-select').addEventListener('change', () => {
+        refreshDexSelect();
+        handleDatasetChange();
+    });
+    document.getElementById('dex-select').addEventListener('change', handleDatasetChange);
     document.getElementById('lock-move-poke').addEventListener('change', loadMovesForPoke);
     document.getElementById('speed-bonus').addEventListener('input', e => {
         document.getElementById('speed-bonus-value').textContent = e.target.value + '%';
@@ -607,6 +784,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('allow-legendaries').addEventListener('change', saveState);
     document.getElementById('no-4x-weakness').addEventListener('change', saveState);
+    document.getElementById('must-include-starter').addEventListener('change', saveState);
     document.getElementById('add-exclude-btn').addEventListener('click', addExcludedPokemon);
     document.getElementById('exclude-poke-input').addEventListener('keydown', e => {
         if (e.key === 'Enter') { e.preventDefault(); addExcludedPokemon(); }
@@ -619,9 +797,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('optimize-btn').addEventListener('click', runOptimize);
     document.getElementById('reset-btn').addEventListener('click', resetState);
 
-    const typeSel = document.getElementById('must-have-type-input');
-    typeSel.innerHTML = '<option value="">Select type\u2026</option>' +
-        ALL_TYPES.map(t => `<option value="${t}">${t[0].toUpperCase() + t.slice(1)}</option>`).join('');
+    refreshMustHaveTypeOptions();
+    refreshEssentialHmsHint();
 
     document.getElementById('lock-poke-input').addEventListener('keydown', e => {
         if (e.key === 'Enter') { e.preventDefault(); addLockedPokemon(); }
@@ -629,13 +806,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('must-have-input').addEventListener('keydown', e => {
         if (e.key === 'Enter') { e.preventDefault(); addMustHave(); }
     });
-
-    restoreState();
 });
 
 async function loadPokemonList() {
-    const leg = document.getElementById('allow-legendaries').checked;
-    const res = await fetch(`/api/pokemon?allow_legendaries=${leg}`);
+    const vg = currentVersionGroup();
+    const res = await fetch(`/api/pokemon?version_group=${vg}`);
     pokemonList = await res.json();
     document.getElementById('pokemon-list').innerHTML =
         pokemonList.map(n => `<option value="${n}">`).join('');
@@ -643,7 +818,8 @@ async function loadPokemonList() {
 }
 
 async function loadAllMoves() {
-    const res = await fetch('/api/all-moves');
+    const vg = currentVersionGroup();
+    const res = await fetch(`/api/all-moves?version_group=${vg}`);
     allMovesList = await res.json();
     document.getElementById('all-moves-list').innerHTML =
         allMovesList.map(n => `<option value="${n}">`).join('');
@@ -659,7 +835,8 @@ async function loadMovesForPoke() {
     const poke = document.getElementById('lock-move-poke').value;
     const moveSel = document.getElementById('lock-move-move');
     if (!poke) { moveSel.innerHTML = '<option value="">Move\u2026</option>'; return; }
-    const res = await fetch(`/api/moves/${poke}`);
+    const vg = currentVersionGroup();
+    const res = await fetch(`/api/moves/${poke}?version_group=${vg}`);
     const moves = await res.json();
     moveSel.innerHTML = '<option value="">Move\u2026</option>' +
         moves.map(m => `<option value="${m}">${m}</option>`).join('');
@@ -741,7 +918,7 @@ function addMustHave() {
 
 function addEssentialHms() {
     let changed = false;
-    for (const move of ESSENTIAL_HM_MOVES) {
+    for (const move of essentialHmMoves()) {
         if (mustHaveMoves.includes(move)) continue;
         mustHaveMoves.push(move);
         changed = true;
@@ -783,6 +960,8 @@ function renderTags(elId, list, removeFn) {
     });
 }
 
+let _lastResult = null;
+let _lastPayload = null;
 let _elapsedTimer = null;
 
 function _startElapsedTimer() {
@@ -820,6 +999,7 @@ async function runOptimize() {
     loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     const payload = {
+        version_group: currentVersionGroup(),
         max_overlap: parseInt(document.getElementById('max-overlap').value),
         min_redundancy: parseInt(document.getElementById('min-redundancy').value),
         max_same_type_moves: parseInt(document.getElementById('max-same-type-moves').value),
@@ -829,6 +1009,7 @@ async function runOptimize() {
         speed_bonus: parseInt(document.getElementById('speed-bonus').value) / 100,
         allow_legendaries: document.getElementById('allow-legendaries').checked,
         no_4x_weakness: document.getElementById('no-4x-weakness').checked,
+        must_include_starter: document.getElementById('must-include-starter').checked,
         locked_pokemon: lockedPokemon,
         locked_moves: lockedMoves,
         must_have_moves: mustHaveMoves,
@@ -873,6 +1054,8 @@ async function runOptimize() {
                 } else if (evtType === 'result') {
                     _stopElapsedTimer();
                     setProgress('Done!');
+                    _lastResult = d;
+                    _lastPayload = payload;
                     renderResults(d);
                     results.style.display = 'block';
                     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -912,10 +1095,12 @@ function renderResults(data, targetId, heading) {
             </div>`;
         }
     }
+    const exportBtn = (_lastResult === data && _lastPayload)
+        ? `<button class="btn-export" onclick="exportCSV()">Export CSV</button>` : '';
     let html = `
         <div class="results-header">
-            <h2>${heading || 'Optimal Team'}</h2>
-            ${zInfo}
+            <h2>${heading || 'Optimal Team'}${data.label ? ` (${data.label})` : ''}</h2>
+            <div style="display:flex;align-items:center;gap:1rem">${exportBtn}${zInfo}</div>
         </div>`;
 
     html += '<div class="team-grid">';
@@ -958,7 +1143,7 @@ function renderResults(data, targetId, heading) {
 
     html += `
         <div class="coverage-section">
-            <h3>Type Damage Matrix <small style="font-weight:400;color:#8b949e;font-size:.7em">(approx. Gen 3 damage &middot; all non-immune single-type matchups)</small></h3>
+            <h3>Type Damage Matrix <small style="font-weight:400;color:#8b949e;font-size:.7em">(approx. Gen ${data.generation || 3} damage &middot; all non-immune single-type matchups)</small></h3>
             <div class="matrix-wrap"><table>
                 <tr>
                     <th>Def Type</th>
@@ -989,6 +1174,62 @@ function renderResults(data, targetId, heading) {
     }
 
     el.innerHTML = html;
+}
+
+function exportCSV() {
+    if (!_lastResult || !_lastPayload) return;
+    const p = _lastPayload;
+    const r = _lastResult;
+    const esc = v => {
+        const s = String(v ?? '');
+        return s.includes(',') || s.includes('"') || s.includes('\n')
+            ? '"' + s.replace(/"/g, '""') + '"' : s;
+    };
+    const rows = [];
+
+    rows.push(['=== Solver Parameters ===']);
+    rows.push(['Dataset', esc(p.version_group)]);
+    rows.push(['Accuracy Penalty', p.acc_exponent]);
+    rows.push(['Speed Bonus', p.speed_bonus]);
+    rows.push(['Max Same Type Per Team', p.max_overlap]);
+    rows.push(['Min SE Backups Per Type', p.min_redundancy]);
+    rows.push(['Max Repeated Move Type', p.max_same_type_moves]);
+    rows.push(['Min Assigned Roles', p.min_role_types]);
+    rows.push(['Role Strength Threshold %', p.role_threshold_pct]);
+    rows.push(['Allow Legendaries', p.allow_legendaries]);
+    rows.push(['Exclude 4x Weakness', p.no_4x_weakness]);
+    rows.push(['Must Include Starter', p.must_include_starter]);
+    rows.push(['Locked Pokemon', esc((p.locked_pokemon || []).join('; '))]);
+    rows.push(['Locked Moves', esc((p.locked_moves || []).map(lm => lm.pokemon + ':' + lm.move).join('; '))]);
+    rows.push(['Must-Have Moves', esc((p.must_have_moves || []).join('; '))]);
+    rows.push(['Must-Have Types', esc((p.must_have_types || []).join('; '))]);
+    rows.push(['Excluded Pokemon', esc((p.excluded_pokemon || []).join('; '))]);
+    rows.push([]);
+
+    rows.push(['=== Team ===']);
+    rows.push(['Pokemon', 'Type 1', 'Type 2', 'Atk', 'SpA']);
+    for (const m of r.roster) {
+        rows.push([esc(m.name), esc(m.types[0] || ''), esc(m.types[1] || ''), m.attack, m.special_attack]);
+    }
+    rows.push([]);
+
+    rows.push(['=== Movesets ===']);
+    rows.push(['Pokemon', 'Move', 'Type', 'Power', 'Accuracy', 'Category', 'Best Damage']);
+    for (const ms of r.movesets) {
+        for (const m of ms.moves) {
+            rows.push([esc(ms.pokemon), esc(m.name), esc(m.type), m.power, m.accuracy, esc(m.category), m.best_damage]);
+        }
+    }
+
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    a.download = `team_${p.version_group}_${ts}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
 // --- Tab switching ---
@@ -1050,7 +1291,8 @@ function predRenderSlots() {
             const name = input.value.trim().toLowerCase();
             if (!name || !pokemonList.includes(name)) return;
             slot.pokemon = name;
-            const res = await fetch(`/api/moves/${name}`);
+            const vg = currentVersionGroup();
+            const res = await fetch(`/api/moves/${name}?version_group=${vg}`);
             slot.availableMoves = await res.json();
             slot.moves = ['','','',''];
             predRenderSlots();
@@ -1102,6 +1344,7 @@ async function runPredict() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                version_group: currentVersionGroup(),
                 team,
                 acc_exponent: parseFloat(document.getElementById('pred-acc-exponent').value),
             }),
