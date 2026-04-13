@@ -1,10 +1,10 @@
-# Optimisation Problem - Gen 3 Pokémon Team Optimizer
+# Optimisation Problem - Pokémon Team Optimizer
 
 A lexicographic **max-min Mixed-Integer Linear Program (MILP)** that selects a 6-Pokémon team maximising worst-case super-effective damage from a **single attacker**, solved with PuLP (HiGHS).
 
 The main goal is to find a team where each Pokémon is a strong multi-type specialist, and the team collectively covers all types with best-in-class attackers.
 
-MILP idea: pick 6 Pokémon and assign each up to 4 moves to maximise the *weakest* best-single-attacker damage across all 17 defending types. Only one Pokémon battles at a time (matching gameplay), so damage against a type is determined by the team's strongest specialist, not the sum of all members. Brute-force over $\binom{73}{6} \approx 7 \times 10^8$ team combinations (73 full evolves, pick 6) with $\sim 20^4$ moveset assignments each is infeasible, so we formulate it as a MILP and let a branch-and-bound solver handle it.
+MILP idea: pick 6 Pokémon and assign each up to 4 moves to maximise the *weakest* best-single-attacker damage across all 17 defending types. Only one Pokémon battles at a time (matching gameplay), so damage against a type is determined by the team's strongest specialist, not the sum of all members. Brute-force over $\binom{N}{6}$ team combinations (where $N$ is the number of fully-evolved Pokemon in the dataset) with $\sim 20^4$ moveset assignments each is infeasible, so we formulate it as a MILP and let a branch-and-bound solver handle it.
 
 ---
 
@@ -12,7 +12,7 @@ MILP idea: pick 6 Pokémon and assign each up to 4 moves to maximise the *weakes
 
 | Symbol | Meaning |
 |---|---|
-| $\mathcal{P}$ | Pool of fully-evolved Pokémon (optionally excluding legendaries). Typically $\|\mathcal{P}\| \approx 73$. |
+| $\mathcal{P}$ | Pool of fully-evolved Pokémon (optionally excluding legendaries). Size varies by dataset. |
 | $\mathcal{T}$ | The 17 defending types: normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel |
 | $\mathcal{M}_p$ | Set of attacking moves available to Pokémon $p$ (power > 0, after dominated-move filtering). Varies per Pokémon; averages ~24 moves. |
 | $\tau(m)$ | Attacking type of move $m$ |
@@ -34,17 +34,17 @@ $$
 
 | Term | Value | Notes |
 |---|---|---|
-| $\text{power}_m^{*}$ | Base power | Proportional to the numerator of the Gen 3 damage formula: $\lfloor\frac{(2L/5+2) \cdot \text{Atk} \cdot \text{Power}}{50 \cdot \text{Def}} + 2\rfloor \cdot \text{Modifier}$. Halved for recharge moves like Hyper Beam)  |
+| $\text{power}_m^{*}$ | Base power | Proportional to the numerator of the standard damage formula: $\lfloor\frac{(2L/5+2) \cdot \text{Atk} \cdot \text{Power}}{50 \cdot \text{Def}} + 2\rfloor \cdot \text{Modifier}$. Halved for recharge moves like Hyper Beam)  |
 | $(\text{acc}/100)^\alpha$ | Accuracy factor, $\alpha = 2.0$ default | Converts raw damage to *expected* damage per attempt. The exponent $\alpha > 1$ penalises low-accuracy moves more than a straight probability would - a design choice to reflect that missing matters more than the expected-value calculation suggests (tempo loss, wasted turn). |
 | $\text{STAB}_{p,m}$ | 1.5 or 1.0 | Same-type attack bonus, directly from the game formula |
-| $\text{effectiveness}_{m,t}$ | $1.0$ or $2.0$ | Gen 3 monotype effectiveness multiplier. Not-very-effective ($0.5\times$) and immune ($0\times$) matchups are omitted from the score table. |
+| $\text{effectiveness}_{m,t}$ | $1.0$ or $2.0$ | Monotype effectiveness multiplier. Not-very-effective ($0.5\times$) and immune ($0\times$) matchups are omitted from the score table. |
 | $\text{stat}_{p,m}$ | Base Atk or Sp.Atk | The other half of the damage numerator. Multiplying $\text{stat} \times \text{power}$ is a valid proxy for ranking offensive output because the terms we drop - level factor $(2L/5+2)$, division by $50 \cdot \text{Def}$, the $+2$ floor constant - are either shared across all candidates or unknown (defender's defense). |
 | $\text{speedFactor}$ | See notes | Linear speed bonus: $1 + \beta \cdot (v_p - v_{\min}) / (v_{\max} - v_{\min})$ where $v$ is base speed. $\beta$ (`speed_bonus`, default 0.25) is the max bonus for the fastest Pokémon in the pool. Slowest gets 1.0×, fastest gets $(1+\beta)\times$. |
 | $\text{recoilFactor}_m$ | $1 - \text{recoilPct}$ | Penalises self-damaging moves proportionally to recoil. Double-Edge (33% recoil) gets 0.67×, Take-Down and Submission (25% recoil) get 0.75×. Non-recoil moves get 1.0×. |
 | $\text{priorityFactor}_m$ | $\gamma$ or 1.0 | Penalises negative-priority moves like Focus Punch which fail if the user is hit before attacking. $\gamma$ (`low_priority_factor`, default 0.3) applies to these moves; all others get 1.0×. |
 | $\text{moveFactor}_m$ | Move-specific | Hard-coded discounts for moves whose raw damage is misleading in this optimiser. `Explosion` and `Self-Destruct` get 0.35× because they KO the user, `Overheat` gets 0.8× because it sharply lowers the user's Special Attack after firing, and `Frustration` gets 0.1× because it assumes deliberately minimized friendship. Most moves get 1.0×. |
 
-$S_{p,m,t}$ is stored only for neutral ($1\times$) and super-effective ($2\times$) matchups. Not-very-effective ($0.5\times$) and immune ($0\times$) entries are omitted — a resisted matchup is almost never optimal when another team member can hit the same type neutrally or super-effectively. Stages 1 and 3 optimise over this score table, while the `min_redundancy` constraint still only uses the super-effective subset.
+$S_{p,m,t}$ is stored only for neutral ($1\times$) and super-effective ($2\times$) matchups. Not-very-effective ($0.5\times$) and immune ($0\times$) entries are omitted - a resisted matchup is almost never optimal when another team member can hit the same type neutrally or super-effectively. Stages 1 and 3 optimise over this full score table so the solver can prefer a strong STAB neutral hit over a weak super-effective one. The `min_redundancy` constraint intentionally counts only super-effective moves: expanding it to neutral hits would make it trivially satisfied (most of the 24 team moves are at least neutral against any given type) and remove the guarantee of genuine SE backup.
 
 For role-aware diversity, define the defending-type best score:
 
@@ -60,9 +60,9 @@ $$
 
 where $\rho \in [0, 1]$ is the user-facing `role_threshold_pct / 100`. With the default 80%, a selected move must be super-effective and score at least $0.8 \cdot S_t^{\max}$ to count as a legitimate role-holder for defending type $t$.
 
-### Gen 3 Physical / Special Split
+### Physical / Special Split (Gen 3)
 
-In Gen 3 (unlike Gen 4+), physical vs. special is determined by the **move's type**, not the move itself:
+In Gen 3 games (unlike Gen 4+), physical vs. special is determined by the **move's type**, not the move itself. Gen 4+ games use per-move categories instead.
 
 - **Physical:** Normal, Fighting, Flying, Poison, Ground, Rock, Bug, Ghost, Steel
 - **Special:** Fire, Water, Electric, Grass, Ice, Psychic, Dragon, Dark
@@ -154,7 +154,7 @@ This is a pure tie-break among equally strong and equally diverse teams, so ther
 
 ### Equivalence to max-min-max
 
-The natural formulation is $\max \min_{t} \max_{p} d_{p,t}$ — maximise the worst-case damage when only the best single attacker fights each type. Both $\min$ and $\max$ are non-linear.
+The natural formulation is $\max \min_{t} \max_{p} d_{p,t}$ - maximise the worst-case damage when only the best single attacker fights each type. Both $\min$ and $\max$ are non-linear.
 
 The outer $\min$ is linearised with the standard epigraph trick: introduce $z \in \mathbb{R}$ and add one constraint per type:
 
@@ -198,7 +198,7 @@ $$
 z  \leq  \sum_{p \in \mathcal{P}} \sum_{m \in \mathcal{M}_p} S_{p,m,t} \cdot w_{p,m,t} \qquad \forall\, t \in \mathcal{T}
 $$
 
-Structurally this is the same sum as before, but the attacker-assignment constraints (§5.5) force $w_{p,m,t} = 0$ for every Pokémon except the one designated attacker. The effective value is therefore $\max_p \max_m S_{p,m,t} \cdot y_{p,m}$ — the best single Pokémon's best move. This matches gameplay where only one Pokémon battles at a time.
+Structurally this is the same sum as before, but the attacker-assignment constraints (§5.5) force $w_{p,m,t} = 0$ for every Pokémon except the one designated attacker. The effective value is therefore $\max_p \max_m S_{p,m,t} \cdot y_{p,m}$ - the best single Pokémon's best move. This matches gameplay where only one Pokémon battles at a time.
 
 ### 5.4 Best Move Per Matchup (action-selection model)
 
@@ -222,7 +222,7 @@ $$
 \sum_{\substack{m \in \mathcal{M}_p \\ S_{p,m,t} > 0}} w_{p,m,t} \leq 1 \qquad \forall\, p \in \mathcal{P},\, t \in \mathcal{T}
 $$
 
-Since $z$ is being maximised and each type constraint (§5.3) benefits from larger $w$ values, the solver automatically sets $w_{p,m^*,t} = 1$ for the highest-scoring selected move $m^*$ of the designated attacker and $w_{p,m,t} = 0$ for the rest (including all non-designated Pokémon, forced to 0 by the $u$ constraint). This gives exactly $d_{p,t} = \max_{m} \{S_{p,m,t} \cdot y_{p,m}\}$ for the chosen attacker without needing $w$ to be binary — the LP relaxation is exact because "pick the best of $N$" is solved greedily.
+Since $z$ is being maximised and each type constraint (§5.3) benefits from larger $w$ values, the solver automatically sets $w_{p,m^*,t} = 1$ for the highest-scoring selected move $m^*$ of the designated attacker and $w_{p,m,t} = 0$ for the rest (including all non-designated Pokémon, forced to 0 by the $u$ constraint). This gives exactly $d_{p,t} = \max_{m} \{S_{p,m,t} \cdot y_{p,m}\}$ for the chosen attacker without needing $w$ to be binary - the LP relaxation is exact because "pick the best of $N$" is solved greedily.
 
 Note that the same Pokémon can use different moves against different defending types (e.g., Blaziken uses Brick Break vs Steel but Blaze Kick vs Grass). The 4-move constraint (§5.2) still matters because it determines which moves are available across all matchups.
 
@@ -307,7 +307,7 @@ $$
 \sum_{p \in \text{users}(m_{\text{TM}})} y_{p,\, m_{\text{TM}}}  \leq  1 \qquad \forall\ m_{\text{TM}} \in \text{SingleUseTMs}
 $$
 
-Unlimited TMs (purchasable repeatedly in FRLG): Ice Beam, Thunderbolt, Flamethrower, Iron Tail, Hyper Beam, Dig, Brick Break, Rest, Secret Power, Attract, Roar.
+Which TMs are unlimited (purchasable repeatedly) is defined per game in the profile configuration - see `data/profiles.py`.
 
 ### 5.11 Role-Aware Diversity
 
@@ -347,7 +347,7 @@ $$
 
 ## 6 Solver
 
-The MILP is solved with **PuLP** using the **HiGHS** solver (`pip install highspy`). HiGHS is a modern open-source solver significantly faster than CBC on MILPs.
+The MILP is solved with **PuLP** using the **HiGHS** solver. HiGHS is a modern open-source solver significantly faster than CBC on MILPs. Both are installed via `pixi install`.
 
 ### Problem Size
 
@@ -358,7 +358,7 @@ PuLP emits ~53,000 rows and ~27,600 columns; after HiGHS presolve this reduces t
 - The ~24,000 $w_{p,m,t}$ variables are continuous $[0,1]$ and don't add branching complexity
 - The $w \leq y$ and $w \leq u$ linking constraints are the main row-count driver
 
-Move pre-filtering and NVE-matchup skipping keep the model from growing further — without them the score table would be ~40% larger.
+Move pre-filtering and NVE-matchup skipping keep the model from growing further - without them the score table would be ~40% larger.
 
 ---
 
@@ -378,6 +378,5 @@ Move pre-filtering and NVE-matchup skipping keep the model from growing further 
 ### Known Limitations
 
 - **Single-type defenders only.** The model treats each of the 17 types independently. Dual-type matchups (e.g., 4× against Ground/Flying, or immunity from Normal/Ghost) are not modelled.
-- **Mixed objective emphasis.** Stages 1 and 3 now optimise over all non-immune monotype matchups, but `min_redundancy` still focuses only on super-effective coverage.
 - **No defensive stats.** HP, Def, Sp.Def are ignored - the model assumes every Pokémon survives long enough to attack.
 - **Speed is a proxy.** The linear bonus approximates the value of moving first but doesn't model actual speed tiers.
