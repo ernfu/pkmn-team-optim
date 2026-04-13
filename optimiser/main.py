@@ -6,40 +6,83 @@ import argparse
 import json
 from pathlib import Path
 
-from data.pokedex import FRLG_UNLIMITED_TMS
+from data.pokedex import (
+    DEFAULT_VERSION_GROUP,
+    compiled_path_for,
+    get_profile,
+    list_version_groups,
+)
 
 from .scoring import (
-    ALL_TYPES,
-    PHYSICAL_TYPES,
+    attack_stat_for_move,
     compute_scores,
     estimate_damage,
     filter_dominated_moves,
     has_4x_weakness,
-    SE_CHART,
+    move_category,
+    types_for_generation,
 )
 from .solver import Params, optimise
 
-DATA_PATH = (
-    Path(__file__).parent.parent / "data" / "compiled" / "firered-leafgreen.json"
-)
+DATA_DIR = Path(__file__).parent.parent / "data" / "compiled"
+DATA_PATH = compiled_path_for(DEFAULT_VERSION_GROUP)
+
+
+def load_dataset(path: Path) -> dict:
+    data = json.loads(path.read_text())
+    data.setdefault("generation", 3)
+    data.setdefault("version_group", DEFAULT_VERSION_GROUP)
+    data.setdefault("label", data["version_group"].replace("-", " ").title())
+    data.setdefault("unlimited_tms", [])
+    return data
+
+
+def dataset_generation(data: dict) -> int:
+    version_group = data.get("version_group")
+    if version_group:
+        try:
+            return int(get_profile(version_group)["generation"])
+        except ValueError:
+            pass
+    return int(data.get("generation", 3))
+
+
+def dataset_unlimited_tms(data: dict) -> set[str]:
+    return set(data.get("unlimited_tms", []))
 
 
 def load_pokemon(
-    path: Path, no_legendaries: bool, no_4x_weakness: bool = False
+    path_or_data: Path | dict,
+    no_legendaries: bool,
+    no_4x_weakness: bool = False,
+    locked_names: set[str] | None = None,
 ) -> list[dict]:
-    """Load compiled JSON and filter to fully-evolved Pokémon."""
-    data = json.loads(path.read_text())
+    """Load compiled JSON and filter to fully-evolved Pokémon.
+
+    Pokémon in *locked_names* bypass legendary and 4x-weakness filters.
+    """
+    data = (
+        load_dataset(path_or_data) if isinstance(path_or_data, Path) else path_or_data
+    )
+    generation = dataset_generation(data)
+    locked_names = locked_names or set()
     pool = [p for p in data["pokemon"] if p["is_fully_evolved"]]
     if no_legendaries:
-        pool = [p for p in pool if not p["is_legendary"]]
+        pool = [p for p in pool if not p["is_legendary"] or p["name"] in locked_names]
     if no_4x_weakness:
-        pool = [p for p in pool if not has_4x_weakness(p["types"])]
+        pool = [
+            p
+            for p in pool
+            if not has_4x_weakness(p["types"], generation=generation)
+            or p["name"] in locked_names
+        ]
     return pool
 
 
-def display_team(team, pokemon_pool, scores):
+def display_team(team, pokemon_pool, scores, generation: int = 3):
     """Print the team roster, movesets, and type coverage matrix."""
     poke_by_name = {p["name"]: p for p in pokemon_pool}
+    defending_types = types_for_generation(generation)
 
     print("\n" + "=" * 72)
     print("  OPTIMAL TEAM")
@@ -79,17 +122,25 @@ def display_team(team, pokemon_pool, scores):
             effective_power = raw_power * multi_hit
             power_adj = effective_power / 2 if is_mt else effective_power
             acc = md.get("accuracy") or 100
-            cat = "Phys" if m_type in PHYSICAL_TYPES else "Spec"
-            atk_base = (
-                p["base_stats"]["attack"]
-                if m_type in PHYSICAL_TYPES
-                else p["base_stats"]["special-attack"]
+            category = move_category(md, generation=generation)
+            cat = (
+                "Phys"
+                if category == "physical"
+                else "Spec" if category == "special" else category.title()
             )
+            atk_base = attack_stat_for_move(p, md, generation=generation)
 
             best_damage = max(
                 (
-                    estimate_damage(effective_power, atk_base, m_type, p["types"], t)
-                    for t in ALL_TYPES
+                    estimate_damage(
+                        effective_power,
+                        atk_base,
+                        m_type,
+                        p["types"],
+                        t,
+                        generation=generation,
+                    )
+                    for t in defending_types
                 ),
                 default=0,
             )
@@ -117,7 +168,7 @@ def display_team(team, pokemon_pool, scores):
     weakest_type = None
     weakest_val = float("inf")
 
-    for t in ALL_TYPES:
+    for t in defending_types:
         row_vals = []
         for entry in team:
             p_name = entry["name"]
@@ -130,12 +181,15 @@ def display_team(team, pokemon_pool, scores):
                 if not m_type or m_power <= 0:
                     continue
                 effective_power = m_power * md.get("multi_hit", 1.0)
-                atk_base = (
-                    p["base_stats"]["attack"]
-                    if m_type in PHYSICAL_TYPES
-                    else p["base_stats"]["special-attack"]
+                atk_base = attack_stat_for_move(p, md, generation=generation)
+                dmg = estimate_damage(
+                    effective_power,
+                    atk_base,
+                    m_type,
+                    p["types"],
+                    t,
+                    generation=generation,
                 )
-                dmg = estimate_damage(effective_power, atk_base, m_type, p["types"], t)
                 if dmg > best:
                     best = dmg
             row_vals.append(best)
@@ -159,9 +213,7 @@ def display_team(team, pokemon_pool, scores):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Gen 3 Pokémon Team Optimizer (FireRed/LeafGreen)"
-    )
+    parser = argparse.ArgumentParser(description="Pokemon Team Optimizer")
     parser.add_argument(
         "--max-overlap",
         type=int,
@@ -261,13 +313,21 @@ def main():
         "--data",
         type=str,
         default=None,
-        help="Path to compiled JSON (default: data/compiled/firered-leafgreen.json)",
+        help="Path to compiled JSON (overrides --version-group)",
+    )
+    parser.add_argument(
+        "--version-group",
+        choices=list_version_groups(),
+        default=DEFAULT_VERSION_GROUP,
+        help="Compiled dataset to use when --data is not provided",
     )
 
     args = parser.parse_args()
 
     no_legendaries = not args.allow_legendaries
-    data_path = Path(args.data) if args.data else DATA_PATH
+    data_path = Path(args.data) if args.data else compiled_path_for(args.version_group)
+    dataset = load_dataset(data_path)
+    generation = dataset_generation(dataset)
 
     locked_pokemon: dict[str, list[str]] = {}
     for name in args.lock:
@@ -285,14 +345,19 @@ def main():
         locked_pokemon=locked_pokemon,
         must_have_moves=[m.lower() for m in args.must_have],
         must_have_types=[t.lower() for t in args.must_have_type],
-        unlimited_tms=FRLG_UNLIMITED_TMS,
+        unlimited_tms=dataset_unlimited_tms(dataset),
     )
 
     excluded = {n.lower() for n in args.exclude}
 
     print(f"Loading data from {data_path}...")
     no_4x = getattr(args, "no_4x_weakness", False)
-    pool = load_pokemon(data_path, params.no_legendaries, no_4x_weakness=no_4x)
+    pool = load_pokemon(
+        dataset,
+        params.no_legendaries,
+        no_4x_weakness=no_4x,
+        locked_names=set(locked_pokemon),
+    )
     if excluded:
         pool = [p for p in pool if p["name"] not in excluded]
     print(f"Pool: {len(pool)} fully-evolved Pokémon")
@@ -308,18 +373,21 @@ def main():
         pool,
         acc_exponent=args.acc_exponent,
         speed_bonus=args.speed_bonus,
+        generation=generation,
     )
     print(f"Score entries: {len(scores)} (acc exponent: {args.acc_exponent})")
 
     print("\n--- Optimising (lexicographic max-min) ---")
-    status, result, z_val, _obj_val = optimise(pool, scores, params)
+    status, result, z_val, _obj_val = optimise(
+        pool, scores, params, generation=generation
+    )
 
     if status != "Optimal":
         print(f"\n{result}")
         return
 
     print(f"Min coverage (z) = {z_val:.1f}")
-    display_team(result, pool, scores)
+    display_team(result, pool, scores, generation=generation)
 
 
 if __name__ == "__main__":
