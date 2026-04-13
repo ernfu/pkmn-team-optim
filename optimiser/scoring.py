@@ -1,8 +1,8 @@
 """
-Gen 3 type chart, physical/special classification, and score pre-computation.
+Generation-aware type chart, move classification, and score pre-computation.
 """
 
-ALL_TYPES = [
+LEGACY_TYPES = [
     "normal",
     "fire",
     "water",
@@ -21,6 +21,8 @@ ALL_TYPES = [
     "dark",
     "steel",
 ]
+
+MODERN_TYPES = LEGACY_TYPES + ["fairy"]
 
 PHYSICAL_TYPES = {
     "normal",
@@ -44,18 +46,38 @@ SPECIAL_TYPES = {
     "dark",
 }
 
-# Hard-coded discounts for moves whose raw damage overstates optimizer value.
-# Self-KO moves trade away the user, and Frustration assumes intentionally
-# minimized friendship, so both get less credit than base power alone suggests.
+SELF_KO_FACTOR = 0.35
+LOCK_IN_FACTOR = 0.5
+DELAYED_ATTACK_FACTOR = 0.3
+CONDITIONAL_MOVE_FACTOR = 0.2
+SELF_STAT_DROP_PENALTY_PER_STAGE = 0.1
+
 MOVE_SCORE_FACTORS: dict[str, float] = {
-    "self-destruct": 0.35,
-    "explosion": 0.35,
     "frustration": 0.1,
-    "overheat": 0.8,
 }
 
-# Gen 3 super-effective chart: attacking_type -> set of defending types it is SE against.
-SE_CHART: dict[str, set[str]] = {
+
+def move_penalty_factor(move: dict) -> float:
+    """Return a combined multiplicative penalty derived from move metadata."""
+    factor = MOVE_SCORE_FACTORS.get(move.get("name", ""), 1.0)
+    if move.get("is_self_ko"):
+        factor *= SELF_KO_FACTOR
+    if move.get("is_lock_in"):
+        factor *= LOCK_IN_FACTOR
+    if move.get("is_delayed_attack"):
+        factor *= DELAYED_ATTACK_FACTOR
+    if move.get("is_conditional"):
+        factor *= CONDITIONAL_MOVE_FACTOR
+    stat_changes = move.get("self_stat_changes") or []
+    total_drop = sum(abs(change) for _, change in stat_changes)
+    if total_drop:
+        factor *= max(1.0 - SELF_STAT_DROP_PENALTY_PER_STAGE * total_drop, 0.1)
+    return factor
+
+
+# Gen 3-5 super-effective chart: attacking_type -> set of defending types it is
+# super-effective against.
+LEGACY_SE_CHART: dict[str, set[str]] = {
     "normal": set(),
     "fire": {"grass", "ice", "bug", "steel"},
     "water": {"fire", "ground", "rock"},
@@ -76,8 +98,16 @@ SE_CHART: dict[str, set[str]] = {
 }
 
 
-# Gen 3 resisted chart: attacking_type -> set of defending types it is not very effective against.
-NVE_CHART: dict[str, set[str]] = {
+# Gen 6+ super-effective chart, including Fairy.
+MODERN_SE_CHART: dict[str, set[str]] = {
+    **LEGACY_SE_CHART,
+    "poison": {"grass", "fairy"},
+    "steel": {"ice", "rock", "fairy"},
+    "fairy": {"fighting", "dragon", "dark"},
+}
+
+# Gen 3-5 resisted chart: attacking_type -> set of defending types it is not very effective against.
+LEGACY_NVE_CHART: dict[str, set[str]] = {
     "normal": {"rock", "steel"},
     "fire": {"fire", "water", "rock", "dragon"},
     "water": {"water", "grass", "dragon"},
@@ -97,8 +127,18 @@ NVE_CHART: dict[str, set[str]] = {
     "steel": {"fire", "water", "electric", "steel"},
 }
 
-# Gen 3 immunity chart: attacking_type -> set of defending types it cannot hit.
-IMMUNE_CHART: dict[str, set[str]] = {
+# Gen 6+ resisted chart, including Fairy and Steel interaction changes.
+MODERN_NVE_CHART: dict[str, set[str]] = {
+    **LEGACY_NVE_CHART,
+    "fighting": {"poison", "flying", "psychic", "bug", "fairy"},
+    "bug": {"fire", "fighting", "poison", "flying", "ghost", "steel", "fairy"},
+    "ghost": {"dark"},
+    "dark": {"fighting", "dark", "fairy"},
+    "fairy": {"fire", "poison", "steel"},
+}
+
+# Gen 3-5 immunity chart: attacking_type -> set of defending types it cannot hit.
+LEGACY_IMMUNE_CHART: dict[str, set[str]] = {
     "normal": {"ghost"},
     "electric": {"ground"},
     "fighting": {"ghost"},
@@ -108,18 +148,64 @@ IMMUNE_CHART: dict[str, set[str]] = {
     "ghost": {"normal"},
 }
 
+MODERN_IMMUNE_CHART: dict[str, set[str]] = {
+    **LEGACY_IMMUNE_CHART,
+    "dragon": {"fairy"},
+}
 
-def is_super_effective(atk_type: str, def_type: str) -> bool:
-    return def_type in SE_CHART.get(atk_type, set())
+ALL_TYPES = LEGACY_TYPES
+SUPPORTED_GENERATIONS = {3, 4, 5, 6, 7, 8, 9}
 
 
-def type_multiplier(atk_type: str, def_type: str) -> float:
-    """Return the Gen 3 monotype effectiveness multiplier."""
-    if def_type in IMMUNE_CHART.get(atk_type, set()):
+def types_for_generation(generation: int) -> list[str]:
+    _validate_generation(generation)
+    return MODERN_TYPES if generation >= 6 else LEGACY_TYPES
+
+
+def _charts_for_generation(
+    generation: int,
+) -> tuple[dict[str, set[str]], dict[str, set[str]], dict[str, set[str]]]:
+    _validate_generation(generation)
+    if generation >= 6:
+        return MODERN_SE_CHART, MODERN_NVE_CHART, MODERN_IMMUNE_CHART
+    return LEGACY_SE_CHART, LEGACY_NVE_CHART, LEGACY_IMMUNE_CHART
+
+
+def _validate_generation(generation: int) -> None:
+    if generation not in SUPPORTED_GENERATIONS:
+        supported = ", ".join(str(g) for g in sorted(SUPPORTED_GENERATIONS))
+        raise ValueError(f"Unsupported generation {generation}. Supported: {supported}")
+
+
+def move_category(move: dict, generation: int = 3) -> str:
+    _validate_generation(generation)
+    if generation <= 3:
+        if (move.get("power") or 0) <= 0:
+            return move.get("damage_class", "status")
+        return "physical" if move["type"] in PHYSICAL_TYPES else "special"
+    return move.get("damage_class", "status")
+
+
+def attack_stat_for_move(pokemon: dict, move: dict, generation: int = 3) -> int:
+    category = move_category(move, generation=generation)
+    if category == "physical":
+        return pokemon["base_stats"]["attack"]
+    return pokemon["base_stats"]["special-attack"]
+
+
+def is_super_effective(atk_type: str, def_type: str, generation: int = 3) -> bool:
+    se_chart, _, _ = _charts_for_generation(generation)
+    return def_type in se_chart.get(atk_type, set())
+
+
+def type_multiplier(atk_type: str, def_type: str, generation: int = 3) -> float:
+    """Return the monotype effectiveness multiplier for the selected generation."""
+    se_chart, nve_chart, immune_chart = _charts_for_generation(generation)
+    if def_type in immune_chart.get(atk_type, set()):
         return 0.0
-    if def_type in SE_CHART.get(atk_type, set()):
+    if def_type in se_chart.get(atk_type, set()):
         return 2.0
-    if def_type in NVE_CHART.get(atk_type, set()):
+    if def_type in nve_chart.get(atk_type, set()):
         return 0.5
     return 1.0
 
@@ -131,9 +217,10 @@ def estimate_damage(
     attacker_types: list[str],
     def_type: str,
     defender_base: int = 100,
+    generation: int = 3,
 ) -> int:
-    """Approximate Gen 3 monotype damage at Lv100, 0 IV / 0 EV."""
-    multiplier = type_multiplier(move_type, def_type)
+    """Approximate monotype damage at Lv100, 0 IV / 0 EV."""
+    multiplier = type_multiplier(move_type, def_type, generation=generation)
     if power <= 0 or multiplier <= 0:
         return 0
 
@@ -144,13 +231,14 @@ def estimate_damage(
     return int(base * stab * multiplier)
 
 
-def has_4x_weakness(types: list[str]) -> bool:
+def has_4x_weakness(types: list[str], generation: int = 3) -> bool:
     """Return True if a dual-type Pokémon has any 4x weakness."""
+    se_chart, _, _ = _charts_for_generation(generation)
     if len(types) < 2:
         return False
     t1, t2 = types[0], types[1]
     return any(
-        t1 in se_targets and t2 in se_targets for se_targets in SE_CHART.values()
+        t1 in se_targets and t2 in se_targets for se_targets in se_chart.values()
     )
 
 
@@ -162,12 +250,10 @@ def _effective_power(move: dict, low_priority_factor: float = 0.3) -> float:
     acc = move["accuracy"] if move.get("accuracy") is not None else 100
     multi_hit = move.get("multi_hit", 1.0)
     recoil = 1.0 - move.get("recoil_pct", 0)
-    multi_turn = 0.5 if move.get("is_multi_turn") else 1.0
+    multi_turn = 0.3 if move.get("is_multi_turn") else 1.0
     priority = low_priority_factor if move.get("is_low_priority") else 1.0
-    move_factor = MOVE_SCORE_FACTORS.get(move.get("name", ""), 1.0)
-    return (
-        power * multi_hit * (acc / 100) * recoil * multi_turn * priority * move_factor
-    )
+    penalty = move_penalty_factor(move)
+    return power * multi_hit * (acc / 100) * recoil * multi_turn * priority * penalty
 
 
 def _is_machine_or_tutor_move(move: dict) -> bool:
@@ -239,6 +325,7 @@ def compute_scores(
     acc_exponent: float = 2.0,
     speed_bonus: float = 0.1,
     low_priority_factor: float = 0.3,
+    generation: int = 3,
 ) -> dict[tuple[str, str, str], float]:
     """
     Pre-compute S_{p,m,t} for every (pokemon, move, defending_type) triple.
@@ -256,6 +343,7 @@ def compute_scores(
     low_priority_factor: multiplier for negative-priority moves like Focus
     Punch (0.3 = 30% credit).  Set to 1.0 to disable the penalty.
     """
+    _validate_generation(generation)
     scores: dict[tuple[str, str, str], float] = {}
 
     speeds = [p["base_stats"]["speed"] for p in pokemon_pool]
@@ -288,17 +376,17 @@ def compute_scores(
                 else m_power * multi_hit
             )
             stab = 1.5 if m_type in p_types else 1.0
-            stat = p_atk if m_type in PHYSICAL_TYPES else p_spa
+            stat = attack_stat_for_move(poke, move, generation=generation)
             acc_factor = (m_acc / 100) ** acc_exponent
 
             recoil_factor = 1.0 - move["recoil_pct"]
 
             is_low_pri = move["is_low_priority"]
             priority_factor = low_priority_factor if is_low_pri else 1.0
-            move_factor = MOVE_SCORE_FACTORS.get(m_name, 1.0)
+            move_factor = move_penalty_factor(move)
 
-            for def_type in ALL_TYPES:
-                effectiveness = type_multiplier(m_type, def_type)
+            for def_type in types_for_generation(generation):
+                effectiveness = type_multiplier(m_type, def_type, generation=generation)
                 if effectiveness < 1.0:
                     continue
                 score = (
